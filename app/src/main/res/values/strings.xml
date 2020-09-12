@@ -1,3 +1,24 @@
 <resources>
-    <string name="app_name">ruto</string>
+    <string name="appName">ruto</string>
+
+    <!--  Buttons  -->
+    <string name="skipBtn">Skip</string>
+    <string name="nextBtn">Next</string>
+    <string name="backBtn">Back</string>
+    <string name="logOutBtn">Log out</string>
+    <string name="changePasswordBtn">Change Password</string>
+    <string name="updateInfoBtn">Update Information</string>
+    <string name="lgsBtn">Log In</string>
+    <string name="sUpBtn">Sign Up</string>
+
+    <!-- Titles -->
+    <string name="obTitle1">Improve</string>
+    <string name="obTitle2">Stay Sharp</string>
+    <string name="obTitle3"></string>
+
+    <!-- Text -->
+    <string name="obText1">Track your habits and control them by getting a visual of your daily/weekly activity </string>
+    <string name="obText2">Get alerted whenever you are about to touch your face to avoid risking infection. </string>
+    <string name="obText3"></string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.example.ruto;
+package com.quarantino.ruto;
 
 import android.content.Context;
 
