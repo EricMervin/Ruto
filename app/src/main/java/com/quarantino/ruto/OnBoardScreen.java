@@ -110,7 +110,7 @@ public class OnBoardScreen extends AppCompatActivity {
         sharedPrefs preference = new sharedPrefs(getApplicationContext());
         preference.setIsFirstTime(false);
 
-        startActivity(new Intent(this, LoginScreen.class));
+        startActivity(new Intent(this, CurrentLocation.class));
         finish();
     }
 }
