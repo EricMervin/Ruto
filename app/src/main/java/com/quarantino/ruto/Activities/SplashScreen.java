@@ -49,7 +49,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else if (preference.getIsLoggedIn()) {
-                    Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
+                    Intent intent = new Intent(getApplicationContext(), CurrentLocation.class);
                     startActivity(intent);
                     finish();
                 } else if (preference.getIsLoggedOut()) {
