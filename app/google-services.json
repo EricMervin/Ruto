@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "824163817997",
+    "firebase_url": "https://ruto-abd74.firebaseio.com",
+    "project_id": "ruto-abd74",
+    "storage_bucket": "ruto-abd74.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824163817997:android:a61d4203cd37ad5dd3d344",
+        "android_client_info": {
+          "package_name": "com.quarantino.ruto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "824163817997-gqvc5j3v9h7ghaefnfa115v4sfucdet0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR-b5qJ0D2kyqdOPdgy-uJ2WKHdywkbL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "824163817997-gqvc5j3v9h7ghaefnfa115v4sfucdet0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
