@@ -150,7 +150,7 @@ public class LoginScreen extends AppCompatActivity {
                         preference.setIsLoggedIn(true);
 
                         //Start Next Activity : Main Dashboard
-                        startActivity(new Intent(getApplicationContext(), MainDashboard.class));
+                        startActivity(new Intent(getApplicationContext(), CurrentLocation.class));
                         finish();
                     } else {
                         logInPasswordInput.setError("Wrong password entered.");
