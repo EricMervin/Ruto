@@ -170,7 +170,7 @@ public class LoginScreen extends AppCompatActivity {
     }
 
     public void openSignUp(View view) {
-        startActivity(new Intent(this, SplashScreen.class));
+        startActivity(new Intent(this, SignUpScreen.class));
         finish();
     }
 }

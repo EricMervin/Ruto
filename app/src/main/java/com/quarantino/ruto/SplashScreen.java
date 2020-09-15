@@ -46,15 +46,15 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else if (preference.getIsLoggedIn()) {
-                    Intent intent = new Intent(getApplicationContext(), OnBoardScreen.class);
+                    Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
                     startActivity(intent);
                     finish();
                 } else if (preference.getIsLoggedOut()) {
-                    Intent intent = new Intent(getApplicationContext(), OnBoardScreen.class);
+                    Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
                     startActivity(intent);
                     finish();
                 } else {
-                    Intent intent = new Intent(getApplicationContext(), OnBoardScreen.class);
+                    Intent intent = new Intent(getApplicationContext(), SignUpScreen.class);
                     startActivity(intent);
                     finish();
                 }
