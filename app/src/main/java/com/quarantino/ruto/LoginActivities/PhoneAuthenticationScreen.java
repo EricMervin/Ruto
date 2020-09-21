@@ -1,10 +1,9 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.LoginActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,10 +23,11 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.quarantino.ruto.HelperClasses.sharedPrefs;
+import com.quarantino.ruto.CurrentLocation;
+import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.userHelperClass;
-import com.quarantino.ruto.HelperClasses.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.userHelperClassFirebase;
+import com.quarantino.ruto.R;
 
 import java.util.concurrent.TimeUnit;
 
@@ -134,7 +134,7 @@ public class PhoneAuthenticationScreen extends AppCompatActivity {
                             reference = rootNode.getReference("users");
 
                             //SharedPreferences : Storing user Info in Firebase
-                            userHelperClassFirebase helperClass = new userHelperClassFirebase(previousName, previousUsername, previousPhoneNo, previousPassword);
+                            userHelperClassFirebase helperClass = new userHelperClassFirebase(previousName, previousUsername, previousPassword);
                             reference.child(previousUsername).setValue(helperClass);
 
                             //SharedPreferences : Storing user Info Locally
@@ -149,7 +149,7 @@ public class PhoneAuthenticationScreen extends AppCompatActivity {
                             preference.setIsLoggedIn(true);
 
                             //Start next activity
-                            Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
+                            Intent intent = new Intent(getApplicationContext(), CurrentLocation.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         } else {

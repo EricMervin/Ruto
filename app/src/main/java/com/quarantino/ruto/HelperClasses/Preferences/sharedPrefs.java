@@ -1,4 +1,4 @@
-package com.quarantino.ruto.HelperClasses;
+package com.quarantino.ruto.HelperClasses.Preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

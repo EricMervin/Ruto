@@ -31,6 +31,7 @@
         android:letterSpacing=".1"
         android:onClick="skipSlide"
         android:text="@string/skipBtn"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,6 +106,7 @@
             android:fontFamily="@font/montserratbold"
             android:letterSpacing=".1"
             android:onClick="nextSlide"
+            android:visibility="visible"
             android:text="@string/nextBtn" />
 
     </RelativeLayout>

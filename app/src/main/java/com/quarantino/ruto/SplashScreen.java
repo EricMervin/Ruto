@@ -10,7 +10,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
-import com.quarantino.ruto.HelperClasses.sharedPrefs;
+import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
+import com.quarantino.ruto.LoginActivities.LoginScreen;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -27,7 +28,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.splash_screen);
 
         //Animation
-        topAnimation = AnimationUtils.loadAnimation(this, R.anim.ss_titledown);
+        topAnimation = AnimationUtils.loadAnimation(this, R.anim.ss_titleup);
 
         //Hooks
         logo = findViewById(R.id.ssTitleText);
@@ -46,7 +47,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else if (preference.getIsLoggedIn()) {
-                    Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
+                    Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
                     startActivity(intent);
                     finish();
                 } else if (preference.getIsLoggedOut()) {
@@ -54,7 +55,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    Intent intent = new Intent(getApplicationContext(), SignUpScreen.class);
+                    Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
                     startActivity(intent);
                     finish();
                 }

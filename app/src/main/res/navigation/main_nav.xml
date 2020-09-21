@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/dashboard_frag">
+
+    <fragment
+        android:id="@+id/dashboard_frag"
+        android:name="com.quarantino.ruto.dashboard_frag"
+        android:label="fragment_dashboard_frag"
+        tools:layout="@layout/fragment_dashboard" />
+    <fragment
+        android:id="@+id/user_frag"
+        android:name="com.quarantino.ruto.user_frag"
+        android:label="fragment_user_frag"
+        tools:layout="@layout/fragment_user" />
+    <fragment
+        android:id="@+id/create_frag"
+        android:name="com.quarantino.ruto.create_frag"
+        android:label="fragment_create_frag"
+        tools:layout="@layout/fragment_create" />
+</navigation>

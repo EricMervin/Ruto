@@ -1,20 +1,22 @@
 package com.quarantino.ruto;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import com.quarantino.ruto.HelperClasses.SliderAdapter;
-import com.quarantino.ruto.HelperClasses.sharedPrefs;
+import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
+import com.quarantino.ruto.LoginActivities.LoginScreen;
+import com.quarantino.ruto.LoginActivities.SignUpScreen;
 
 public class OnBoardScreen extends AppCompatActivity {
 
@@ -24,7 +26,7 @@ public class OnBoardScreen extends AppCompatActivity {
     SliderAdapter sliderAdapter;
     TextView[] obSliderDots;
 
-    Button lgsButton, signButton;
+    Button lgsButton, signButton, skipButton, nextButton;
 
     // Animations
     Animation animation;
@@ -34,6 +36,7 @@ public class OnBoardScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.on_board);
 
         // Hooks
@@ -41,6 +44,8 @@ public class OnBoardScreen extends AppCompatActivity {
         dotsLayout = findViewById(R.id.obDots);
         lgsButton = findViewById(R.id.obLgsBtn);
         signButton = findViewById(R.id.obSignBtn);
+        skipButton = findViewById(R.id.obSkipBtn);
+        nextButton = findViewById(R.id.obNextBtn);
 
         //Adapter
         sliderAdapter = new SliderAdapter(this);
@@ -48,6 +53,14 @@ public class OnBoardScreen extends AppCompatActivity {
 
         sliderDots(0);
         viewPager.addOnPageChangeListener(changeListener);
+    }
+
+    public void skipSlide(View view) {
+        viewPager.setCurrentItem(2);
+    }
+
+    public void nextSlide(View view) {
+        viewPager.setCurrentItem(currentSlidePosition + 1);
     }
 
     private void sliderDots(int position) {
@@ -81,14 +94,18 @@ public class OnBoardScreen extends AppCompatActivity {
 
             if (position == 2) {
 //                animation = AnimationUtils.loadAnimation(OnBoardScreen.this, R.anim.ob_btnup);
-                animation = AnimationUtils.loadAnimation(OnBoardScreen.this, R.anim.ss_titledown);
-                signButton.setAnimation(animation);
-                lgsButton.setAnimation(animation);
+//                signButton.setAnimation(animation);
+//                lgsButton.setAnimation(animation);
+
                 signButton.setVisibility(View.VISIBLE);
                 lgsButton.setVisibility(View.VISIBLE);
+                skipButton.setVisibility(View.INVISIBLE);
+                nextButton.setVisibility(View.INVISIBLE);
             } else {
                 signButton.setVisibility(View.INVISIBLE);
                 lgsButton.setVisibility(View.INVISIBLE);
+                skipButton.setVisibility(View.VISIBLE);
+                nextButton.setVisibility(View.VISIBLE);
             }
         }
 
@@ -97,14 +114,6 @@ public class OnBoardScreen extends AppCompatActivity {
 
         }
     };
-
-    public void skipSlide(View view) {
-        viewPager.setCurrentItem(2);
-    }
-
-    public void nextSlide(View view) {
-        viewPager.setCurrentItem(currentSlidePosition + 1);
-    }
 
     public void openLogIn(View view) {
         sharedPrefs preference = new sharedPrefs(getApplicationContext());

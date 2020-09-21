@@ -1,4 +1,4 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.LoginActivities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,8 +19,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.quarantino.ruto.HelperClasses.sharedPrefs;
+import com.quarantino.ruto.CurrentLocation;
+import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.userHelperClass;
+import com.quarantino.ruto.MainDashboard;
+import com.quarantino.ruto.R;
 
 public class LoginScreen extends AppCompatActivity {
 
@@ -53,21 +55,21 @@ public class LoginScreen extends AppCompatActivity {
 
         //Hooks
         logInHeading = findViewById(R.id.headingLogIn);
-        logInSubHeading = findViewById(R.id.subHeadingLogIn);
-        logInIllustration = findViewById(R.id.illustrationLogIn);
+//        logInSubHeading = findViewById(R.id.subHeadingLogIn);
+//        logInIllustration = findViewById(R.id.illustrationLogIn);
         logInUsernameInput = findViewById(R.id.logInUsernameInput);
         logInPasswordInput = findViewById(R.id.logInPasswordInput);
         logInBtn = findViewById(R.id.logInBtn);
-        createAccountBtn = findViewById(R.id.createAccountBtn);
+//        createAccountBtn = findViewById(R.id.createAccountBtn);
 
         //Animation Assignment
         logInHeading.setAnimation(headingFadeUp);
-        logInSubHeading.setAnimation(subHeadingFadeUp);
-        logInIllustration.setAnimation(imageFadeUp);
+//        logInSubHeading.setAnimation(subHeadingFadeUp);
+//        logInIllustration.setAnimation(imageFadeUp);
         logInUsernameInput.setAnimation(textField1FadeUp);
         logInPasswordInput.setAnimation(textField2FadeUp);
         logInBtn.setAnimation(button1FadeUp);
-        createAccountBtn.setAnimation(button2FadeUp);
+//        createAccountBtn.setAnimation(button2FadeUp);
 
         //Authentication
         firebaseAuth = FirebaseAuth.getInstance();
@@ -136,21 +138,19 @@ public class LoginScreen extends AppCompatActivity {
 
                         String nameFromDB = dataSnapshot.child(userEnteredUsername).child("name").getValue(String.class);
                         String usernameFromDB = dataSnapshot.child(userEnteredUsername).child("username").getValue(String.class);
-                        String phoneNoFromDB = dataSnapshot.child(userEnteredUsername).child("phoneNo").getValue(String.class);
 
                         //SharedPreferences : Storing user Info
                         userHelperClass helperClass = new userHelperClass(getApplicationContext());
                         helperClass.setName(nameFromDB);
                         helperClass.setUsername(usernameFromDB);
                         helperClass.setPassword(userEnteredPassword);
-                        helperClass.setPhoneNo(phoneNoFromDB);
 
                         //SharedPreferences : Login Token
                         sharedPrefs preference = new sharedPrefs(getApplicationContext());
                         preference.setIsLoggedIn(true);
 
                         //Start Next Activity : Main Dashboard
-                        startActivity(new Intent(getApplicationContext(), CurrentLocation.class));
+                        startActivity(new Intent(getApplicationContext(), MainDashboard.class));
                         finish();
                     } else {
                         logInPasswordInput.setError("Wrong password entered.");

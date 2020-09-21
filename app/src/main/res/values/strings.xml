@@ -12,13 +12,16 @@
     <string name="sUpBtn">Sign Up</string>
 
     <!-- Titles -->
-    <string name="obTitle1">Improve</string>
-    <string name="obTitle2">Stay Sharp</string>
+    <string name="obTitle1">Lorem</string>
+    <string name="obTitle2">Lorem</string>
     <string name="obTitle3"></string>
 
     <!-- Text -->
-    <string name="obText1">Track your habits and control them by getting a visual of your daily/weekly activity </string>
-    <string name="obText2">Get alerted whenever you are about to touch your face to avoid risking infection. </string>
+    <string name="obText1">Think of a small description for one of the features of the app.</string>
+    <string name="obText2">Think of a small description for one of the features of the app.</string>
     <string name="obText3"></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

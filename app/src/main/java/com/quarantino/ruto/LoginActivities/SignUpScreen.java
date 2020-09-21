@@ -1,10 +1,9 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.LoginActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,12 +11,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.quarantino.ruto.CurrentLocation;
+import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
+import com.quarantino.ruto.HelperClasses.userHelperClass;
+import com.quarantino.ruto.HelperClasses.userHelperClassFirebase;
+import com.quarantino.ruto.MainDashboard;
+import com.quarantino.ruto.R;
 
 public class SignUpScreen extends AppCompatActivity {
 
@@ -48,26 +58,26 @@ public class SignUpScreen extends AppCompatActivity {
 //        button2FadeUp = AnimationUtils.loadAnimation(this, R.anim.signup_button2up);
 
         //Hooks
-        signUpIllustration = findViewById(R.id.illustrationSignUp);
+//        signUpIllustration = findViewById(R.id.illustrationSignUp);
         signUpHeading = findViewById(R.id.headingSignUp);
-        signUpSubHeading = findViewById(R.id.subHeadingSignUp);
+//        signUpSubHeading = findViewById(R.id.subHeadingSignUp);
         signUpNameInput = findViewById(R.id.signUpNameInput);
         signUpUsernameInput = findViewById(R.id.signUpUsernameInput);
-        signUpPhoneNumInput = findViewById(R.id.signUpPhoneNumInput);
+//        signUpPhoneNumInput = findViewById(R.id.signUpPhoneNumInput);
         signUpPasswordInput = findViewById(R.id.signUpPasswordInput);
         signUpBtn = findViewById(R.id.signUpBtn);
-        alreadyMemberBtn = findViewById(R.id.alreadyMemberBtn);
+//        alreadyMemberBtn = findViewById(R.id.alreadyMemberBtn);
 
         //Animation Assignment
         signUpHeading.setAnimation(headingFadeUp);
-        signUpSubHeading.setAnimation(subHeadingFadeUp);
-        signUpIllustration.setAnimation(imageFadeUp);
+//        signUpSubHeading.setAnimation(subHeadingFadeUp);
+//        signUpIllustration.setAnimation(imageFadeUp);
         signUpNameInput.setAnimation(textField1FadeUp);
         signUpUsernameInput.setAnimation(textField2FadeUp);
-        signUpPhoneNumInput.setAnimation(textField3FadeUp);
+//        signUpPhoneNumInput.setAnimation(textField3FadeUp);
         signUpPasswordInput.setAnimation(textField4FadeUp);
         signUpBtn.setAnimation(button1FadeUp);
-        alreadyMemberBtn.setAnimation(button2FadeUp);
+//        alreadyMemberBtn.setAnimation(button2FadeUp);
     }
 
     public void openLogIn(View view) {
@@ -117,21 +127,21 @@ public class SignUpScreen extends AppCompatActivity {
         }
     }
 
-    private Boolean validatePhoneNumber() {
-        String value = signUpPhoneNumInput.getEditText().getText().toString();
-
-        if (value.isEmpty()) {
-            signUpPhoneNumInput.setError("Field cannot be empty.");
-            return false;
-        } else if (value.length() < 10 || value.length() > 10) {
-            signUpPhoneNumInput.setError("Enter a valid phone number.");
-            return false;
-        } else {
-            signUpPhoneNumInput.setError(null);
-            signUpPhoneNumInput.setErrorEnabled(false);
-            return true;
-        }
-    }
+//    private Boolean validatePhoneNumber() {
+//        String value = signUpPhoneNumInput.getEditText().getText().toString();
+//
+//        if (value.isEmpty()) {
+//            signUpPhoneNumInput.setError("Field cannot be empty.");
+//            return false;
+//        } else if (value.length() < 10 || value.length() > 10) {
+//            signUpPhoneNumInput.setError("Enter a valid phone number.");
+//            return false;
+//        } else {
+//            signUpPhoneNumInput.setError(null);
+//            signUpPhoneNumInput.setErrorEnabled(false);
+//            return true;
+//        }
+//    }
 
     private Boolean validatePassword() {
         String value = signUpPasswordInput.getEditText().getText().toString();
@@ -164,17 +174,17 @@ public class SignUpScreen extends AppCompatActivity {
         reference = rootNode.getReference("users");
 
         //Validation
-        if (!validateName() || !validateUsername() || !validatePhoneNumber() || !validatePassword()) {
+        if (!validateName() || !validateUsername() || !validatePassword()) {
             return;
         }
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String userName = signUpNameInput.getEditText().getText().toString();
-                String userUsername = signUpUsernameInput.getEditText().getText().toString();
-                String userPhoneNumber = signUpPhoneNumInput.getEditText().getText().toString();
-                String userPassword = signUpPasswordInput.getEditText().getText().toString();
+                final String userName = signUpNameInput.getEditText().getText().toString();
+                final String userUsername = signUpUsernameInput.getEditText().getText().toString();
+//                String userPhoneNumber = signUpPhoneNumInput.getEditText().getText().toString();
+                final String userPassword = signUpPasswordInput.getEditText().getText().toString();
 
                 if (dataSnapshot.hasChild(userUsername)) {
                     signUpUsernameInput.setError("Username already taken.");
@@ -182,13 +192,27 @@ public class SignUpScreen extends AppCompatActivity {
                     // userHelperClass helperClass = new userHelperClass(userName, userUsername ,userPhoneNumber, userPassword);
                     // reference.child(userUsername).setValue(helperClass);
 
-                    Intent intent = new Intent(getApplicationContext(), PhoneAuthenticationScreen.class);
-                    intent.putExtra("name", userName);
-                    intent.putExtra("username", userUsername);
-                    intent.putExtra("phoneNo", userPhoneNumber);
-                    intent.putExtra("password", userPassword);
+                    rootNode = FirebaseDatabase.getInstance();
+                    reference = rootNode.getReference("users");
+
+                    //SharedPreferences : Storing user Info in Firebase
+                    userHelperClassFirebase helperClass = new userHelperClassFirebase(userName, userUsername,  userPassword);
+                    reference.child(userUsername).setValue(helperClass);
+
+                    //SharedPreferences : Storing user Info Locally
+                    userHelperClass helperClass1 = new userHelperClass(getApplicationContext());
+                    helperClass1.setName(userName);
+                    helperClass1.setUsername(userUsername);
+                    helperClass1.setPassword(userPassword);
+
+                    //SharedPreferences : Login Token
+                    sharedPrefs preference = new sharedPrefs(getApplicationContext());
+                    preference.setIsLoggedIn(true);
+
+                    //Start next activity
+                    Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
-                    finish();
                 }
             }
 
