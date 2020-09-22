@@ -12,10 +12,10 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/sf_pro_text_bold"
+        android:letterSpacing="-0.075"
         android:text="Home"
-        android:letterSpacing="-0.05"
         android:textColor="@color/colorPrimary"
-        android:textSize="42sp" />
+        android:textSize="54sp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,32 +33,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
-                android:fontFamily="@font/montserratbold"
-                android:text="Nearby Places"
+                android:fontFamily="@font/sf_pro_text_bold"
+                android:letterSpacing="-0.075"
+                android:text="Nearby Restaurants"
                 android:textColor="@color/colorPrimary"
                 android:textSize="24dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/nearbyPlaces"
                     android:layout_width="match_parent"
-                    android:layout_height="160dp">
-
-
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="160dp" />
 
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="36dp"
+                android:orientation="vertical"
                 android:padding="24dp">
 
                 <RelativeLayout
@@ -68,33 +66,27 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Most Popular"
-                        android:textSize="24sp"
-                        android:fontFamily="@font/montserratbold"
-                        android:textColor="@color/colorPrimary"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View More"
-                        android:fontFamily="@font/montserratregular"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true" />
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:letterSpacing="-0.075"
+                        android:text="Top Rated"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="24sp" />
 
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:background="@color/colorPrimaryDark"/>
+                    android:layout_height="160dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorPrimaryDark" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="36dp"
+                android:orientation="vertical"
                 android:padding="24dp">
 
                 <RelativeLayout
@@ -104,32 +96,24 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:letterSpacing="-0.075"
                         android:text="Categories"
-                        android:textSize="24sp"
-                        android:fontFamily="@font/montserratbold"
-                        android:textColor="@color/colorPrimary"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View More"
-                        android:fontFamily="@font/montserratregular"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true" />
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="24sp" />
 
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:background="@color/colorPrimaryDark"/>
+                    android:layout_height="160dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/colorPrimaryDark" />
 
             </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
-
-
 
 </LinearLayout>

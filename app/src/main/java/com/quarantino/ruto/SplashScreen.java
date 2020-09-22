@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.LoginActivities.LoginScreen;
+import com.quarantino.ruto.LoginActivities.SignUpScreen;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -47,7 +48,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else if (preference.getIsLoggedIn()) {
-                    Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                    Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
                     startActivity(intent);
                     finish();
                 } else if (preference.getIsLoggedOut()) {
@@ -55,7 +56,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                    Intent intent = new Intent(getApplicationContext(), SignUpScreen.class);
                     startActivity(intent);
                     finish();
                 }

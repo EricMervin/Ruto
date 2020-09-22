@@ -13,11 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CurrentLocation"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD4KfDcLVjVPatpIKtrPXot024Z4UHVZQ8" />
+            android:value="@string/places_api_key"/>
+
+        <activity android:name=".CurrentLocation"></activity>
 
         <activity
             android:name=".MainDashboard"
