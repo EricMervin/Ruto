@@ -2,6 +2,10 @@ package com.quarantino.ruto;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +50,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class dashboard_frag extends Fragment {
-
 //    private final String FSClientID = "N141PNZ13EZGGBNP3KIDI1YOVKVPWJE1HGSK3IGUYFJJWU0G";
 //    private final String FSClientScr = "MCVDR3ZJ0OR52ZOJFSBTUBSPCZG30FOAHM5TASQBXAJRUR1Y";
 
@@ -56,20 +60,33 @@ public class dashboard_frag extends Fragment {
     double currentLat = 0, currentLong = 0;
 
     public dashboard_frag() {
-        // Required empty public constructor
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+
         nearbyPlacesRecycler = view.findViewById(R.id.nearbyPlaces);
+        nearbyPlacesRecycler.setHasFixedSize(true);
+        nearbyPlacesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
 //        nearbyPlacesRecycler();
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
-        getCurrentLocation();
-
+        if(ActivityCompat.checkSelfPermission(getContext()
+                , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            getCurrentLocation();
+        } else{
+            ActivityCompat.requestPermissions(getActivity()
+                    ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
+//        getCurrentLocation();
         return view;
     }
 
@@ -134,9 +151,6 @@ public class dashboard_frag extends Fragment {
 
         @Override
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
-            nearbyPlacesRecycler.setHasFixedSize(true);
-            nearbyPlacesRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-
             ArrayList<NearbyPlacesHelperClass> nearbyPlaces = new ArrayList<>();
             for(int i = 0 ; i<5 ; i++) {
                 HashMap<String, String> hashMapList = hashMaps.get(i);
@@ -144,16 +158,45 @@ public class dashboard_frag extends Fragment {
                 double lat = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lat")));
                 double lng = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
 
+                String rating = hashMapList.get("rating");
+//                String photoRef = hashMapList.get("photo_reference");
+//                String openNow = hashMapList.get("open_now");
+
                 String name = hashMapList.get("name");
                 LatLng latlng = new LatLng(lat, lng);
 
                 Log.d("Process", "On Post Executed");
-
-                nearbyPlaces.add(new NearbyPlacesHelperClass(R.drawable.bg, name));
+//                Log.d("Rating", photoRef );
+                nearbyPlaces.add(new NearbyPlacesHelperClass(R.drawable.bg, name, Float.parseFloat(rating)));
             }
             recyclerAdapter = new NearbyPlacesAdapter(nearbyPlaces);
             nearbyPlacesRecycler.setAdapter(recyclerAdapter);
         }
+    }
+
+    private int getPhotoOfPlace(String photoRef) throws IOException {
+        String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo" + "?maxwidth=400" +
+                "&photoreference=" + photoRef +
+                "&key=" + getResources().getString(R.string.places_api_key);
+        URL url = new URL(urlPhoto);
+//
+//        HttpURLConnection connection = (HttpURLConnection) photoUrl.openConnection();
+//        connection.connect();
+//        InputStream stream = connection.getInputStream();
+//
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+        HttpURLConnection connection = (HttpURLConnection) url
+                .openConnection();
+        connection.setDoInput(true);
+        connection.connect();
+        InputStream input = connection.getInputStream();
+        Bitmap myBitmap = BitmapFactory.decodeStream(input);
+        Drawable d = new BitmapDrawable(getResources(), myBitmap);
+        int drawableId = Integer.parseInt(d.toString());
+
+        return drawableId;
+//        return reader;
     }
 
 
@@ -166,31 +209,41 @@ public class dashboard_frag extends Fragment {
                 if(location != null){
                     currentLat = location.getLatitude();
                     currentLong = location.getLongitude();
-                    Log.d("Location lat", String.valueOf(currentLat));
-                    Log.d("Location long", String.valueOf(currentLong));
 
-                    String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
-                            "?location=" + currentLat + "," + currentLong +
-                            "&radius=5000" + "&type=" + "restaurant" +
-                            "&key=" + getResources().getString(R.string.places_api_key);
-
-                    new PlaceTask().execute(url);
+                    getNearbyRestaurant(currentLat, currentLong);
                 }
             }
         });
     }
 
+    private void getNearbyRestaurant(double currentLat, double currentLong) {
+        Log.d("Location lat", String.valueOf(currentLat));
+        Log.d("Location long", String.valueOf(currentLong));
+
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                "?location=" + currentLat + "," + currentLong +
+                "&radius=5000" + "&type=" + "restaurant" +
+                "&key=" + getResources().getString(R.string.places_api_key);
+
+        Log.d("Json URL", url);
+
+        new PlaceTask().execute(url);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 44){
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                getCurrentLocation();
+            }
+        }
+    }
+
     //Create card for the recycler
     private void nearbyPlacesRecycler() {
-        nearbyPlacesRecycler.setHasFixedSize(true);
-        nearbyPlacesRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-
         ArrayList<NearbyPlacesHelperClass> nearbyPlaces = new ArrayList<>();
-
-        nearbyPlaces.add(new NearbyPlacesHelperClass(R.drawable.bg, "Green Park"));
-        nearbyPlaces.add(new NearbyPlacesHelperClass(R.drawable.bg_2, "Taj Mahal"));
-        nearbyPlaces.add(new NearbyPlacesHelperClass(R.drawable.bg, "Venice"));
-
+        nearbyPlaces.add(new NearbyPlacesHelperClass(R.drawable.bg, "Name of Place", Float.parseFloat("4.1")));
         recyclerAdapter = new NearbyPlacesAdapter(nearbyPlaces);
         nearbyPlacesRecycler.setAdapter(recyclerAdapter);
     }

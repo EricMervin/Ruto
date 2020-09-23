@@ -29,12 +29,16 @@
                 android:id="@+id/titleNearby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/placeRating"
                 android:fontFamily="@font/sf_pro_text_bold"
                 android:text="Green Park"
                 android:textColor="@color/white"
-                android:textSize="21sp" />
+                android:textSize="16sp" />
 
             <RatingBar
+                android:id="@+id/placeRating"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

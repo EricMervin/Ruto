@@ -3,6 +3,7 @@ package com.quarantino.ruto.HelperClasses.NearbyAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -33,8 +34,9 @@ public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapte
     public void onBindViewHolder(@NonNull NearbyPlacesViewHolder holder, int position) {
         NearbyPlacesHelperClass nearbyPlacesHelperClass = nearbyPlaces.get(position);
 
-        holder.cardLayout.setBackgroundResource(nearbyPlacesHelperClass.getImage());
-        holder.placeName.setText(nearbyPlacesHelperClass.getTitle());
+        holder.cardLayout.setBackgroundResource(nearbyPlacesHelperClass.getImageOfPlace());
+        holder.placeName.setText(nearbyPlacesHelperClass.getNameOfPlace());
+        holder.placeRatingBar.setRating(nearbyPlacesHelperClass.getRating());
     }
 
     @Override
@@ -46,6 +48,7 @@ public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapte
 
         RelativeLayout cardLayout;
         TextView placeName;
+        RatingBar placeRatingBar;
 
         public NearbyPlacesViewHolder(@NonNull View itemView){
             super(itemView);
@@ -53,6 +56,7 @@ public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapte
             //Hooks
             cardLayout = itemView.findViewById(R.id.imageNearby);
             placeName = itemView.findViewById(R.id.titleNearby);
+            placeRatingBar = itemView.findViewById(R.id.placeRating);
         }
     }
 }

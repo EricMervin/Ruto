@@ -14,6 +14,10 @@ public class JsonParser {
         HashMap<String,String> dataList = new HashMap<>();
         try {
             String name = object.getString("name");
+            String rating = object.getString("rating");
+
+//            String photoRef = object.getJSONObject("photo").getString("photo_reference");
+//            String openNow = object.getJSONObject("opening_hours").getString("open_now");
 
             String latitude = object.getJSONObject("geometry")
                     .getJSONObject("location").getString("lat");
@@ -22,6 +26,9 @@ public class JsonParser {
                     .getJSONObject("location").getString("lng");
 
             dataList.put("name", name);
+            dataList.put("rating", rating);
+//            dataList.put("photo_reference", photoRef);
+//            dataList.put("open_now", openNow);
             dataList.put("lat", latitude);
             dataList.put("lng", longitude);
 
