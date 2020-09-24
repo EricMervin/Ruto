@@ -32,13 +32,13 @@ public class userHelperClass {
         editor.commit();
     }
 
-    public String getPhoneNo() {
-        return sharedPref.getString("Phone No", "");
+    public String getEmail() {
+        return sharedPref.getString("Email", "");
     }
 
-    public void setPhoneNo(String phoneNo) {
+    public void setEmail(String phoneNo) {
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("Phone No", phoneNo);
+        editor.putString("Email", phoneNo);
         editor.commit();
     }
 
@@ -59,16 +59,6 @@ public class userHelperClass {
     public void setProfilePhoto(String filePath) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("Profile Photo", filePath);
-        editor.commit();
-    }
-
-    public String getDeviceName() {
-        return sharedPref.getString("Device Name", "No devices found");
-    }
-
-    public void setDeviceName(String deviceName) {
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("Device Name", deviceName);
         editor.commit();
     }
 }

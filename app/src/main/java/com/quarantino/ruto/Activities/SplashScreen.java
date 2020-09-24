@@ -1,4 +1,4 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.LoginActivities.LoginScreen;
 import com.quarantino.ruto.LoginActivities.SignUpScreen;
+import com.quarantino.ruto.R;
 
 public class SplashScreen extends AppCompatActivity {
 

@@ -18,10 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.quarantino.ruto.CurrentLocation;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.userHelperClass;
-import com.quarantino.ruto.MainDashboard;
+import com.quarantino.ruto.Activities.MainDashboard;
 import com.quarantino.ruto.R;
 
 public class LoginScreen extends AppCompatActivity {
@@ -84,6 +83,7 @@ public class LoginScreen extends AppCompatActivity {
 
         if (value.isEmpty()) {
             logInUsernameInput.setError("Field cannot be empty.");
+            logInUsernameInput.requestFocus();
             return false;
         } else {
             logInUsernameInput.setError(null);
@@ -97,6 +97,7 @@ public class LoginScreen extends AppCompatActivity {
 
         if (value.isEmpty()) {
             logInPasswordInput.setError("Field cannot be empty.");
+            logInPasswordInput.requestFocus();
             return false;
         } else {
             logInPasswordInput.setError(null);
@@ -137,12 +138,14 @@ public class LoginScreen extends AppCompatActivity {
 
                         String nameFromDB = dataSnapshot.child(userEnteredUsername).child("name").getValue(String.class);
                         String usernameFromDB = dataSnapshot.child(userEnteredUsername).child("username").getValue(String.class);
+                        String emailFromDB = dataSnapshot.child(userEnteredUsername).child("email").getValue(String.class);
 
                         //SharedPreferences : Storing user Info
                         userHelperClass helperClass = new userHelperClass(getApplicationContext());
                         helperClass.setName(nameFromDB);
                         helperClass.setUsername(usernameFromDB);
                         helperClass.setPassword(userEnteredPassword);
+                        helperClass.setEmail(emailFromDB);
 
                         //SharedPreferences : Login Token
                         sharedPrefs preference = new sharedPrefs(getApplicationContext());

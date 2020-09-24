@@ -1,50 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="160dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="6dp"
-    android:layout_marginEnd="12dp">
+    android:layout_width="225dp"
+    android:layout_height="345dp"
+    android:layout_marginEnd="24dp"
+    app:cardCornerRadius="16dp">
 
     <RelativeLayout
         android:id="@+id/imageNearby"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg">
+        android:layout_height="match_parent">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/card_image_overlay"/>
-
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/photoNearby"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="2dp"
-            android:layout_alignParentBottom="true">
+            android:fitsSystemWindows="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg" />
+
+        <View
+            android:id="@+id/imageOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/card_image_overlay" />
+
+        <RatingBar
+            android:id="@+id/placeRating"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/white"
+            android:rating="5" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp">
 
             <TextView
                 android:id="@+id/titleNearby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="25dp"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/placeRating"
                 android:fontFamily="@font/sf_pro_text_bold"
                 android:text="Green Park"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
-
-            <RatingBar
-                android:id="@+id/placeRating"
-                style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:rating="5" />
 
         </RelativeLayout>
 

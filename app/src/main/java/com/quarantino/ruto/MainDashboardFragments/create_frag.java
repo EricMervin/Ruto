@@ -1,4 +1,4 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.MainDashboardFragments;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.quarantino.ruto.R;
 
 
 /**

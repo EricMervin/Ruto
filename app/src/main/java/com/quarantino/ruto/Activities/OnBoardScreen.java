@@ -1,4 +1,4 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import com.quarantino.ruto.HelperClasses.SliderAdapter;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.LoginActivities.LoginScreen;
 import com.quarantino.ruto.LoginActivities.SignUpScreen;
+import com.quarantino.ruto.R;
 
 public class OnBoardScreen extends AppCompatActivity {
 

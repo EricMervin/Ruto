@@ -1,6 +1,7 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.MainDashboardFragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,27 +13,32 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.util.Pair;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
 import com.quarantino.ruto.HelperClasses.JsonParser;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
+import com.quarantino.ruto.HelperClasses.PlacesApiParser;
+import com.quarantino.ruto.NearbyPlaceTemplate;
+import com.quarantino.ruto.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,26 +48,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
-public class dashboard_frag extends Fragment {
+public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener {
 //    private final String FSClientID = "N141PNZ13EZGGBNP3KIDI1YOVKVPWJE1HGSK3IGUYFJJWU0G";
 //    private final String FSClientScr = "MCVDR3ZJ0OR52ZOJFSBTUBSPCZG30FOAHM5TASQBXAJRUR1Y";
 
-    RecyclerView nearbyPlacesRecycler;
-    RecyclerView.Adapter recyclerAdapter;
+    private RecyclerView nearbyPlacesRecycler;
+    private RecyclerView.Adapter recyclerAdapter;
+    private  ArrayList<NearbyPlacesHelperClass> nearbyPlaces = new ArrayList<>();
 
     FusedLocationProviderClient fusedLocationProviderClient;
-    double currentLat = 0, currentLong = 0;
+    private double currentLat = 0, currentLong = 0;
 
-    public dashboard_frag() {
-
-    }
+    public dashboard_frag() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -78,7 +83,6 @@ public class dashboard_frag extends Fragment {
         nearbyPlacesRecycler.setHasFixedSize(true);
         nearbyPlacesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-//        nearbyPlacesRecycler();
         if(ActivityCompat.checkSelfPermission(getContext()
                 , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             getCurrentLocation();
@@ -86,7 +90,7 @@ public class dashboard_frag extends Fragment {
             ActivityCompat.requestPermissions(getActivity()
                     ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
-//        getCurrentLocation();
+
         return view;
     }
 
@@ -105,7 +109,7 @@ public class dashboard_frag extends Fragment {
 
         @Override
         protected void onPostExecute(String s) {
-            new ParserTask().execute(s);
+            new nearbyPlacesParserTask().execute(s);
         }
     }
 
@@ -133,7 +137,7 @@ public class dashboard_frag extends Fragment {
         return data;
     }
 
-    private class ParserTask extends AsyncTask<String,Integer, List<HashMap<String,String>>>{
+    private class nearbyPlacesParserTask extends AsyncTask<String,Integer, List<HashMap<String,String>>>{
         @Override
         protected List<HashMap<String, String>> doInBackground(String... strings) {
             JsonParser jsonParser = new JsonParser();
@@ -151,7 +155,11 @@ public class dashboard_frag extends Fragment {
 
         @Override
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
-            ArrayList<NearbyPlacesHelperClass> nearbyPlaces = new ArrayList<>();
+            Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+            Bitmap icon2 = BitmapFactory.decodeResource(getResources(), R.drawable.bg_2);
+
+            int cnt = 0;
+
             for(int i = 0 ; i<5 ; i++) {
                 HashMap<String, String> hashMapList = hashMaps.get(i);
 
@@ -159,23 +167,24 @@ public class dashboard_frag extends Fragment {
                 double lng = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
 
                 String rating = hashMapList.get("rating");
-//                String photoRef = hashMapList.get("photo_reference");
+                String photoRef = hashMapList.get("photo_reference");
 //                String openNow = hashMapList.get("open_now");
 
                 String name = hashMapList.get("name");
-                LatLng latlng = new LatLng(lat, lng);
+//                LatLng latlng = new LatLng(lat, lng);
 
                 Log.d("Process", "On Post Executed");
-//                Log.d("Rating", photoRef );
-                nearbyPlaces.add(new NearbyPlacesHelperClass(R.drawable.bg, name, Float.parseFloat(rating)));
+                Log.d("PhotoRef", photoRef );
+
+                nearbyPlaces.add(new NearbyPlacesHelperClass(icon1, name, Float.parseFloat(rating)));
             }
-            recyclerAdapter = new NearbyPlacesAdapter(nearbyPlaces);
-            nearbyPlacesRecycler.setAdapter(recyclerAdapter);
+
+            nearbyPlacesRecycler();
         }
     }
 
-    private int getPhotoOfPlace(String photoRef) throws IOException {
-        String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo" + "?maxwidth=400" +
+    private Bitmap getPhotoOfPlace(String photoRef) throws IOException {
+        String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo" + "?maxwidth=1200" +
                 "&photoreference=" + photoRef +
                 "&key=" + getResources().getString(R.string.places_api_key);
         URL url = new URL(urlPhoto);
@@ -192,13 +201,9 @@ public class dashboard_frag extends Fragment {
         connection.connect();
         InputStream input = connection.getInputStream();
         Bitmap myBitmap = BitmapFactory.decodeStream(input);
-        Drawable d = new BitmapDrawable(getResources(), myBitmap);
-        int drawableId = Integer.parseInt(d.toString());
-
-        return drawableId;
+        return myBitmap;
 //        return reader;
     }
-
 
     //Get location of the user
     private void getCurrentLocation(){
@@ -225,11 +230,15 @@ public class dashboard_frag extends Fragment {
                 "&radius=5000" + "&type=" + "restaurant" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
+//        String url2 = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + cityName.toLowerCase()
+//                + "+city+point+of+interest&language=en&key=" +
+//                getResources().getString(R.string.places_api_key);
+
         Log.d("Json URL", url);
+//        Log.d("City URL", url2);
 
         new PlaceTask().execute(url);
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -242,9 +251,25 @@ public class dashboard_frag extends Fragment {
 
     //Create card for the recycler
     private void nearbyPlacesRecycler() {
-        ArrayList<NearbyPlacesHelperClass> nearbyPlaces = new ArrayList<>();
-        nearbyPlaces.add(new NearbyPlacesHelperClass(R.drawable.bg, "Name of Place", Float.parseFloat("4.1")));
-        recyclerAdapter = new NearbyPlacesAdapter(nearbyPlaces);
+        recyclerAdapter = new NearbyPlacesAdapter(nearbyPlaces, this);
         nearbyPlacesRecycler.setAdapter(recyclerAdapter);
+    }
+
+    @Override
+    public void onNearbyPlaceClick(int position, TextView placeName, ImageView placePhoto, RatingBar placeRating, View imageOverlay){
+        Intent intent = new Intent(getContext(), NearbyPlaceTemplate.class);
+        intent.putExtra("Name of Place", nearbyPlaces.get(position).getNameOfPlace());
+        intent.putExtra("Rating of Place", nearbyPlaces.get(position).getRating());
+
+        Pair<View, String> p1 = Pair.create((View) placePhoto, "nearbyImageAnim");
+        Pair<View, String> p2 = Pair.create((View) placeName, "nearbyTitleAnim");
+        Pair<View, String> p3 = Pair.create((View) placeRating, "nearbyRatingAnim");
+        Pair<View, String> p4 = Pair.create((View) imageOverlay, "nearbyImageOverlayAnim");
+
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2, p3, p4);
+
+        startActivity(intent, optionsCompat.toBundle());
+
+//        Log.d("Position Clicked", String.valueOf(position) + " " + (nearbyPlaces.get(position).getRating() + 1));
     }
 }

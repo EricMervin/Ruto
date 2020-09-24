@@ -1,11 +1,12 @@
 package com.quarantino.ruto.HelperClasses;
 
 public class userHelperClassFirebase {
-    String name, username, password;
+    String name, username, password, email;
 
-    public userHelperClassFirebase(String userName, String userUsername, String userPassword) {
+    public userHelperClassFirebase(String userName, String userUsername, String userEmail, String userPassword) {
         this.name = userName;
         this.username = userUsername;
+        this.email = userEmail;
         this.password = userPassword;
     }
 
@@ -34,5 +35,13 @@ public class userHelperClassFirebase {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

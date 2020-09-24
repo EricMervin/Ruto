@@ -4,17 +4,17 @@ import android.graphics.Bitmap;
 
 public class NearbyPlacesHelperClass {
 
-    int imageOfPlace;
+    Bitmap imageOfPlace;
     float rating;
     String nameOfPlace;
 
-    public NearbyPlacesHelperClass(int imageOfPlace, String nameOfPlace, float rating) {
+    public NearbyPlacesHelperClass(Bitmap imageOfPlace, String nameOfPlace, float rating) {
         this.imageOfPlace = imageOfPlace;
         this.nameOfPlace = nameOfPlace;
         this.rating = rating;
     }
 
-    public int getImageOfPlace() {
+    public Bitmap getImageOfPlace() {
         return imageOfPlace;
     }
 

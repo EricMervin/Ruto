@@ -1,4 +1,4 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.Activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;

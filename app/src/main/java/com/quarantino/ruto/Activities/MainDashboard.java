@@ -1,4 +1,4 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
@@ -11,6 +11,7 @@ import androidx.navigation.ui.NavigationUI;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.quarantino.ruto.R;
 
 public class MainDashboard extends AppCompatActivity {
 
