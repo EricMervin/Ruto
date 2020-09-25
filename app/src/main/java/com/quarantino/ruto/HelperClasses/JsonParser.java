@@ -25,7 +25,9 @@ public class JsonParser {
                 dataList.put("photo_reference", photoRef);
             }
 
-            String openNow = object.getJSONObject("opening_hours").getString("open_now");
+            String placeId = object.getString("place_id");
+
+//            String openNow = object.getJSONObject("opening_hours").getString("open_now");
 
             String latitude = object.getJSONObject("geometry")
                     .getJSONObject("location").getString("lat");
@@ -37,7 +39,8 @@ public class JsonParser {
             dataList.put("rating", rating);
             dataList.put("lat", latitude);
             dataList.put("lng", longitude);
-            dataList.put("open_now", openNow);
+            dataList.put("place_id", placeId);
+//            dataList.put("open_now", openNow);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -17,11 +17,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/sf_pro_text_bold"
+            android:fontFamily="@font/sf_pro_text_semibold"
             android:letterSpacing="-0.075"
             android:text="Home"
             android:textColor="@color/colorPrimary"
-            android:textSize="54sp"
+            android:textSize="57sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,7 +39,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="54dp"
         android:overScrollMode="never"
         android:scrollbars="none">
 
@@ -52,87 +52,62 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/sf_pro_text_bold"
+                android:layout_marginTop="21dp"
+                android:fontFamily="@font/sf_pro_text_semibold"
                 android:letterSpacing="-0.075"
-                android:text="Nearby Restaurants"
+                android:text="Nearby Places"
                 android:textColor="@color/colorPrimary"
-                android:textSize="24dp" />
+                android:textSize="27dp" />
 
-            <RelativeLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/nearbyPlaces"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/nearbyPlaces"
-                    android:layout_width="match_parent"
-                    android:layout_height="345dp"
-                    android:clipToPadding="false"
-                    android:overScrollMode="never"
-                    android:paddingStart="24dp" />
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="330dp"
                 android:layout_marginTop="8dp"
-                android:orientation="vertical"
-                android:padding="24dp">
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="24dp" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/sf_pro_text_bold"
-                        android:letterSpacing="-0.075"
-                        android:text="Categories"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="24sp" />
-
-                </RelativeLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/colorPrimaryDark" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/sf_pro_text_semibold"
+                android:letterSpacing="-0.075"
+                android:text="Categories"
+                android:textColor="@color/colorPrimary"
+                android:textSize="27sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoriesRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
-                android:orientation="vertical"
-                android:padding="24dp">
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="24dp" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/sf_pro_text_semibold"
+                android:letterSpacing="-0.075"
+                android:text="Top Restaurants"
+                android:textColor="@color/colorPrimary"
+                android:textSize="27sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/sf_pro_text_bold"
-                        android:letterSpacing="-0.075"
-                        android:text="Top Rated"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="24sp" />
-
-                </RelativeLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="160dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/colorPrimaryDark" />
-
-            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/restaurantsRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="36dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="24dp" />
 
         </LinearLayout>
 
