@@ -74,9 +74,9 @@ public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapte
             placeName = itemView.findViewById(R.id.titleNearby);
             placeRatingBar = itemView.findViewById(R.id.placeRating);
             imageOverlay = itemView.findViewById(R.id.imageOverlay);
-            
+
             this.onNearbyPlaceListener = onNearbyPlaceListener;
-            
+
             itemView.setOnClickListener(this);
         }
 

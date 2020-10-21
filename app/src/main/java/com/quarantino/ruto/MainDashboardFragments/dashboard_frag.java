@@ -47,6 +47,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -205,7 +206,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         }
     }
 
-    public Bitmap getPhotoOfPlace(String photoRef){
+    public Bitmap getPhotoOfPlace(String photoRef) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -224,6 +225,10 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
     //Get location of the user
     private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
@@ -310,8 +315,14 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
     @Override
     public void onNearbyPlaceClick(int position, TextView placeName, ImageView placePhoto, RatingBar placeRating, View imageOverlay) {
         Intent intent = new Intent(getContext(), NearbyPlaceTemplate.class);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        nearbyPlaces.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
         intent.putExtra("Name of Place", nearbyPlaces.get(position).getNameOfPlace());
         intent.putExtra("Position", position);
+        intent.putExtra("Image", byteArray);
         intent.putExtra("Rating of Place", nearbyPlaces.get(position).getRating());
 
         Pair<View, String> p1 = Pair.create((View) placePhoto, "nearbyImageAnim");
@@ -322,6 +333,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2, p3, p4);
 
         startActivity(intent, optionsCompat.toBundle());
+//        startActivity(intent);
 
 //        Log.d("Position Clicked", String.valueOf(position) + " " + (nearbyPlaces.get(position).getRating() + 1));
     }

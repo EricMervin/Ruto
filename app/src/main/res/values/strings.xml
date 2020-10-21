@@ -1,5 +1,5 @@
 <resources>
-    <string name="appName">ruto</string>
+    <string name="appName">Ruto</string>
 
     <!--  Buttons  -->
     <string name="skipBtn">Skip</string>
@@ -23,6 +23,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="places_api_key">AIzaSyDe-Cmt9A6tMFsqJUPtsaY73kYfYt_tzjg</string>
+    <string name="places_api_key">AIzaSyA5L81_-5d2Hy7hHsNVhodk1zS90Qu-aP8</string>
+    <string name="splashTitle">Ruto<font fgcolor='#FFFD6A02'>.</font></string>
+    <string name="logIn"><u>Log In</u></string>
+    <string name="signUp"><u>Sign Up</u></string>
 
 </resources>

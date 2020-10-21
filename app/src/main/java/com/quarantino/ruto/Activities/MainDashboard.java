@@ -1,3 +1,4 @@
+
 package com.quarantino.ruto.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;

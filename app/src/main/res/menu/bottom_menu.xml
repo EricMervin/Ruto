@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/dashboard_frag"
-        android:title="Home"
-        android:icon="@drawable/ic_home"/>
+        android:title="Dashboard"
+        android:icon="@drawable/ic_home"
+        app:cnb_backgroundColor="#222"
+        app:cnb_iconColor="@color/white"
+        app:iconTintMode="src_in"
+        app:cnb_textColor="@color/white"/>
 
     <item
         android:id="@+id/create_frag"
         android:title="Create"
-        android:icon="@drawable/ic_create"/>
+        android:icon="@drawable/ic_create"
+        app:cnb_backgroundColor="#222"
+        app:cnb_iconColor="@color/white"
+        app:iconTintMode="src_in"
+        app:cnb_textColor="@color/white"/>
 
     <item
         android:id="@+id/user_frag"
-        android:title="User"
-        android:icon="@drawable/ic_person"/>
+        android:title="Profile"
+        android:icon="@drawable/ic_person"
+        app:cnb_backgroundColor="#222"
+        app:cnb_iconColor="@color/white"
+        app:iconTintMode="src_in"
+        app:cnb_textColor="@color/white"/>
 </menu>

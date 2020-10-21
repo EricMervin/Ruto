@@ -3,6 +3,7 @@ package com.quarantino.ruto;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,13 +29,15 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         String nameOfPlaceStr = getIntent().getStringExtra("Name of Place");
         float ratingOfPlaceVal = getIntent().getFloatExtra("Rating of Place", 0);
 
-//        Log.d("Rating value", String.valueOf(ratingOfPlaceVal));
+        byte[] byteArray = getIntent().getExtras().getByteArray("Image");
+        Bitmap imageOfPlace = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         ratingOfPlace.setRating(ratingOfPlaceVal);
         nameOfPlace.setText(nameOfPlaceStr);
+        photoOfPlace.setImageBitmap(imageOfPlace);
     }
 
     public void goBack(View view) {
-        finish();
+        onBackPressed();
     }
 }

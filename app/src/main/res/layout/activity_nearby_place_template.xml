@@ -42,11 +42,13 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginEnd="16dp"
                     android:layout_toStartOf="@+id/placeRating"
-                    android:fontFamily="@font/sf_pro_text_semibold"
-                    android:letterSpacing="-0.075"
+                    android:fontFamily="@font/gothammedium"
+                    android:letterSpacing="-0.05"
+                    android:lineSpacingExtra="6dp"
                     android:text="@string/appName"
                     android:textColor="@color/white"
-                    android:textSize="36sp"
+                    android:textSize="33sp"
+                    android:layout_centerVertical="true"
                     android:transitionName="nearbyTitleAnim" />
 
                 <RatingBar
@@ -74,6 +76,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:onClick="goBack"
+        android:fontFamily="@font/gothammedium"
         android:text="Go Back"
         android:textColor="@color/white"
         android:textSize="16sp" />

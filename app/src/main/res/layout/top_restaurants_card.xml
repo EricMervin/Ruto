@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="Subway"
-                android:fontFamily="@font/sf_pro_text_medium"
+                android:fontFamily="@font/gothammedium"
                 android:textSize="16sp"
                 android:textColor="@color/white"/>
 
