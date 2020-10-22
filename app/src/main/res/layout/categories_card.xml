@@ -13,8 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingEnd="24dp"
-        android:paddingStart="24dp">
+        android:paddingEnd="30dp"
+        android:paddingStart="30dp">
 
         <ImageView
             android:id="@+id/categoryIcon"

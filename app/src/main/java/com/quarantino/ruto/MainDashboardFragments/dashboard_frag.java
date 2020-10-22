@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -57,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -66,6 +69,7 @@ import javax.xml.parsers.SAXParserFactory;
 public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener {
 
     private RecyclerView nearbyPlacesRecycler, categoriesRecycler, topRestaurantsRecycler;
+    private TextView cityOfUser;
     private RecyclerView.Adapter nearbyPlacesRecyclerAdapter, categoriesRecyclerAdapter, topRestaurantsRecyclerAdapter;
     private ArrayList<NearbyPlacesHelperClass> nearbyPlaces = new ArrayList<>();
     private ArrayList<RestaurantsHelperClass> topRestaurants = new ArrayList<>();
@@ -89,6 +93,9 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+
+        //City Text View
+        cityOfUser = view.findViewById(R.id.currentCity);
 
         //Nearby Places Recycler
         nearbyPlacesRecycler = view.findViewById(R.id.nearbyPlaces);
@@ -177,9 +184,6 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
         @Override
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
-            Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
-            Bitmap icon2 = BitmapFactory.decodeResource(getResources(), R.drawable.bg_2);
-
             int cnt = 0;
 
             for (int i = 0; cnt < 5; i++) {
@@ -196,10 +200,11 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 //                String openNow = hashMapList.get("open_now");
 
                 Log.d("Process", "On Post Executed");
+                Log.d("Place Id", placeId);
                 Log.d("PhotoRef", photoRef);
 
 //                topRestaurants.add(new RestaurantsHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating)));
-                nearbyPlaces.add(new NearbyPlacesHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating)));
+                nearbyPlaces.add(new NearbyPlacesHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating), placeId));
                 cnt++;
             }
             nearbyPlacesRecycler();
@@ -237,6 +242,16 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                     currentLat = location.getLatitude();
                     currentLong = location.getLongitude();
 
+                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                    List<Address> addresses = null;
+                    try {
+                        addresses = geocoder.getFromLocation(currentLat, currentLong, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String cityName = addresses.get(0).getLocality();
+                    cityOfUser.setText(cityName);
+
                     getNearbyPlaces(currentLat, currentLong);
 //                    getNearbyRestaurants(currentLat, currentLong);
                 }
@@ -250,7 +265,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
-                "&radius=5000" + "&type=" + "tourist_attraction" +
+                "&radius=9000" + "&type=" + "tourist_attraction" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
         Log.d("Json URL", url);
@@ -316,13 +331,15 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
     public void onNearbyPlaceClick(int position, TextView placeName, ImageView placePhoto, RatingBar placeRating, View imageOverlay) {
         Intent intent = new Intent(getContext(), NearbyPlaceTemplate.class);
 
+        //Converting the photo of place to byte array
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        nearbyPlaces.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        nearbyPlaces.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 90, stream);
         byte[] byteArray = stream.toByteArray();
 
         intent.putExtra("Name of Place", nearbyPlaces.get(position).getNameOfPlace());
         intent.putExtra("Position", position);
         intent.putExtra("Image", byteArray);
+        intent.putExtra("Id Of Place", nearbyPlaces.get(position).getIdOfPlace());
         intent.putExtra("Rating of Place", nearbyPlaces.get(position).getRating());
 
         Pair<View, String> p1 = Pair.create((View) placePhoto, "nearbyImageAnim");

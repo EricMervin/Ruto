@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +33,7 @@ public class LoginScreen extends AppCompatActivity {
     TextInputLayout logInUsernameInput, logInPasswordInput;
     Button logInBtn, createAccountBtn;
 
-//    FirebaseAuth firebaseAuth;
+    FirebaseAuth firebaseAuth;
 
     FirebaseDatabase rootNode;
     DatabaseReference reference;
@@ -70,7 +71,7 @@ public class LoginScreen extends AppCompatActivity {
 //        createAccountBtn.setAnimation(button2FadeUp);
 
         //Authentication
-//        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
 
         userHelperClass userData = new userHelperClass(getApplicationContext());
 

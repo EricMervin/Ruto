@@ -22,6 +22,7 @@ public class MainDashboard extends AppCompatActivity {
         setContentView(R.layout.main_dashboard);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+//        AnimatedBottomBar bottomNavigationView = findViewById(R.id.bottom_bar);
         NavController navController = Navigation.findNavController(this, R.id.fragment);
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);

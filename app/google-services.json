@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "824163817997-5mcnjf93btvf9n5se6rr1bik7c2s75jo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quarantino.ruto",
+            "certificate_hash": "bd89f57aeb9658df027d39a1b4a1499820550960"
+          }
+        },
+        {
+          "client_id": "824163817997-urdpstpld0td1r2ud9o9nnuqf4gngmps.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quarantino.ruto",
+            "certificate_hash": "20085ff2ddd6f440c2056b592c35f78aa0da7578"
+          }
+        },
+        {
           "client_id": "824163817997-gqvc5j3v9h7ghaefnfa115v4sfucdet0.apps.googleusercontent.com",
           "client_type": 3
         }

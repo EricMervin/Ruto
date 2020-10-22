@@ -5,26 +5,17 @@
         android:id="@+id/dashboard_frag"
         android:title="Dashboard"
         android:icon="@drawable/ic_home"
-        app:cnb_backgroundColor="#222"
-        app:cnb_iconColor="@color/white"
-        app:iconTintMode="src_in"
-        app:cnb_textColor="@color/white"/>
+        app:iconTintMode="src_in"/>
 
     <item
         android:id="@+id/create_frag"
         android:title="Create"
         android:icon="@drawable/ic_create"
-        app:cnb_backgroundColor="#222"
-        app:cnb_iconColor="@color/white"
-        app:iconTintMode="src_in"
-        app:cnb_textColor="@color/white"/>
+        app:iconTintMode="src_in"/>
 
     <item
         android:id="@+id/user_frag"
         android:title="Profile"
         android:icon="@drawable/ic_person"
-        app:cnb_backgroundColor="#222"
-        app:cnb_iconColor="@color/white"
-        app:iconTintMode="src_in"
-        app:cnb_textColor="@color/white"/>
+        app:iconTintMode="src_in"/>
 </menu>

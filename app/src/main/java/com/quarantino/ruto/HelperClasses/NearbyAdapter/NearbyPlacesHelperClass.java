@@ -6,12 +6,17 @@ public class NearbyPlacesHelperClass {
 
     Bitmap imageOfPlace;
     float rating;
-    String nameOfPlace;
+    String nameOfPlace, idOfPlace;
 
-    public NearbyPlacesHelperClass(Bitmap imageOfPlace, String nameOfPlace, float rating) {
+    public NearbyPlacesHelperClass(Bitmap imageOfPlace, String nameOfPlace, float rating, String idOfPlace) {
+        this.idOfPlace = idOfPlace;
         this.imageOfPlace = imageOfPlace;
         this.nameOfPlace = nameOfPlace;
         this.rating = rating;
+    }
+
+    public String getIdOfPlace() {
+        return idOfPlace;
     }
 
     public Bitmap getImageOfPlace() {
