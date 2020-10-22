@@ -191,6 +191,10 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
                 double lat = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lat")));
                 double lng = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
+
+                Log.d("Latitude", String.valueOf(lat));
+                Log.d("Longitude", String.valueOf(lng));
+
 //                LatLng latlng = new LatLng(lat, lng);
 
                 String name = hashMapList.get("name");
@@ -204,7 +208,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 Log.d("PhotoRef", photoRef);
 
 //                topRestaurants.add(new RestaurantsHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating)));
-                nearbyPlaces.add(new NearbyPlacesHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating), placeId));
+                nearbyPlaces.add(new NearbyPlacesHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating), placeId, lat, lng));
                 cnt++;
             }
             nearbyPlacesRecycler();
@@ -339,6 +343,8 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         intent.putExtra("Name of Place", nearbyPlaces.get(position).getNameOfPlace());
         intent.putExtra("Position", position);
         intent.putExtra("Image", byteArray);
+        intent.putExtra("Latitude of Place", nearbyPlaces.get(position).getPlaceLat());
+        intent.putExtra("Longitude of Place", nearbyPlaces.get(position).getPlaceLng());
         intent.putExtra("Id Of Place", nearbyPlaces.get(position).getIdOfPlace());
         intent.putExtra("Rating of Place", nearbyPlaces.get(position).getRating());
 

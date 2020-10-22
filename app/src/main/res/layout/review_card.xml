@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="330dp"
     android:layout_height="87dp"
-    android:layout_marginEnd="12dp"
+    android:layout_marginEnd="21dp"
     android:backgroundTint="@color/lightGrey"
     android:padding="12dp"
-    app:cardCornerRadius="24dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="0dp">
 
     <RelativeLayout
@@ -21,7 +21,7 @@
             android:layout_height="48dp"
             android:layout_centerVertical="true"
             app:cardElevation="0dp"
-            app:cardCornerRadius="12dp">
+            app:cardCornerRadius="9dp">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -45,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gothammedium"
                 android:text="Restaurant"
+                android:letterSpacing="-0.05"
                 android:textColor="@color/colorPrimary"
                 android:textSize="21sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -59,6 +60,9 @@
                 android:layout_marginTop="2dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gothamlight"
+                android:textSize="13sp"
+                android:lineSpacingExtra="2dp"
+                android:letterSpacing="-0.025"
                 android:text="@string/obText2"
                 android:ellipsize="end"
                 android:maxLines="2"
