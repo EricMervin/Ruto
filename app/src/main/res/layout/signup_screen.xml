@@ -49,14 +49,13 @@
             android:fontFamily="@font/gothamregular"
             android:hint="Full Name"
             android:inputType="textPersonName"
-            android:paddingStart="18dp"
+            android:paddingStart="16dp"
             android:paddingTop="18dp"
-            android:paddingEnd="18dp"
+            android:paddingEnd="16dp"
             android:paddingBottom="18dp"
             android:singleLine="true"
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorAccent"
-            android:textCursorDrawable="@drawable/cursor_custom"
             android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -88,14 +87,13 @@
             android:fontFamily="@font/gothamregular"
             android:hint="Username"
             android:inputType="text"
-            android:paddingStart="18dp"
+            android:paddingStart="16dp"
             android:paddingTop="18dp"
-            android:paddingEnd="18dp"
+            android:paddingEnd="16dp"
             android:paddingBottom="18dp"
             android:singleLine="true"
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorAccent"
-            android:textCursorDrawable="@drawable/cursor_custom"
             android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -127,14 +125,13 @@
             android:fontFamily="@font/gothamregular"
             android:hint="Email Address"
             android:inputType="textEmailAddress"
-            android:paddingStart="18dp"
+            android:paddingStart="16dp"
             android:paddingTop="18dp"
-            android:paddingEnd="18dp"
+            android:paddingEnd="16dp"
             android:paddingBottom="18dp"
             android:singleLine="true"
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorAccent"
-            android:textCursorDrawable="@drawable/cursor_custom"
             android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -169,14 +166,13 @@
             android:fontFamily="@font/gothamregular"
             android:hint="Password"
             android:inputType="textPassword"
-            android:paddingStart="18dp"
+            android:paddingStart="16dp"
             android:paddingTop="18dp"
-            android:paddingEnd="18dp"
+            android:paddingEnd="16dp"
             android:paddingBottom="18dp"
             android:singleLine="true"
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorAccent"
-            android:textCursorDrawable="@drawable/cursor_custom"
             android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>

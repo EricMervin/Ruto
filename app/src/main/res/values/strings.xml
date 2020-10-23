@@ -21,11 +21,12 @@
     <string name="obText2">Think of a small description for one of the features of the app.</string>
     <string name="obText3"></string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="places_api_key">AIzaSyA5L81_-5d2Hy7hHsNVhodk1zS90Qu-aP8</string>
     <string name="splashTitle">Ruto<font fgcolor='#FFFD6A02'>.</font></string>
     <string name="logIn"><u>Log In</u></string>
     <string name="signUp"><u>Sign Up</u></string>
+
+    <string name="uberClientId">Y-oWoU91f8dIguIrgOg49Tmk6f8vWoMJ</string>
+    <string name="places_api_key">AIzaSyA5L81_-5d2Hy7hHsNVhodk1zS90Qu-aP8</string>
 
 </resources>

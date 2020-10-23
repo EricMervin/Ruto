@@ -189,11 +189,11 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
             for (int i = 0; cnt < 5; i++) {
                 HashMap<String, String> hashMapList = hashMaps.get(i);
 
-                double lat = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lat")));
-                double lng = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
+                double placeLat = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lat")));
+                double placeLong = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
 
-                Log.d("Latitude", String.valueOf(lat));
-                Log.d("Longitude", String.valueOf(lng));
+//                Log.d("Latitude", String.valueOf(lat));
+//                Log.d("Longitude", String.valueOf(lng));
 
 //                LatLng latlng = new LatLng(lat, lng);
 
@@ -208,7 +208,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 Log.d("PhotoRef", photoRef);
 
 //                topRestaurants.add(new RestaurantsHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating)));
-                nearbyPlaces.add(new NearbyPlacesHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating), placeId, lat, lng));
+                nearbyPlaces.add(new NearbyPlacesHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
                 cnt++;
             }
             nearbyPlacesRecycler();
@@ -277,19 +277,19 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         new PlaceTask().execute(url);
     }
 
-    private void getNearbyRestaurants(double currentLat, double currentLong) {
-        Log.d("Location lat", String.valueOf(currentLat));
-        Log.d("Location long", String.valueOf(currentLong));
-
-        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
-                "?location=" + currentLat + "," + currentLong +
-                "&radius=5000" + "&type=" + "restaurant" +
-                "&key=" + getResources().getString(R.string.places_api_key);
-
-        Log.d("Json URL", url);
-
-        new PlaceTask().execute(url);
-    }
+//    private void getNearbyRestaurants(double currentLat, double currentLong) {
+//        Log.d("Location lat", String.valueOf(currentLat));
+//        Log.d("Location long", String.valueOf(currentLong));
+//
+//        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+//                "?location=" + currentLat + "," + currentLong +
+//                "&radius=5000" + "&type=" + "restaurant" +
+//                "&key=" + getResources().getString(R.string.places_api_key);
+//
+//        Log.d("Json URL", url);
+//
+//        new PlaceTask().execute(url);
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -343,8 +343,10 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         intent.putExtra("Name of Place", nearbyPlaces.get(position).getNameOfPlace());
         intent.putExtra("Position", position);
         intent.putExtra("Image", byteArray);
+        intent.putExtra("Current Latitude", currentLat);
+        intent.putExtra("Current Longitude", currentLong);
         intent.putExtra("Latitude of Place", nearbyPlaces.get(position).getPlaceLat());
-        intent.putExtra("Longitude of Place", nearbyPlaces.get(position).getPlaceLng());
+        intent.putExtra("Longitude of Place", nearbyPlaces.get(position).getPlaceLong());
         intent.putExtra("Id Of Place", nearbyPlaces.get(position).getIdOfPlace());
         intent.putExtra("Rating of Place", nearbyPlaces.get(position).getRating());
 

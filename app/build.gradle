@@ -27,6 +27,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    //Uber
+    compile 'com.uber.sdk:rides-android:0.5.3'
+
     //Gson
     implementation 'com.google.code.gson:gson:2.8.6'
 

@@ -1,16 +1,22 @@
 package com.quarantino.ruto;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,11 +24,19 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.quarantino.ruto.HelperClasses.JsonParserPlace;
 import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewAdapter;
 import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewHelperClass;
+import com.uber.sdk.android.core.UberSdk;
+import com.uber.sdk.android.rides.RideParameters;
+import com.uber.sdk.android.rides.RideRequestButton;
+import com.uber.sdk.core.auth.Scope;
+import com.uber.sdk.rides.client.SessionConfiguration;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +47,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -50,10 +66,11 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
     private TextView nameOfPlace, openStatus, phoneNumber;
     private RatingBar ratingOfPlace;
     private ImageView photoOfPlace;
+    private RideRequestButton rideRequestButton;
 
-    private String nameOfPlaceStr;
+    private String nameOfPlaceStr, cityOfPlace;
     private float ratingOfPlaceVal;
-    private double placeLat, placeLng;
+    private double placeLat, placeLng, currentLat, currentLong;
 
 
     @Override
@@ -71,11 +88,13 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         reviewRecycler.setHasFixedSize(true);
         reviewRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.locationOnMap);
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.locationMap);
 
         //Data from last activity
         nameOfPlaceStr = getIntent().getStringExtra("Name of Place");
         ratingOfPlaceVal = getIntent().getFloatExtra("Rating of Place", 0);
+        currentLat = getIntent().getDoubleExtra("Current Latitude", 0);
+        currentLong = getIntent().getDoubleExtra("Current Longitude", 0);
         placeLat = getIntent().getDoubleExtra("Latitude of Place", 0);
         placeLng = getIntent().getDoubleExtra("Longitude of Place", 0);
         byte[] byteArray = getIntent().getExtras().getByteArray("Image");
@@ -87,7 +106,17 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         nameOfPlace.setText(nameOfPlaceStr);
         photoOfPlace.setImageBitmap(imageOfPlace);
 
-        Log.d("Id Of Place", idOfPlace);
+        //Uber
+        SessionConfiguration configuration = new SessionConfiguration.Builder()
+                .setClientId(getResources().getString(R.string.uberClientId))
+                .setScopes(Arrays.asList(Scope.RIDE_WIDGETS))
+                .setEnvironment(SessionConfiguration.Environment.SANDBOX)
+                .build();
+        UberSdk.initialize(configuration);
+
+        rideRequestButton = new RideRequestButton(getApplicationContext());
+
+//        Log.d("Id Of Place", idOfPlace);
         getPlaceDetails(idOfPlace);
     }
 
@@ -96,14 +125,43 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     map = googleMap;
+                    map.clear();
+                    map.getUiSettings().setScrollGesturesEnabled(false);
+                    map.getUiSettings().setZoomGesturesEnabled(false);
+                    map.getUiSettings().setZoomControlsEnabled(false);
+
+                    try {
+                        boolean success = googleMap.setMapStyle(
+                                MapStyleOptions.loadRawResourceStyle(
+                                        getApplicationContext(), R.raw.mapstyle));
+                        if (!success) {
+                            Log.d("Map Error", "Style parsing failed.");
+                        }
+                    } catch (Resources.NotFoundException e) {
+                        Log.d("Map Error", "Can't find style. Error: ", e);
+                    }
+
                     LatLng latLng = new LatLng(placeLat, placeLng);
-                    MarkerOptions options = new MarkerOptions().position(latLng).title(nameOfPlaceStr);
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    MarkerOptions options = new MarkerOptions().position(latLng)
+                            .title(nameOfPlaceStr).icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(
                             new LatLng(placeLat, placeLng), 15
                     ));
-                    googleMap.addMarker(options);
+                    map.addMarker(options);
                 }
             });
+    }
+
+    private BitmapDescriptor bitmapFromVector(Context context, int vectorResId){
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     private void getPlaceDetails(String placeId) {
@@ -120,7 +178,18 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
     }
 
     public void bookUber(View view) {
+//        RideParameters rideParams = new RideParameters.Builder()
+//                .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
+//                .setDropoffLocation(37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
+//                .setPickupLocation(37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
+//                .build();
+//// set parameters for the RideRequestButton instance
+//        rideRequestButton.setRideParameters(rideParams);
         Log.d("Uber Status", "Uber Booked");
+    }
+
+    public void bookmarkPlace(View view) {
+        Log.d("Bookmark Pressed", "Added Bookmark");
     }
 
     private class PlaceTask extends AsyncTask<String, Integer, String> {
@@ -188,7 +257,8 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
             HashMap<String, String> hashMapList = hashMaps.get(0);
 
-//            String name = hashMapList.get("name");
+            String name = hashMapList.get("name");
+            cityOfPlace = hashMapList.get("city_place");
 
             String contactDetails = hashMapList.get("contact");
             if(contactDetails != null){

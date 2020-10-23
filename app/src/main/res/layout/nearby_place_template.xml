@@ -239,7 +239,7 @@
                     app:cardElevation="0dp">
 
                     <fragment
-                        android:id="@+id/locationOnMap"
+                        android:id="@+id/locationMap"
                         android:name="com.google.android.gms.maps.SupportMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
@@ -310,7 +310,7 @@
                 android:insetTop="0dp"
                 android:insetRight="0dp"
                 android:insetBottom="0dp"
-                android:onClick="bookUber"
+                android:onClick="bookmarkPlace"
                 android:stateListAnimator="@null"
                 app:cornerRadius="12dp"
                 app:icon="@drawable/abc_vector_test"
