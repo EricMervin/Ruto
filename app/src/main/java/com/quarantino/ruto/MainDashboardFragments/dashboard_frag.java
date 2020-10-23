@@ -1,7 +1,6 @@
 package com.quarantino.ruto.MainDashboardFragments;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,10 +18,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
@@ -69,8 +66,6 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
     private ArrayList<NearbyPlacesHelperClass> nearbyPlaces = new ArrayList<>();
     private ArrayList<RestaurantsHelperClass> topRestaurants = new ArrayList<>();
     private ArrayList<CategoriesHelperClass> categoriesList = new ArrayList<>();
-
-//    PlacesClient placesClient;
 
     FusedLocationProviderClient fusedLocationProviderClient;
     private double currentLat = 0, currentLong = 0;
@@ -330,12 +325,12 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         categoriesRecycler.setHasFixedSize(true);
         categoriesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        categoriesList.add(new CategoriesHelperClass("Cafe"));
-        categoriesList.add(new CategoriesHelperClass("Restaurants"));
-        categoriesList.add(new CategoriesHelperClass("Monument"));
-        categoriesList.add(new CategoriesHelperClass("Tourist Attraction"));
-        categoriesList.add(new CategoriesHelperClass("Art Gallery"));
-        categoriesList.add(new CategoriesHelperClass("Park"));
+        categoriesList.add(new CategoriesHelperClass("Cafe", getResources().getDrawable(R.drawable.cafe_icon)));
+        categoriesList.add(new CategoriesHelperClass("Monument", getResources().getDrawable(R.drawable.monument_icon)));
+        categoriesList.add(new CategoriesHelperClass("Restaurants", getResources().getDrawable(R.drawable.restaurant_icon)));
+        categoriesList.add(new CategoriesHelperClass("Art Gallery", getResources().getDrawable(R.drawable.art_icon)));
+        categoriesList.add(new CategoriesHelperClass("Theatre", getResources().getDrawable(R.drawable.theatre_icon)));
+        categoriesList.add(new CategoriesHelperClass("Park", getResources().getDrawable(R.drawable.cafe_icon)));
 
         categoriesRecyclerAdapter = new CategoriesAdapter(categoriesList);
         categoriesRecycler.setAdapter(categoriesRecyclerAdapter);
@@ -357,7 +352,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
         //Converting the photo of place to byte array
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        nearbyPlaces.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        nearbyPlaces.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 95, stream);
         byte[] byteArray = stream.toByteArray();
 
         intent.putExtra("Name of Place", nearbyPlaces.get(position).getNameOfPlace());

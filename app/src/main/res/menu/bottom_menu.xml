@@ -4,18 +4,18 @@
     <item
         android:id="@+id/dashboard_frag"
         android:title="Dashboard"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/dashboard_icon"
         app:iconTintMode="src_in"/>
 
     <item
         android:id="@+id/create_frag"
         android:title="Create"
-        android:icon="@drawable/ic_create"
+        android:icon="@drawable/map_icon"
         app:iconTintMode="src_in"/>
 
     <item
         android:id="@+id/user_frag"
         android:title="Profile"
-        android:icon="@drawable/ic_person"
+        android:icon="@drawable/user_icon"
         app:iconTintMode="src_in"/>
 </menu>
