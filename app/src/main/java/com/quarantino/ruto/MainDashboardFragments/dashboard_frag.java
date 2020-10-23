@@ -1,6 +1,7 @@
 package com.quarantino.ruto.MainDashboardFragments;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,8 +19,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
@@ -27,10 +30,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.quarantino.ruto.HelperClasses.CategoriesAdapter.CategoriesAdapter;
@@ -45,8 +46,6 @@ import com.quarantino.ruto.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -56,15 +55,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.util.concurrent.ExecutionException;
 
 public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener {
 
@@ -186,16 +181,11 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
             int cnt = 0;
 
-            for (int i = 0; cnt < 5; i++) {
+            for (int i = 0; cnt < 7; i++) {
                 HashMap<String, String> hashMapList = hashMaps.get(i);
 
                 double placeLat = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lat")));
                 double placeLong = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
-
-//                Log.d("Latitude", String.valueOf(lat));
-//                Log.d("Longitude", String.valueOf(lng));
-
-//                LatLng latlng = new LatLng(lat, lng);
 
                 String name = hashMapList.get("name");
                 String rating = hashMapList.get("rating");
@@ -207,11 +197,41 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 Log.d("Place Id", placeId);
                 Log.d("PhotoRef", photoRef);
 
-//                topRestaurants.add(new RestaurantsHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating)));
-                nearbyPlaces.add(new NearbyPlacesHelperClass(getPhotoOfPlace(photoRef), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                try {
+                    nearbyPlaces.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 cnt++;
             }
             nearbyPlacesRecycler();
+        }
+    }
+
+    private class photoDownload extends AsyncTask<String, Void, Bitmap>{
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            String photoReference = strings[0];
+            Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+
+            String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference="
+                    + photoReference + "&key=" + getResources().getString(R.string.places_api_key);
+            try {
+                InputStream in = new java.net.URL(urlPhoto).openStream();
+                return BitmapFactory.decodeStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return icon1;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
         }
     }
 
@@ -269,7 +289,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
-                "&radius=9000" + "&type=" + "tourist_attraction" +
+                "&radius=21000" + "&type=" + "tourist_attraction" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
         Log.d("Json URL", url);

@@ -7,41 +7,6 @@
     android:orientation="vertical"
     tools:context=".MainDashboardFragments.dashboard_frag">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/dashboardHomeTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/gothammedium"
-            android:letterSpacing="-0.075"
-            android:text="Home"
-            android:textColor="@color/colorPrimary"
-            android:textSize="57sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/currentCity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:fontFamily="@font/gothamregular"
-            android:letterSpacing="-0.05"
-            android:text="name of the place"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/dashboardHomeTV"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/dashboardHomeTV"
-            app:layout_constraintVertical_bias=".8" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,6 +18,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/dashboardHomeTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="30dp"
+                    android:fontFamily="@font/gothammedium"
+                    android:letterSpacing="-0.075"
+                    android:text="Home"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="57sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/currentCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/gothamregular"
+                    android:letterSpacing="-0.05"
+                    android:text="name of the place"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/dashboardHomeTV"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/dashboardHomeTV"
+                    app:layout_constraintVertical_bias=".8" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,6 +107,26 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/restaurantsRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginTop="12dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="36dp"
+                android:fontFamily="@font/gothammedium"
+                android:letterSpacing="-0.05"
+                android:text="Top Parks"
+                android:textColor="@color/colorPrimary"
+                android:textSize="27sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/parksRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:layout_marginTop="12dp"

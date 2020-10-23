@@ -1,6 +1,7 @@
 package com.quarantino.ruto;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,11 +33,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.quarantino.ruto.HelperClasses.JsonParserPlace;
 import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewAdapter;
 import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewHelperClass;
+import com.uber.sdk.android.core.Deeplink;
 import com.uber.sdk.android.core.UberSdk;
+import com.uber.sdk.android.core.auth.AccessTokenManager;
+import com.uber.sdk.android.rides.RequestDeeplink;
 import com.uber.sdk.android.rides.RideParameters;
+import com.uber.sdk.android.rides.RideRequestActivityBehavior;
 import com.uber.sdk.android.rides.RideRequestButton;
+import com.uber.sdk.core.auth.AccessToken;
 import com.uber.sdk.core.auth.Scope;
-import com.uber.sdk.rides.client.SessionConfiguration;
+import com.uber.sdk.core.client.SessionConfiguration;
+import com.uber.sdk.rides.client.UberRidesApi;
+import com.uber.sdk.rides.client.error.ApiError;
+import com.uber.sdk.rides.client.error.ErrorParser;
+import com.uber.sdk.rides.client.model.Product;
+import com.uber.sdk.rides.client.model.Ride;
+import com.uber.sdk.rides.client.model.RideEstimate;
+import com.uber.sdk.rides.client.model.RideRequestParameters;
+import com.uber.sdk.rides.client.model.UserProfile;
+import com.uber.sdk.rides.client.services.RidesService;
+import com.uber.sdk.android.rides.RideRequestDeeplink;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,16 +64,23 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Array;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import retrofit2.Response;
+
 public class NearbyPlaceTemplate extends AppCompatActivity {
 
     private SupportMapFragment supportMapFragment;
     private GoogleMap map;
+
+    private RideParameters rideParameters;
+    private SessionConfiguration configuration;
+    private RideRequestDeeplink deeplink;
 
     private RecyclerView reviewRecycler;
     private RecyclerView.Adapter reviewRecyclerAdapter;
@@ -66,7 +89,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
     private TextView nameOfPlace, openStatus, phoneNumber;
     private RatingBar ratingOfPlace;
     private ImageView photoOfPlace;
-    private RideRequestButton rideRequestButton;
+//    private RideRequestButton rideRequestButton;
 
     private String nameOfPlaceStr, cityOfPlace;
     private float ratingOfPlaceVal;
@@ -106,17 +129,8 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         nameOfPlace.setText(nameOfPlaceStr);
         photoOfPlace.setImageBitmap(imageOfPlace);
 
-        //Uber
-        SessionConfiguration configuration = new SessionConfiguration.Builder()
-                .setClientId(getResources().getString(R.string.uberClientId))
-                .setScopes(Arrays.asList(Scope.RIDE_WIDGETS))
-                .setEnvironment(SessionConfiguration.Environment.SANDBOX)
-                .build();
-        UberSdk.initialize(configuration);
+//        rideRequestButton = new RideRequestButton(getApplicationContext());
 
-        rideRequestButton = new RideRequestButton(getApplicationContext());
-
-//        Log.d("Id Of Place", idOfPlace);
         getPlaceDetails(idOfPlace);
     }
 
@@ -178,17 +192,12 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
     }
 
     public void bookUber(View view) {
-//        RideParameters rideParams = new RideParameters.Builder()
-//                .setProductId("a1111c8c-c720-46c3-8534-2fcdd730040d")
-//                .setDropoffLocation(37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
-//                .setPickupLocation(37.775304, -122.417522, "Uber HQ", "1455 Market Street, San Francisco")
-//                .build();
-//// set parameters for the RideRequestButton instance
-//        rideRequestButton.setRideParameters(rideParams);
         Log.d("Uber Status", "Uber Booked");
+        startActivity(new Intent(Intent.ACTION_VIEW, deeplink.getUri()));
     }
 
     public void bookmarkPlace(View view) {
+        onBackPressed();
         Log.d("Bookmark Pressed", "Added Bookmark");
     }
 
@@ -202,6 +211,27 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            rideParameters = new RideParameters.Builder()
+                    .setPickupToMyLocation()
+                    .setDropoffLocation(placeLat, placeLng, cityOfPlace, "Place Address")
+                    .build();
+
+            configuration = new SessionConfiguration.Builder()
+                    .setClientId(getResources().getString(R.string.uberClientId))
+                    .setRedirectUri("com.quarantino.ruto://redirect")
+                    .setScopes(Arrays.asList(Scope.RIDE_WIDGETS))
+                    .setEnvironment(SessionConfiguration.Environment.PRODUCTION)
+                    .build();
+
+            UberSdk.initialize(configuration);
+
+            deeplink = new RideRequestDeeplink.Builder(getApplicationContext())
+                    .setSessionConfiguration(configuration)
+                    .setFallback(Deeplink.Fallback.MOBILE_WEB)
+                    .setRideParameters(rideParameters)
+                    .build();
+
             return data;
         }
 
@@ -273,10 +303,14 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
                 else
                     openStatus.setText("Closed Now");
             }
-            String author = hashMapList.get("review_author");
-            String review = hashMapList.get("review_text");
+            String author_1 = hashMapList.get("review_author_1");
+            String review_1 = hashMapList.get("review_text_1");
 
-            reviewOfPlace.add(new ReviewHelperClass(author, review));
+            String author_2 = hashMapList.get("review_author_2");
+            String review_2 = hashMapList.get("review_text_2");
+
+            reviewOfPlace.add(new ReviewHelperClass(author_1, review_1));
+            reviewOfPlace.add(new ReviewHelperClass(author_2, review_2));
             drawMap();
 
             reviewRecycler();
@@ -285,7 +319,6 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
     }
 
     private void reviewRecycler() {
-        reviewOfPlace.add(new ReviewHelperClass("Eric", getResources().getString(R.string.obText2)));
         reviewRecyclerAdapter = new ReviewAdapter(reviewOfPlace);
         reviewRecycler.setAdapter(reviewRecyclerAdapter);
     }

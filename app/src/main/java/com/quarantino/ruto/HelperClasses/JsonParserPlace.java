@@ -18,15 +18,23 @@ public class JsonParserPlace {
             String name = object.getString("name");
             String rating = object.getString("rating");
 
+            String cityName = ((JSONObject) object.getJSONArray("address_components").get(2)).getString("long_name");
+            String placeAddress = object.getString("formatted_address");
+
             JSONArray placeReviews = object.getJSONArray("reviews");
 //            HashMap<String, String> reviewList = new HashMap<>();
-            for(int i = 0; i < 1; i++){
+            for(int i = 0; i <= 1; i++){
                 String author = ((JSONObject) placeReviews.get(i)).getString("author_name");
                 String reviewText = ((JSONObject) placeReviews.get(i)).getString("text");
-//                reviewList.put("Review Author", author);
-//                reviewList.put("Review Text", author);
-                dataList.put("review_author", author);
-                dataList.put("review_text", reviewText);
+                switch(i){
+                    case 0:
+                        dataList.put("review_author_1", author);
+                        dataList.put("review_text_1", reviewText);
+                        break;
+                    case 1:
+                        dataList.put("review_author_2", author);
+                        dataList.put("review_text_2", reviewText);
+                }
             }
 
             String contact = object.getString("international_phone_number");
@@ -40,7 +48,9 @@ public class JsonParserPlace {
                     .getJSONObject("location").getString("lng");
 
             dataList.put("name", name);
-            dataList.put("contat", contact);
+            dataList.put("city_place", cityName);
+            dataList.put("place_address", placeAddress);
+            dataList.put("contact", contact);
 //            dataList.put("rating", rating);
             dataList.put("latitude", latVal);
             dataList.put("longitude", lngVal);

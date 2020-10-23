@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/photoNearby"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="210dp"
+            android:layout_height="330dp"
             android:scaleType="centerCrop"
             android:src="@drawable/bg" />
 
