@@ -14,48 +14,48 @@ import com.quarantino.ruto.R;
 
 import java.util.ArrayList;
 
-public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesRouteAdapter.CategoriesViewHolder>{
+public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesRouteAdapter.NearbyPlaceViewHolder>{
 
-    ArrayList<NearbyPlacesRouteHelperClass> categoriesList;
+    ArrayList<NearbyPlacesRouteHelperClass> nearbyTypePlaceList;
     Resources context;
 
-    public NearbyPlacesRouteAdapter(ArrayList<NearbyPlacesRouteHelperClass> categoriesList) {
-        this.categoriesList = categoriesList;
+    public NearbyPlacesRouteAdapter(ArrayList<NearbyPlacesRouteHelperClass> nearbyTypePlaceList) {
+        this.nearbyTypePlaceList = nearbyTypePlaceList;
     }
 
     @NonNull
     @Override
-    public CategoriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.categories_card, parent, false);
-        CategoriesViewHolder categoriesViewHolder = new CategoriesViewHolder(view);
+    public NearbyPlaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_place_route_card, parent, false);
+        NearbyPlaceViewHolder nearbyPlaceViewHolder = new NearbyPlaceViewHolder(view);
 
         context = parent.getContext().getResources();
-        return categoriesViewHolder;
+        return nearbyPlaceViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoriesViewHolder holder, int position) {
-        NearbyPlacesRouteHelperClass categoriesHelperClass = categoriesList.get(position);
-        holder.categoryType.setText(categoriesHelperClass.getCategoryType());
-        holder.categoryIcon.setImageDrawable(categoriesHelperClass.getCategoryIcon());
+    public void onBindViewHolder(@NonNull NearbyPlaceViewHolder holder, int position) {
+        NearbyPlacesRouteHelperClass nearbyPlacesRouteHelperClass = nearbyTypePlaceList.get(position);
+        holder.placeName.setText(nearbyPlacesRouteHelperClass.getPlaceName());
+        holder.placePhoto.setImageBitmap(nearbyPlacesRouteHelperClass.getPlacePhoto());
     }
 
     @Override
     public int getItemCount() {
-        return categoriesList.size();
+        return nearbyTypePlaceList.size();
     }
 
-    public static class CategoriesViewHolder extends RecyclerView.ViewHolder{
+    public static class NearbyPlaceViewHolder extends RecyclerView.ViewHolder{
 
-        TextView categoryType;
-        ImageView categoryIcon;
+        TextView placeName;
+        ImageView placePhoto;
 
-        public CategoriesViewHolder(@NonNull View itemView) {
+        public NearbyPlaceViewHolder(@NonNull View itemView) {
             super(itemView);
 
             //Hooks
-            categoryType = itemView.findViewById(R.id.categoryTitle);
-            categoryIcon = itemView.findViewById(R.id.categoryIcon);
+            placeName = itemView.findViewById(R.id.nearbyPlaceName);
+            placePhoto = itemView.findViewById(R.id.nearbyPlacePhoto);
         }
     }
 }

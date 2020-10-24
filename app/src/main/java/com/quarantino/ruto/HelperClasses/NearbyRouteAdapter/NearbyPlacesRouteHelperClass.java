@@ -1,22 +1,23 @@
 package com.quarantino.ruto.HelperClasses.NearbyRouteAdapter;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 public class NearbyPlacesRouteHelperClass {
 
-    String categoryType;
-    Drawable categoryIcon;
+    String placeName;
+    Bitmap placePhoto;
 
-    public NearbyPlacesRouteHelperClass(String categoryType, Drawable categoryIcon) {
-        this.categoryType = categoryType;
-        this.categoryIcon = categoryIcon;
+    public NearbyPlacesRouteHelperClass(String placeName, Bitmap placePhoto) {
+        this.placeName = placeName;
+        this.placePhoto = placePhoto;
     }
 
-    public String getCategoryType() {
-        return categoryType;
+    public String getPlaceName() {
+        return placeName;
     }
 
-    public Drawable getCategoryIcon() {
-        return categoryIcon;
+    public Bitmap getPlacePhoto() {
+        return placePhoto;
     }
 }
