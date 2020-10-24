@@ -4,8 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
@@ -24,6 +28,8 @@ public class create_frag extends Fragment{
     private RecyclerView.Adapter nearbyPlacesRecyclerAdapter, selectedPlacesRecyclerAdapter;
     private Button addPlaceBtn;
 
+    String[] placesArr = { "Restaurants", "Museums", "Cafe", "Airport", "Library"};
+
     private ArrayList<SelectedPlacesHelperClass> selectedPlacesList = new ArrayList<>();
 
     public create_frag() {
@@ -32,13 +38,29 @@ public class create_frag extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create, container, false);
+
+        final AutoCompleteTextView autoCompleteTextView = view.findViewById(R.id.autoCompletePlace);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.custom_row, placesArr);
+        autoCompleteTextView.setThreshold(0);
+        autoCompleteTextView.setDropDownVerticalOffset(9);
+        autoCompleteTextView.setAdapter(adapter);
+        autoCompleteTextView.invalidate();
+
+        autoCompleteTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                autoCompleteTextView.showDropDown();
+                return false;
+            }
+        });
+
 
         addPlaceBtn = view.findViewById(R.id.ericBtn);
         addPlaceBtn.setOnClickListener(new View.OnClickListener() {
@@ -55,15 +77,9 @@ public class create_frag extends Fragment{
         selectedPlacesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         selectedPlacesRecyclerAdapter = new SelectedPlacesAdapter(selectedPlacesList);
         selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
-
-//        Bitmap icon2 = BitmapFactory.decodeResource(getResources(), R.drawable.bg_2);
-//        selectedPlacesList.add(new SelectedPlacesHelperClass("Next Place", icon2));
-//        selectedPlacesList.add(new SelectedPlacesHelperClass("Lotus Temple", icon1));
-//        selectedPlacesList.add(new SelectedPlacesHelperClass("Next Place", icon2));
-
-
         return view;
     }
+
 
 
 }

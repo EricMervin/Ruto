@@ -209,10 +209,6 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingDialog = new ProgressDialog(getContext(), R.style.AppCompatAlertDialogStyle);
-            loadingDialog.setMessage("Finding places near you");
-            loadingDialog.setIndeterminate(false);
-            loadingDialog.show();
         }
 
         @Override
@@ -423,6 +419,13 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
+
+        loadingDialog = new ProgressDialog(getContext(), R.style.AppCompatAlertDialogStyle);
+        loadingDialog.setMessage("Finding places near you");
+        loadingDialog.setIndeterminate(false);
+        loadingDialog.show();
+
+
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override

@@ -29,4 +29,15 @@
     <string name="uberClientId">Y-oWoU91f8dIguIrgOg49Tmk6f8vWoMJ</string>
     <string name="places_api_key">AIzaSyA5L81_-5d2Hy7hHsNVhodk1zS90Qu-aP8</string>
 
+    <string-array name="countries_array">
+        <item>Afghanistan</item>
+        <item>Albania</item>
+        <item>Algeria</item>
+        <item>American Samoa</item>
+        <item>Andorra</item>
+        <item>Angola</item>
+        <item>Anguilla</item>
+        <item>Antarctica</item>
+    </string-array>
+
 </resources>
