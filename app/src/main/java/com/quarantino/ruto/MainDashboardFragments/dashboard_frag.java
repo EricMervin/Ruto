@@ -1,6 +1,7 @@
 package com.quarantino.ruto.MainDashboardFragments;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -36,8 +37,8 @@ import com.quarantino.ruto.HelperClasses.CategoriesAdapter.CategoriesHelperClass
 import com.quarantino.ruto.HelperClasses.JsonParser;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
-import com.quarantino.ruto.HelperClasses.RestaurantsAdapter.RestaurantsAdapter;
-import com.quarantino.ruto.HelperClasses.RestaurantsAdapter.RestaurantsHelperClass;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.ParksAdapter;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.RestaurantsAdapter;
 import com.quarantino.ruto.NearbyPlaceTemplate;
 import com.quarantino.ruto.R;
 
@@ -58,14 +59,19 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener {
+public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener, RestaurantsAdapter.OnRestaurantListener, ParksAdapter.OnParkListener{
 
-    private RecyclerView nearbyPlacesRecycler, categoriesRecycler, topRestaurantsRecycler;
     private TextView cityOfUser;
-    private RecyclerView.Adapter nearbyPlacesRecyclerAdapter, categoriesRecyclerAdapter, topRestaurantsRecyclerAdapter;
+
+    private RecyclerView nearbyPlacesRecycler, categoriesRecycler, topRestaurantsRecycler, shoppingMallRecycler;
+    private RecyclerView.Adapter nearbyPlacesRecyclerAdapter, categoriesRecyclerAdapter, topRestaurantsRecyclerAdapter, shoppingMallRecyclerAdapter;
+
     private ArrayList<NearbyPlacesHelperClass> nearbyPlaces = new ArrayList<>();
-    private ArrayList<RestaurantsHelperClass> topRestaurants = new ArrayList<>();
+    private ArrayList<NearbyPlacesHelperClass> topRestaurants = new ArrayList<>();
+    private ArrayList<NearbyPlacesHelperClass> shoppingMall = new ArrayList<>();
     private ArrayList<CategoriesHelperClass> categoriesList = new ArrayList<>();
+
+    private ProgressDialog loadingDialog;
 
     FusedLocationProviderClient fusedLocationProviderClient;
     private double currentLat = 0, currentLong = 0;
@@ -90,6 +96,8 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         //Nearby Places Recycler
         nearbyPlacesRecycler = view.findViewById(R.id.nearbyPlaces);
         nearbyPlacesRecycler.setHasFixedSize(true);
+        nearbyPlacesRecyclerAdapter = new NearbyPlacesAdapter(nearbyPlaces, this);
+        nearbyPlacesRecycler.setAdapter(nearbyPlacesRecyclerAdapter);
         nearbyPlacesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         //Categories Recycler
@@ -99,22 +107,27 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         //Top Restaurants Recycler
         topRestaurantsRecycler = view.findViewById(R.id.restaurantsRecycler);
         topRestaurantsRecycler.setHasFixedSize(true);
+        topRestaurantsRecyclerAdapter = new RestaurantsAdapter(topRestaurants, this);
+        topRestaurantsRecycler.setAdapter(topRestaurantsRecyclerAdapter);
         topRestaurantsRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        topRestaurantsRecycler();
 
-        if (ActivityCompat.checkSelfPermission(getContext()
-                , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        //Shopping Mall Recycler
+        shoppingMallRecycler = view.findViewById(R.id.shoppingMallRecycler);
+        shoppingMallRecycler.setHasFixedSize(true);
+        shoppingMallRecyclerAdapter = new ParksAdapter(shoppingMall, this);
+        shoppingMallRecycler.setAdapter(shoppingMallRecyclerAdapter);
+        shoppingMallRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getCurrentLocation();
         } else {
-            ActivityCompat.requestPermissions(getActivity()
-                    , new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
 
         return view;
     }
 
-    private class PlaceTask extends AsyncTask<String, Integer, String> {
-
+    private class nearbyPlaceTask extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
             String data = null;
@@ -129,6 +142,42 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         @Override
         protected void onPostExecute(String s) {
             new nearbyPlacesParserTask().execute(s);
+        }
+    }
+
+    private class restaurantTask extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = null;
+            try {
+                data = downloadUrl(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            new restaurantParserTask().execute(s);
+        }
+    }
+
+    private class shoppingTask extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = null;
+            try {
+                data = downloadUrl(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            new shoppingParserTask().execute(s);
         }
     }
 
@@ -157,6 +206,15 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
     }
 
     private class nearbyPlacesParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingDialog = new ProgressDialog(getContext(), R.style.AppCompatAlertDialogStyle);
+            loadingDialog.setMessage("Finding places near you");
+            loadingDialog.setIndeterminate(false);
+            loadingDialog.show();
+        }
+
         @Override
         protected List<HashMap<String, String>> doInBackground(String... strings) {
             JsonParser jsonParser = new JsonParser();
@@ -188,9 +246,9 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 String photoRef = hashMapList.get("photo_reference");
 //                String openNow = hashMapList.get("open_now");
 
-                Log.d("Process", "On Post Executed");
-                Log.d("Place Id", placeId);
-                Log.d("PhotoRef", photoRef);
+//                Log.d("Process", "On Post Executed");
+//                Log.d("Place Id", placeId);
+//                Log.d("PhotoRef", photoRef);
 
                 try {
                     nearbyPlaces.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
@@ -203,10 +261,139 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 cnt++;
             }
             nearbyPlacesRecycler();
+//            loadingDialog.dismiss();
         }
     }
 
-    private class photoDownload extends AsyncTask<String, Void, Bitmap>{
+    private class restaurantParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            loadingDialog = new ProgressDialog(getContext(), R.style.AppCompatAlertDialogStyle);
+//            loadingDialog.setMessage("Finding places near you");
+//            loadingDialog.setIndeterminate(false);
+//            loadingDialog.show();
+//        }
+
+        @Override
+        protected List<HashMap<String, String>> doInBackground(String... strings) {
+            JsonParser jsonParser = new JsonParser();
+
+            List<HashMap<String, String>> mapList = null;
+            JSONObject object = null;
+            try {
+                object = new JSONObject(strings[0]);
+                mapList = jsonParser.parseResult(object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return mapList;
+        }
+
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
+            int cnt = 0;
+
+            for (int i = 0; cnt < 4; i++) {
+                HashMap<String, String> hashMapList = hashMaps.get(i);
+
+                double placeLat = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lat")));
+                double placeLong = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
+
+                String name = hashMapList.get("name");
+                String rating = hashMapList.get("rating");
+                String placeId = hashMapList.get("place_id");
+                String photoRef = hashMapList.get("photo_reference");
+//                String openNow = hashMapList.get("open_now");
+
+//                Log.d("Process", "On Post Executed");
+//                Log.d("Place Id", placeId);
+//                Log.d("PhotoRef", photoRef);
+
+                try {
+                    topRestaurants.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                cnt++;
+            }
+            topRestaurantsRecycler();
+//            loadingDialog.dismiss();
+        }
+    }
+
+    private class shoppingParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            loadingDialog = new ProgressDialog(getContext(), R.style.AppCompatAlertDialogStyle);
+//            loadingDialog.setMessage("Finding places near you");
+//            loadingDialog.setIndeterminate(false);
+//            loadingDialog.show();
+//        }
+
+        @Override
+        protected List<HashMap<String, String>> doInBackground(String... strings) {
+            JsonParser jsonParser = new JsonParser();
+
+            List<HashMap<String, String>> mapList = null;
+            JSONObject object = null;
+            try {
+                object = new JSONObject(strings[0]);
+                mapList = jsonParser.parseResult(object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return mapList;
+        }
+
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
+            int cnt = 0;
+
+            for (int i = 0; cnt < 4; i++) {
+                HashMap<String, String> hashMapList = hashMaps.get(i);
+
+                double placeLat, placeLong;
+
+                if(hashMapList.get("lat") != null && hashMapList.get("lng") != null){
+                    placeLat = Double.parseDouble(hashMapList.get("lat"));
+                    placeLong = Double.parseDouble(hashMapList.get("lng"));
+                    Log.d("Place Lat", String.valueOf(placeLat));
+                    Log.d("Place Long", String.valueOf(placeLong));
+                } else{
+                    continue;
+                }
+
+                String name = hashMapList.get("name");
+                String rating = hashMapList.get("rating");
+                String placeId = hashMapList.get("place_id");
+                String photoRef = hashMapList.get("photo_reference");
+//                String openNow = hashMapList.get("open_now");
+
+//                Log.d("Process", "On Post Executed");
+//                Log.d("Place Id", placeId);
+//                Log.d("PhotoRef", photoRef);
+
+                try {
+                    shoppingMall.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                cnt++;
+            }
+            shoppingMallRecycler();
+//            loadingDialog.dismiss();
+        }
+    }
+
+    private class photoDownload extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... strings) {
             String photoReference = strings[0];
@@ -227,31 +414,14 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+
         }
-    }
-
-    public Bitmap getPhotoOfPlace(String photoRef) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference="
-                + photoRef + "&key=" + getResources().getString(R.string.places_api_key);
-        Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
-
-        try {
-            InputStream in = new java.net.URL(urlPhoto).openStream();
-            return BitmapFactory.decodeStream(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return icon1;
     }
 
     //Get location of the user
     private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -282,14 +452,26 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         Log.d("Location lat", String.valueOf(currentLat));
         Log.d("Location long", String.valueOf(currentLong));
 
-        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+        String touristUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
                 "&radius=21000" + "&type=" + "tourist_attraction" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
-        Log.d("Json URL", url);
+        String restaurantUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                "?location=" + currentLat + "," + currentLong +
+                "&radius=15000" + "&type=" + "restaurant" +
+                "&key=" + getResources().getString(R.string.places_api_key);
 
-        new PlaceTask().execute(url);
+        String shoppingMallUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                "?location=" + currentLat + "," + currentLong +
+                "&radius=15000" + "&type=" + "museum" +
+                "&key=" + getResources().getString(R.string.places_api_key);
+
+        Log.d("Json URL", shoppingMallUrl);
+
+        new nearbyPlaceTask().execute(touristUrl);
+        new restaurantTask().execute(restaurantUrl);
+        new shoppingTask().execute(shoppingMallUrl);
     }
 
 //    private void getNearbyRestaurants(double currentLat, double currentLong) {
@@ -337,13 +519,14 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
     }
 
     private void topRestaurantsRecycler() {
-        Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
-
-        topRestaurants.add(new RestaurantsHelperClass(icon1, "Badiya naam", (float) 2.1));
-        topRestaurants.add(new RestaurantsHelperClass(icon1, "Subway", (float) 4.4));
-        topRestaurants.add(new RestaurantsHelperClass(icon1, "Domino's Pizza", (float) 3.6));
-        topRestaurantsRecyclerAdapter = new RestaurantsAdapter(topRestaurants);
+//        Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+        topRestaurantsRecyclerAdapter = new RestaurantsAdapter(topRestaurants, this);
         topRestaurantsRecycler.setAdapter(topRestaurantsRecyclerAdapter);
+    }
+
+    private void shoppingMallRecycler() {
+        shoppingMallRecycler.setAdapter(shoppingMallRecyclerAdapter);
+        loadingDialog.dismiss();
     }
 
     @Override
@@ -376,5 +559,81 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 //        startActivity(intent);
 
 //        Log.d("Position Clicked", String.valueOf(position) + " " + (nearbyPlaces.get(position).getRating() + 1));
+    }
+
+    @Override
+    public void onRestaurantClick(int position, TextView placeName, ImageView placePhoto, TextView placeRating, View imageOverlay) {
+        Intent intent = new Intent(getContext(), NearbyPlaceTemplate.class);
+
+        //Converting the photo of place to byte array
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        topRestaurants.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 95, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        intent.putExtra("Name of Place", topRestaurants.get(position).getNameOfPlace());
+        intent.putExtra("Position", position);
+        intent.putExtra("Image", byteArray);
+        intent.putExtra("Current Latitude", currentLat);
+        intent.putExtra("Current Longitude", currentLong);
+        intent.putExtra("Latitude of Place", topRestaurants.get(position).getPlaceLat());
+        intent.putExtra("Longitude of Place", topRestaurants.get(position).getPlaceLong());
+        intent.putExtra("Id Of Place", topRestaurants.get(position).getIdOfPlace());
+        intent.putExtra("Rating of Place", topRestaurants.get(position).getRating());
+
+        Pair<View, String> p1 = Pair.create((View) placePhoto, "nearbyImageAnim");
+        Pair<View, String> p2 = Pair.create((View) placeName, "nearbyTitleAnim");
+//        Pair<View, String> p3 = Pair.create((View) placeRating, "nearbyRatingAnim");
+        Pair<View, String> p4 = Pair.create((View) imageOverlay, "nearbyImageOverlayAnim");
+
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2, p4);
+
+        startActivity(intent, optionsCompat.toBundle());
+    }
+
+    @Override
+    public void onParkClick(int position, TextView placeName, ImageView placePhoto, TextView placeRating, View imageOverlay) {
+        Intent intent = new Intent(getContext(), NearbyPlaceTemplate.class);
+
+        //Converting the photo of place to byte array
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        shoppingMall.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 95, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        intent.putExtra("Name of Place", shoppingMall.get(position).getNameOfPlace());
+        intent.putExtra("Position", position);
+        intent.putExtra("Image", byteArray);
+        intent.putExtra("Current Latitude", currentLat);
+        intent.putExtra("Current Longitude", currentLong);
+        intent.putExtra("Latitude of Place", shoppingMall.get(position).getPlaceLat());
+        intent.putExtra("Longitude of Place", shoppingMall.get(position).getPlaceLong());
+        intent.putExtra("Id Of Place", shoppingMall.get(position).getIdOfPlace());
+        intent.putExtra("Rating of Place", shoppingMall.get(position).getRating());
+
+        Pair<View, String> p1 = Pair.create((View) placePhoto, "nearbyImageAnim");
+        Pair<View, String> p2 = Pair.create((View) placeName, "nearbyTitleAnim");
+//        Pair<View, String> p3 = Pair.create((View) placeRating, "nearbyRatingAnim");
+        Pair<View, String> p4 = Pair.create((View) imageOverlay, "nearbyImageOverlayAnim");
+
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2, p4);
+
+        startActivity(intent, optionsCompat.toBundle());
+    }
+
+    // Obsolete
+    public Bitmap getPhotoOfPlace(String photoRef) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference="
+                + photoRef + "&key=" + getResources().getString(R.string.places_api_key);
+        Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+
+        try {
+            InputStream in = new java.net.URL(urlPhoto).openStream();
+            return BitmapFactory.decodeStream(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return icon1;
     }
 }

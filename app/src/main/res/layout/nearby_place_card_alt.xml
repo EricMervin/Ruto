@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="300dp"
     android:layout_height="160dp"
-    android:layout_marginEnd="12dp"
-    app:cardCornerRadius="6dp">
+    android:layout_marginEnd="18dp"
+    app:cardCornerRadius="10.5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/topRestaurantPhoto"
+            android:id="@+id/placePhotoAlt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
@@ -19,29 +19,46 @@
             android:src="@drawable/bg"/>
 
         <View
+            android:id="@+id/imageOverlayRes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/card_image_overlay"/>
+
+        <TextView
+            android:id="@+id/placeRatingAlt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="4.5 / 5"
+            android:fontFamily="@font/gothammedium"
+            android:letterSpacing="-0.05"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingStart="12dp"
+            android:paddingStart="18dp"
             android:paddingEnd="12dp"
-            android:layout_marginBottom="6dp">
+            android:layout_marginBottom="9dp">
 
             <TextView
-                android:id="@+id/topRestaurantName"
+                android:id="@+id/placeNameAlt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="Subway"
+                android:layout_marginEnd="12dp"
+                android:lineSpacingExtra="2dp"
+                android:layout_alignParentStart="true"
                 android:fontFamily="@font/gothammedium"
-                android:textSize="16sp"
-                android:textColor="@color/white"/>
+                android:text="Subway"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
 
-            <RatingBar
+            <!--<RatingBar
                 android:id="@+id/topRestaurantRating"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_alignParentEnd="true"
@@ -49,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:progressTint="@color/white"
-                android:progressBackgroundTint="@color/white"/>
+                android:progressBackgroundTint="@color/white"/> -->
 
         </RelativeLayout>
 

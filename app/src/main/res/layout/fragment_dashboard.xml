@@ -121,12 +121,12 @@
                 android:layout_marginTop="36dp"
                 android:fontFamily="@font/gothammedium"
                 android:letterSpacing="-0.05"
-                android:text="Top Parks"
+                android:text="Museums Nearby"
                 android:textColor="@color/colorPrimary"
                 android:textSize="27sp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/parksRecycler"
+                android:id="@+id/shoppingMallRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:layout_marginTop="12dp"
