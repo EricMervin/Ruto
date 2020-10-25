@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
-import com.quarantino.ruto.HelperClasses.userHelperClass;
+import com.quarantino.ruto.HelperClasses.UserHelperClass;
 import com.quarantino.ruto.Activities.MainDashboard;
 import com.quarantino.ruto.R;
 
@@ -73,7 +73,7 @@ public class LoginScreen extends AppCompatActivity {
         //Authentication
         firebaseAuth = FirebaseAuth.getInstance();
 
-        userHelperClass userData = new userHelperClass(getApplicationContext());
+        UserHelperClass userData = new UserHelperClass(getApplicationContext());
 
         //SetText
         logInUsernameInput.getEditText().setText(userData.getUsername());
@@ -142,7 +142,7 @@ public class LoginScreen extends AppCompatActivity {
                         String emailFromDB = dataSnapshot.child(userEnteredUsername).child("email").getValue(String.class);
 
                         //SharedPreferences : Storing user Info
-                        userHelperClass helperClass = new userHelperClass(getApplicationContext());
+                        UserHelperClass helperClass = new UserHelperClass(getApplicationContext());
                         helperClass.setName(nameFromDB);
                         helperClass.setUsername(usernameFromDB);
                         helperClass.setPassword(userEnteredPassword);

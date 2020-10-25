@@ -4,12 +4,17 @@ import android.graphics.Bitmap;
 
 public class SelectedPlacesHelperClass {
 
-    String nameOfSelectedPlace;
+    String idOfSelectedPlace, nameOfSelectedPlace;
     Bitmap photoOfSelectedPlace;
 
-    public SelectedPlacesHelperClass(String nameOfSelectedPlace, Bitmap photoOfSelectedPlace) {
+    public SelectedPlacesHelperClass(String idOfSelectedPlace, String nameOfSelectedPlace, Bitmap photoOfSelectedPlace) {
+        this.idOfSelectedPlace = idOfSelectedPlace;
         this.nameOfSelectedPlace = nameOfSelectedPlace;
         this.photoOfSelectedPlace = photoOfSelectedPlace;
+    }
+
+    public String getIdOfSelectedPlace() {
+        return idOfSelectedPlace;
     }
 
     public String getNameOfSelectedPlace() {
@@ -18,5 +23,9 @@ public class SelectedPlacesHelperClass {
 
     public Bitmap getPhotoOfSelectedPlace() {
         return photoOfSelectedPlace;
+    }
+
+    public void remove(int i){
+
     }
 }

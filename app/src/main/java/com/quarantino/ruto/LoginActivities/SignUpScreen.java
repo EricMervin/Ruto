@@ -2,15 +2,12 @@ package com.quarantino.ruto.LoginActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.LoginFilter;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,8 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.quarantino.ruto.Activities.MainDashboard;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
-import com.quarantino.ruto.HelperClasses.userHelperClass;
-import com.quarantino.ruto.HelperClasses.userHelperClassFirebase;
+import com.quarantino.ruto.HelperClasses.UserHelperClass;
+import com.quarantino.ruto.HelperClasses.UserHelperClassFirebase;
 import com.quarantino.ruto.R;
 
 public class SignUpScreen extends AppCompatActivity {
@@ -228,11 +225,11 @@ public class SignUpScreen extends AppCompatActivity {
                                 reference = rootNode.getReference("users");
 
                                 //SharedPreferences : Storing user Info in Firebase
-                                userHelperClassFirebase helperClass = new userHelperClassFirebase(userName, userUsername, userEmail,  userPassword);
+                                UserHelperClassFirebase helperClass = new UserHelperClassFirebase(userName, userUsername, userEmail,  userPassword);
                                 reference.child(userUsername).setValue(helperClass);
 
                                 //SharedPreferences : Storing user Info Locally
-                                userHelperClass helperClassLocal = new userHelperClass(getApplicationContext());
+                                UserHelperClass helperClassLocal = new UserHelperClass(getApplicationContext());
                                 helperClassLocal.setName(userName);
                                 helperClassLocal.setUsername(userUsername);
                                 helperClassLocal.setPassword(userPassword);

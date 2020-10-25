@@ -6,4 +6,5 @@
     <color name="white">#FFFFFF</color>
     <color name="customError">#f44336</color>
     <color name="lightGrey">#F2F2F2</color>
+    <color name="checkGreen">#55E552</color>
 </resources>

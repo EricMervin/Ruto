@@ -5,19 +5,41 @@ import android.graphics.drawable.Drawable;
 
 public class NearbyPlacesRouteHelperClass {
 
-    String placeName;
-    Bitmap placePhoto;
+    Bitmap imageOfPlace;
+    float rating;
+    double placeLat, placeLong;
+    String nameOfPlace, idOfPlace;
 
-    public NearbyPlacesRouteHelperClass(String placeName, Bitmap placePhoto) {
-        this.placeName = placeName;
-        this.placePhoto = placePhoto;
+    public NearbyPlacesRouteHelperClass(Bitmap imageOfPlace, String nameOfPlace, float rating, String idOfPlace, double placeLat, double placeLong) {
+        this.idOfPlace = idOfPlace;
+        this.imageOfPlace = imageOfPlace;
+        this.nameOfPlace = nameOfPlace;
+        this.rating = rating;
+        this.placeLat = placeLat;
+        this.placeLong = placeLong;
     }
 
-    public String getPlaceName() {
-        return placeName;
+    public double getPlaceLat() {
+        return placeLat;
     }
 
-    public Bitmap getPlacePhoto() {
-        return placePhoto;
+    public double getPlaceLong() {
+        return placeLong;
+    }
+
+    public String getIdOfPlace() {
+        return idOfPlace;
+    }
+
+    public Bitmap getImageOfPlace() {
+        return imageOfPlace;
+    }
+
+    public String getNameOfPlace() {
+        return nameOfPlace;
+    }
+
+    public float getRating() {
+        return rating;
     }
 }

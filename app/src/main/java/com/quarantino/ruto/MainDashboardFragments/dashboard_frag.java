@@ -39,6 +39,7 @@ import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.ParksAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.RestaurantsAdapter;
+import com.quarantino.ruto.HelperClasses.UserHelperClass;
 import com.quarantino.ruto.NearbyPlaceTemplate;
 import com.quarantino.ruto.R;
 
@@ -425,7 +426,6 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         loadingDialog.setIndeterminate(false);
         loadingDialog.show();
 
-
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
@@ -476,20 +476,6 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         new restaurantTask().execute(restaurantUrl);
         new shoppingTask().execute(shoppingMallUrl);
     }
-
-//    private void getNearbyRestaurants(double currentLat, double currentLong) {
-//        Log.d("Location lat", String.valueOf(currentLat));
-//        Log.d("Location long", String.valueOf(currentLong));
-//
-//        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
-//                "?location=" + currentLat + "," + currentLong +
-//                "&radius=5000" + "&type=" + "restaurant" +
-//                "&key=" + getResources().getString(R.string.places_api_key);
-//
-//        Log.d("Json URL", url);
-//
-//        new PlaceTask().execute(url);
-//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

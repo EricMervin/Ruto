@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".MainDashboardFragments.create_frag">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="54dp"
@@ -21,47 +21,47 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/selectedPlacesHeading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="30dp"
-                    android:fontFamily="@font/gothammedium"
-                    android:letterSpacing="-0.075"
-                    android:text="Selected Places"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="21sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/selectedPlacesHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/gothammedium"
+                android:letterSpacing="-0.075"
+                android:text="Selected Places"
+                android:textColor="@color/colorPrimary"
+                android:textSize="21sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/continueSelectedPlace"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="30dp"
-                    android:fontFamily="@font/gothammedium"
-                    android:text="continue"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/selectedPlacesHeading"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/selectedPlacesHeading" />
+            <TextView
+                android:id="@+id/continueSelectedPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:fontFamily="@font/gothammedium"
+                android:text="continue"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/selectedPlacesHeading"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/selectedPlacesHeading" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/selectedPlaceRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="12dp"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingStart="30dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/selectedPlaceRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="30dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/placeTypeInput"
@@ -102,6 +102,7 @@
                     android:paddingTop="18dp"
                     android:paddingEnd="16dp"
                     android:paddingBottom="18dp"
+                    android:singleLine="true"
                     android:popupBackground="@null"
                     android:textColor="@color/colorPrimary"
                     android:textColorHint="@color/colorPrimary"
@@ -113,7 +114,7 @@
                 android:id="@+id/neabyPlacesTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="32dp"
                 android:fontFamily="@font/gothammedium"
                 android:letterSpacing="-0.075"
@@ -126,30 +127,33 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/nearbyPlacesOptRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="12dp"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
-                android:paddingStart="30dp" />
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:layout_marginBottom="27dp"
+                android:nestedScrollingEnabled="false"/>
 
-            <Button
-                android:id="@+id/ericBtn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="@font/gothammedium"
-                android:letterSpacing="-0.05"
-                android:padding="16dp"
-                android:stateListAnimator="@null"
-                android:text="Add Place"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="18sp" />
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/ericBtn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="24dp"-->
+<!--                android:layout_marginTop="32dp"-->
+<!--                android:layout_marginEnd="24dp"-->
+<!--                android:fontFamily="@font/gothammedium"-->
+<!--                android:letterSpacing="-0.05"-->
+<!--                android:padding="16dp"-->
+<!--                android:stateListAnimator="@null"-->
+<!--                android:text="Add"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="18sp" />-->
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

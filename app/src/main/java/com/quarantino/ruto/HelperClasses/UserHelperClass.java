@@ -3,11 +3,13 @@ package com.quarantino.ruto.HelperClasses;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class userHelperClass {
+import com.google.android.gms.maps.model.LatLng;
+
+public class UserHelperClass {
     Context context;
     SharedPreferences sharedPref;
 
-    public userHelperClass(Context context) {
+    public UserHelperClass(Context context) {
         this.context = context;
         sharedPref = context.getSharedPreferences("User Details", 0);
     }

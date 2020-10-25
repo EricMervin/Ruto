@@ -108,7 +108,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/restaurantsRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="175dp"
+                android:layout_height="169dp"
                 android:layout_marginTop="12dp"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
@@ -128,7 +128,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/shoppingMallRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="175dp"
+                android:layout_height="169dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="36dp"
                 android:clipToPadding="false"

@@ -70,6 +70,5 @@ public class MainDashboard extends AppCompatActivity {
                 Log.d("", "Reselected");
             }
         });
-
     }
 }
