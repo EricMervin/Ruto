@@ -251,24 +251,35 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
                 if (hashMapList.get("lat") != null && hashMapList.get("lng") != null) {
                     placeLat = Double.parseDouble(hashMapList.get("lat"));
                     placeLong = Double.parseDouble(hashMapList.get("lng"));
-                    Log.d("Place Lat", String.valueOf(placeLat));
-                    Log.d("Place Long", String.valueOf(placeLong));
+//                    Log.d("Place Lat", String.valueOf(placeLat));
+//                    Log.d("Place Long", String.valueOf(placeLong));
                 } else {
+                    continue;
+                }
+
+                boolean placeExists = false;
+                String placeId = hashMapList.get("place_id");
+
+                for (int x = 0; x < selectedPlacesList.size(); x++) {
+                    if (placeId.equalsIgnoreCase(selectedPlacesList.get(x).getIdOfSelectedPlace())) {
+                        placeExists = true;
+                    }
+                }
+                if(placeExists){
                     continue;
                 }
 
                 String name = hashMapList.get("name");
                 String rating = hashMapList.get("rating");
-                String placeId = hashMapList.get("place_id");
                 String photoRef = hashMapList.get("photo_reference");
-//                String openNow = hashMapList.get("open_now");
+                String openNow = hashMapList.get("open_now");
 
 //                Log.d("Process", "On Post Executed");
 //                Log.d("Place Id", placeId);
 //                Log.d("PhotoRef", photoRef);
 
                 try {
-                    nearbyPlaces.add(new NearbyPlacesRouteHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                    nearbyPlaces.add(new NearbyPlacesRouteHelperClass(new photoDownload().execute(photoRef).get(), name, openNow ,Float.parseFloat(rating), placeId, placeLat, placeLong));
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -343,11 +354,9 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
     }
 
     @Override
-    public void onAddPLaceRouteClick(int position, boolean isAdded) {
+    public void onAddPlaceRouteClick(int position, boolean isAdded) {
         if (!isAdded) {
-//            Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
             selectedPlacesList.add(new SelectedPlacesHelperClass(nearbyPlaces.get(position).getIdOfPlace(), nearbyPlaces.get(position).getNameOfPlace(), nearbyPlaces.get(position).getImageOfPlace()));
-//            selectedPlacesRecyclerAdapter.
             selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
         } else {
             String idToBeDeleted = nearbyPlaces.get(position).getIdOfPlace();

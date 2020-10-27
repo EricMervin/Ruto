@@ -234,8 +234,16 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
             for (int i = 0; cnt < 7; i++) {
                 HashMap<String, String> hashMapList = hashMaps.get(i);
 
-                double placeLat = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lat")));
-                double placeLong = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
+                double placeLat, placeLong;
+
+                if(hashMapList.get("lat") != null && hashMapList.get("lng") != null){
+                    placeLat = Double.parseDouble(hashMapList.get("lat"));
+                    placeLong = Double.parseDouble(hashMapList.get("lng"));
+                    Log.d("Place Lat", String.valueOf(placeLat));
+                    Log.d("Place Long", String.valueOf(placeLong));
+                } else{
+                    continue;
+                }
 
                 String name = hashMapList.get("name");
                 String rating = hashMapList.get("rating");
@@ -294,8 +302,16 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
             for (int i = 0; cnt < 4; i++) {
                 HashMap<String, String> hashMapList = hashMaps.get(i);
 
-                double placeLat = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lat")));
-                double placeLong = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
+                double placeLat, placeLong;
+
+                if(hashMapList.get("lat") != null && hashMapList.get("lng") != null){
+                    placeLat = Double.parseDouble(hashMapList.get("lat"));
+                    placeLong = Double.parseDouble(hashMapList.get("lng"));
+                    Log.d("Place Lat", String.valueOf(placeLat));
+                    Log.d("Place Long", String.valueOf(placeLong));
+                } else{
+                    continue;
+                }
 
                 String name = hashMapList.get("name");
                 String rating = hashMapList.get("rating");

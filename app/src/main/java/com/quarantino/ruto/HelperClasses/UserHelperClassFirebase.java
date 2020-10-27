@@ -10,9 +10,6 @@ public class UserHelperClassFirebase {
         this.password = userPassword;
     }
 
-    public UserHelperClassFirebase() {
-    }
-
     public String getName() {
         return name;
     }

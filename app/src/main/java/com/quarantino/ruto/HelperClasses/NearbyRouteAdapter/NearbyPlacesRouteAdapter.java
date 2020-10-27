@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.R;
 
 import java.util.ArrayList;
@@ -43,6 +44,27 @@ public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesR
         NearbyPlacesRouteHelperClass nearbyPlacesRouteHelperClass = nearbyTypePlaceList.get(position);
         holder.placeName.setText(nearbyPlacesRouteHelperClass.getNameOfPlace());
         holder.placePhoto.setImageBitmap(nearbyPlacesRouteHelperClass.getImageOfPlace());
+        holder.ratingPlace.setText(String.valueOf(nearbyPlacesRouteHelperClass.getRating()));
+        if(nearbyPlacesRouteHelperClass.getOpenNowStatus() == "true"){
+            holder.openPlace.setText("Open Now");
+            holder.openPlace.setTextColor(context.getColor(R.color.checkGreen));
+        } else {
+            holder.openPlace.setText("Closed");
+            holder.openPlace.setTextColor(context.getColor(R.color.customError));
+        }
+//        holder.isAdded = nearbyPlacesRouteHelperClass.getPlaceAddedStatus();
+//        boolean placeIsAdd = holder.isAdded;
+//
+//        if(placeIsAdd){
+//            holder.addPlaceButton.setBackgroundResource(R.drawable.circle_button_check);
+//            holder.iconButton.setImageResource(R.drawable.tick_icon);
+//        } else{
+//            holder.addPlaceButton.setBackgroundResource(R.drawable.circle_button_uncheck);
+//            holder.iconButton.setImageResource(R.drawable.plus_icon);
+//        }
+//
+//        nearbyPlacesRouteHelperClass.setPlaceAddedStatus(!holder.isAdded);
+//        holder.isAdded = nearbyPlacesRouteHelperClass.getPlaceAddedStatus();
     }
 
     @Override
@@ -52,7 +74,7 @@ public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesR
 
     public static class NearbyPlacesRouteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView placeName;
+        TextView placeName, ratingPlace, openPlace;
         ImageView placePhoto, iconButton;
         FrameLayout addPlaceButton;
         boolean isAdded = false;
@@ -66,21 +88,8 @@ public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesR
             iconButton = itemView.findViewById(R.id.iconButton);
             placeName = itemView.findViewById(R.id.nearbyPlaceName);
             placePhoto = itemView.findViewById(R.id.nearbyPlacePhoto);
-
-//            addPlaceButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if(!isAdded){
-//                        addPlaceButton.setBackgroundResource(R.drawable.circle_button_check);
-//                        iconButton.setImageResource(R.drawable.tick_icon);
-//                        isAdded = true;
-//                    } else{
-//                        addPlaceButton.setBackgroundResource(R.drawable.circle_button_uncheck);
-//                        iconButton.setImageResource(R.drawable.plus_icon);
-//                        isAdded = false;
-//                    }
-//                }
-//            });
+            ratingPlace = itemView.findViewById(R.id.ratingOfPlace);
+            openPlace = itemView.findViewById(R.id.statusOfPlace);
 
             this.onNearbyPlaceRouteListener = onNearbyPlaceRouteListener;
             itemView.setOnClickListener(this);
@@ -94,7 +103,7 @@ public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesR
                         addPlaceButton.setBackgroundResource(R.drawable.circle_button_uncheck);
                         iconButton.setImageResource(R.drawable.plus_icon);
                     }
-                    onNearbyPlaceRouteListener.onAddPLaceRouteClick(getAdapterPosition(), isAdded);
+                    onNearbyPlaceRouteListener.onAddPlaceRouteClick(getAdapterPosition(), isAdded);
                     isAdded = !isAdded;
                 }
             });
@@ -108,6 +117,8 @@ public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesR
 
     public interface OnNearbyPlaceRouteListener{
         void onNearbyPlaceRouteClick(int position, TextView placeName, ImageView placePhoto);
-        void onAddPLaceRouteClick(int position, boolean isAdded);
+        void onAddPlaceRouteClick(int position, boolean isAdded);
     }
+
+
 }

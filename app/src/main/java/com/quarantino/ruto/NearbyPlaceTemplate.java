@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -159,7 +160,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
                     MarkerOptions options = new MarkerOptions().position(latLng)
                             .title(nameOfPlaceStr).icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker));
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(placeLat, placeLng), 15
+                            new LatLng(placeLat, placeLng), 12
                     ));
                     map.addMarker(options);
                 }

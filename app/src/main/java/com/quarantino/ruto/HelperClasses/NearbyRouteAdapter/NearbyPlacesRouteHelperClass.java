@@ -8,15 +8,30 @@ public class NearbyPlacesRouteHelperClass {
     Bitmap imageOfPlace;
     float rating;
     double placeLat, placeLong;
-    String nameOfPlace, idOfPlace;
+    String nameOfPlace, idOfPlace, openNowStatus;
+    boolean placeAddedStatus;
 
-    public NearbyPlacesRouteHelperClass(Bitmap imageOfPlace, String nameOfPlace, float rating, String idOfPlace, double placeLat, double placeLong) {
+    public NearbyPlacesRouteHelperClass(Bitmap imageOfPlace, String nameOfPlace, String openNowStatus,float rating, String idOfPlace, double placeLat, double placeLong) {
         this.idOfPlace = idOfPlace;
         this.imageOfPlace = imageOfPlace;
         this.nameOfPlace = nameOfPlace;
         this.rating = rating;
         this.placeLat = placeLat;
         this.placeLong = placeLong;
+        this.openNowStatus = openNowStatus;
+//        this.placeAddedStatus = placeAddedStatus;
+    }
+
+    public boolean getPlaceAddedStatus(){
+        return placeAddedStatus;
+    }
+//
+    public void setPlaceAddedStatus(boolean placeAddedStatus) {
+        this.placeAddedStatus = placeAddedStatus;
+    }
+
+    public String getOpenNowStatus() {
+        return openNowStatus;
     }
 
     public double getPlaceLat() {

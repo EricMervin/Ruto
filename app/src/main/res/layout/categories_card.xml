@@ -26,7 +26,8 @@
             app:layout_constraintBottom_toBottomOf="@id/categoryTitle"
             app:layout_constraintTop_toTopOf="@+id/categoryTitle"
             android:src="@drawable/monument_icon"
-            app:layout_constraintEnd_toStartOf="@id/categoryTitle"/>
+            app:layout_constraintEnd_toStartOf="@id/categoryTitle"
+            app:tint="@color/white" />
 
         <TextView
             android:id="@+id/categoryTitle"
