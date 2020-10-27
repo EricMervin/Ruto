@@ -37,7 +37,7 @@ public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapte
     public NearbyPlacesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.nearby_places_card, parent, false);
-//        NearbyPlacesViewHolder nearbyPlacesViewHolder = new NearbyPlacesViewHolder(view);
+
         return new NearbyPlacesViewHolder(view, onNearbyPlaceListener);
     }
 
@@ -45,7 +45,6 @@ public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapte
     public void onBindViewHolder(@NonNull NearbyPlacesViewHolder holder, int position) {
         NearbyPlacesHelperClass nearbyPlacesHelperClass = nearbyPlaces.get(position);
 
-//        holder.cardLayout.setBackgroundResource(nearbyPlacesHelperClass.getImageOfPlace());
         holder.placePhoto.setImageBitmap(nearbyPlacesHelperClass.getImageOfPlace());
         holder.placeName.setText(nearbyPlacesHelperClass.getNameOfPlace());
         holder.placeRatingBar.setRating(nearbyPlacesHelperClass.getRating());

@@ -24,8 +24,4 @@ public class SelectedPlacesHelperClass {
     public Bitmap getPhotoOfSelectedPlace() {
         return photoOfSelectedPlace;
     }
-
-    public void remove(int i){
-
-    }
 }

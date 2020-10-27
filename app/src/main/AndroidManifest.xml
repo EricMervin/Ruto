@@ -20,7 +20,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/places_api_key" />
 
-        <activity android:name=".Activities.CurrentLocation" />
         <activity
             android:name=".Activities.MainDashboard"
             android:windowSoftInputMode="adjustPan"

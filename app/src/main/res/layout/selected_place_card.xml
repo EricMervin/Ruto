@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="60dp"
     android:layout_marginEnd="16dp"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="15dp"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    android:id="@+id/selectedPlaceCardView">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="12dp"
@@ -18,11 +20,9 @@
             android:id="@+id/selectedPlaceImageCard"
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:layout_centerVertical="true"
             app:cardElevation="0dp"
-            app:cardCornerRadius="9dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:cardCornerRadius="9dp">
 
             <ImageView
                 android:id="@+id/selectedPlaceImage"
@@ -43,10 +43,39 @@
             android:textSize="18sp"
             android:text="Lotus Temple"
             android:textColor="@color/colorPrimary"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/selectedPlaceImageCard"/>
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/selectedPlaceImageCard"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <FrameLayout
+            android:id="@+id/removeButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/selectedPlaceName"
+            android:layout_marginStart="6dp"
+            android:layout_centerVertical="true"
+            android:padding="6dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/circle_button_remove"
+                android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                <ImageView
+                    android:id="@+id/iconButton"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/minus_icon"
+                    app:tint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

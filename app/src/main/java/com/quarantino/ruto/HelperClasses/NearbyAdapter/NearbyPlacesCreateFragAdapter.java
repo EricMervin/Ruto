@@ -1,57 +1,56 @@
-package com.quarantino.ruto.HelperClasses.NearbyRouteAdapter;
+package com.quarantino.ruto.HelperClasses.NearbyAdapter;
 
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.R;
 
 import java.util.ArrayList;
 
-public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesRouteAdapter.NearbyPlacesRouteViewHolder> {
+public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPlacesCreateFragAdapter.NearbyPlacesCreateFragViewHolder> {
 
-    private ArrayList<NearbyPlacesRouteHelperClass> nearbyTypePlaceList;
+    private ArrayList<NearbyPlacesHelperClass> nearbyTypePlaceList;
     private OnNearbyPlaceRouteListener onNearbyPlaceRouteListener;
     Resources context;
 
-    public NearbyPlacesRouteAdapter(ArrayList<NearbyPlacesRouteHelperClass> nearbyTypePlaceList, OnNearbyPlaceRouteListener onNearbyPlaceRouteListener) {
+    public NearbyPlacesCreateFragAdapter(ArrayList<NearbyPlacesHelperClass> nearbyTypePlaceList, OnNearbyPlaceRouteListener onNearbyPlaceRouteListener) {
         this.nearbyTypePlaceList = nearbyTypePlaceList;
         this.onNearbyPlaceRouteListener = onNearbyPlaceRouteListener;
     }
 
     @NonNull
     @Override
-    public NearbyPlacesRouteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NearbyPlacesCreateFragViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_place_route_card, parent, false);
-//        NearbyPlacesRouteViewHolder nearbyPlacesRouteViewHolder = new NearbyPlacesRouteViewHolder(view);
 
         context = parent.getContext().getResources();
-        return new NearbyPlacesRouteViewHolder(view, onNearbyPlaceRouteListener);
+        return new NearbyPlacesCreateFragViewHolder(view, onNearbyPlaceRouteListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NearbyPlacesRouteViewHolder holder, int position) {
-        NearbyPlacesRouteHelperClass nearbyPlacesRouteHelperClass = nearbyTypePlaceList.get(position);
-        holder.placeName.setText(nearbyPlacesRouteHelperClass.getNameOfPlace());
-        holder.placePhoto.setImageBitmap(nearbyPlacesRouteHelperClass.getImageOfPlace());
-        holder.ratingPlace.setText(String.valueOf(nearbyPlacesRouteHelperClass.getRating()));
-        if(nearbyPlacesRouteHelperClass.getOpenNowStatus() == "true"){
+    public void onBindViewHolder(@NonNull NearbyPlacesCreateFragViewHolder holder, int position) {
+        NearbyPlacesHelperClass nearbyPlacesHelperClass = nearbyTypePlaceList.get(position);
+        holder.placeName.setText(nearbyPlacesHelperClass.getNameOfPlace());
+        holder.placePhoto.setImageBitmap(nearbyPlacesHelperClass.getImageOfPlace());
+        holder.ratingPlace.setText(String.valueOf(nearbyPlacesHelperClass.getRating()));
+
+        if(nearbyPlacesHelperClass.getOpenStatus() == "true"){
             holder.openPlace.setText("Open Now");
             holder.openPlace.setTextColor(context.getColor(R.color.checkGreen));
         } else {
             holder.openPlace.setText("Closed");
             holder.openPlace.setTextColor(context.getColor(R.color.customError));
         }
+
 //        holder.isAdded = nearbyPlacesRouteHelperClass.getPlaceAddedStatus();
 //        boolean placeIsAdd = holder.isAdded;
 //
@@ -72,19 +71,21 @@ public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesR
         return nearbyTypePlaceList.size();
     }
 
-    public static class NearbyPlacesRouteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class NearbyPlacesCreateFragViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView placeName, ratingPlace, openPlace;
         ImageView placePhoto, iconButton;
         FrameLayout addPlaceButton;
+        ConstraintLayout addPlaceButtonBackground;
         boolean isAdded = false;
         OnNearbyPlaceRouteListener onNearbyPlaceRouteListener;
 
-        public NearbyPlacesRouteViewHolder(@NonNull View itemView, final OnNearbyPlaceRouteListener onNearbyPlaceRouteListener) {
+        public NearbyPlacesCreateFragViewHolder(@NonNull View itemView, final OnNearbyPlaceRouteListener onNearbyPlaceRouteListener) {
             super(itemView);
 
             //Hooks
             addPlaceButton = itemView.findViewById(R.id.addButton);
+            addPlaceButtonBackground = itemView.findViewById(R.id.addButtonBackground);
             iconButton = itemView.findViewById(R.id.iconButton);
             placeName = itemView.findViewById(R.id.nearbyPlaceName);
             placePhoto = itemView.findViewById(R.id.nearbyPlacePhoto);
@@ -93,14 +94,15 @@ public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesR
 
             this.onNearbyPlaceRouteListener = onNearbyPlaceRouteListener;
             itemView.setOnClickListener(this);
+
             addPlaceButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(!isAdded){
-                        addPlaceButton.setBackgroundResource(R.drawable.circle_button_check);
+                        addPlaceButtonBackground.setBackgroundResource(R.drawable.circle_button_check);
                         iconButton.setImageResource(R.drawable.tick_icon);
                     } else{
-                        addPlaceButton.setBackgroundResource(R.drawable.circle_button_uncheck);
+                        addPlaceButtonBackground.setBackgroundResource(R.drawable.circle_button_uncheck);
                         iconButton.setImageResource(R.drawable.plus_icon);
                     }
                     onNearbyPlaceRouteListener.onAddPlaceRouteClick(getAdapterPosition(), isAdded);
@@ -119,6 +121,4 @@ public class NearbyPlacesRouteAdapter extends RecyclerView.Adapter<NearbyPlacesR
         void onNearbyPlaceRouteClick(int position, TextView placeName, ImageView placePhoto);
         void onAddPlaceRouteClick(int position, boolean isAdded);
     }
-
-
 }

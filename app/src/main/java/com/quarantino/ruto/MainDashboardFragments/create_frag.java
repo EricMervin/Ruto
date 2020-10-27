@@ -34,8 +34,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.quarantino.ruto.HelperClasses.JsonParser;
-import com.quarantino.ruto.HelperClasses.NearbyRouteAdapter.NearbyPlacesRouteAdapter;
-import com.quarantino.ruto.HelperClasses.NearbyRouteAdapter.NearbyPlacesRouteHelperClass;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesCreateFragAdapter;
 import com.quarantino.ruto.HelperClasses.SelectedPlacesAdapter.SelectedPlacesAdapter;
 import com.quarantino.ruto.HelperClasses.SelectedPlacesAdapter.SelectedPlacesHelperClass;
 import com.quarantino.ruto.NearbyPlaceTemplate;
@@ -56,7 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class create_frag extends Fragment implements AdapterView.OnItemClickListener, NearbyPlacesRouteAdapter.OnNearbyPlaceRouteListener {
+public class create_frag extends Fragment implements AdapterView.OnItemClickListener, NearbyPlacesCreateFragAdapter.OnNearbyPlaceRouteListener, SelectedPlacesAdapter.OnSelectedPlaceListener {
 
     private RecyclerView nearbyPlacesRecycler, selectedPlacesRecycler;
     private RecyclerView.Adapter nearbyPlacesRecyclerAdapter, selectedPlacesRecyclerAdapter;
@@ -70,7 +70,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
     FusedLocationProviderClient fusedLocationProviderClient;
 
     private ArrayList<SelectedPlacesHelperClass> selectedPlacesList = new ArrayList<>();
-    private ArrayList<NearbyPlacesRouteHelperClass> nearbyPlaces;
+    private ArrayList<NearbyPlacesHelperClass> nearbyPlaces;
 
     public create_frag() {
     }
@@ -118,7 +118,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         //Selected Places Recycler View
         selectedPlacesRecycler = view.findViewById(R.id.selectedPlaceRecycler);
         selectedPlacesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        selectedPlacesRecyclerAdapter = new SelectedPlacesAdapter(selectedPlacesList);
+        selectedPlacesRecyclerAdapter = new SelectedPlacesAdapter(selectedPlacesList, this);
         selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
         return view;
     }
@@ -242,8 +242,9 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         @Override
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
             int cnt = 0;
+            int limit = 6;
 
-            for (int i = 0; cnt < 8; i++) {
+            for (int i = 0; i < hashMaps.size(); i++) {
                 HashMap<String, String> hashMapList = hashMaps.get(i);
 
                 double placeLat, placeLong;
@@ -251,8 +252,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
                 if (hashMapList.get("lat") != null && hashMapList.get("lng") != null) {
                     placeLat = Double.parseDouble(hashMapList.get("lat"));
                     placeLong = Double.parseDouble(hashMapList.get("lng"));
-//                    Log.d("Place Lat", String.valueOf(placeLat));
-//                    Log.d("Place Long", String.valueOf(placeLong));
                 } else {
                     continue;
                 }
@@ -273,13 +272,10 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
                 String rating = hashMapList.get("rating");
                 String photoRef = hashMapList.get("photo_reference");
                 String openNow = hashMapList.get("open_now");
-
-//                Log.d("Process", "On Post Executed");
-//                Log.d("Place Id", placeId);
-//                Log.d("PhotoRef", photoRef);
+//                String cityName = hashMapList.get("city_name");
 
                 try {
-                    nearbyPlaces.add(new NearbyPlacesRouteHelperClass(new photoDownload().execute(photoRef).get(), name, openNow ,Float.parseFloat(rating), placeId, placeLat, placeLong));
+                    nearbyPlaces.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, openNow ,Float.parseFloat(rating), placeId, placeLat, placeLong));
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -287,6 +283,9 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
                 }
 
                 cnt++;
+                if(cnt >= 8){
+                    break;
+                }
             }
             nearbyPlacesRecycler();
         }
@@ -317,7 +316,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
     }
 
     private void nearbyPlacesRecycler() {
-        nearbyPlacesRecyclerAdapter = new NearbyPlacesRouteAdapter(nearbyPlaces, this);
+        nearbyPlacesRecyclerAdapter = new NearbyPlacesCreateFragAdapter(nearbyPlaces, this);
         nearbyPlacesRecycler.setAdapter(nearbyPlacesRecyclerAdapter);
         loadingDialog.dismiss();
     }
@@ -331,6 +330,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         nearbyPlaces.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 95, stream);
         byte[] byteArray = stream.toByteArray();
 
+        //Passing data to the next activity
         intent.putExtra("Name of Place", nearbyPlaces.get(position).getNameOfPlace());
         intent.putExtra("Position", position);
         intent.putExtra("Image", byteArray);
@@ -349,8 +349,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2);
 
         startActivity(intent, optionsCompat.toBundle());
-
-        Log.d("Adapter", "Row clicked");
     }
 
     @Override
@@ -370,5 +368,12 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
             }
             Log.d("Place", String.valueOf(selectedPlacesList.size()));
         }
+    }
+
+    @Override
+    public void onRemovePlaceClick(int position) {
+        selectedPlacesList.remove(position);
+        selectedPlacesRecyclerAdapter.notifyItemRemoved(position);
+        selectedPlacesRecyclerAdapter.notifyItemRangeRemoved(position, 1);
     }
 }
