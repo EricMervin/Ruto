@@ -240,7 +240,7 @@
         android:backgroundTint="@color/colorPrimary"
         android:fontFamily="@font/gothammedium"
         android:letterSpacing="-0.05"
-        android:onClick="openLogIn"
+        android:onClick="googleSignIn"
         android:padding="18dp"
         android:stateListAnimator="@null"
         android:text="Continue with Google"

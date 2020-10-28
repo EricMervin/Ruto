@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/alertAuthPhoto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="36dp"
+            android:src="@drawable/person_8" />
+
+        <TextView
+            android:id="@+id/alertAuthName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/alertAuthPhoto"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="36dp"
+            android:fontFamily="@font/gothammedium"
+            android:letterSpacing="-0.05"
+            android:text="Eric mervin"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp" />
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/alertAuthName"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="36dp">
+
+            <TextView
+                android:id="@+id/alertAuthReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:lineSpacingExtra="4dp"
+                android:maxLines="12"
+                android:scrollbars="vertical"
+                android:scrollbarSize="1dp"
+                android:paddingStart="36dp"
+                android:paddingEnd="36dp"
+                android:text="@string/obText1"
+                android:textAlignment="center"
+                android:textColor="@color/colorAccent" />
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

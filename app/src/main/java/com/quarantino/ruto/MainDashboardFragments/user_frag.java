@@ -3,6 +3,7 @@ package com.quarantino.ruto.MainDashboardFragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -10,6 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.LoginActivities.LoginScreen;
@@ -50,7 +59,16 @@ public class user_frag extends Fragment {
         preference.setIsLoggedOut(true);
         preference.setMDFirstTime(true);
 
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        GoogleSignInClient firebaseGoogleSignInClient = GoogleSignIn.getClient(getContext(), googleSignInOptions);
+        firebaseGoogleSignInClient.signOut();
+
         FirebaseAuth.getInstance().signOut();
+
         startActivity(new Intent(getContext(), LoginScreen.class));
         getActivity().finish();
     }

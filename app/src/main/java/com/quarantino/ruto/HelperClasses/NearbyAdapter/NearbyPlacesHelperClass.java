@@ -1,8 +1,9 @@
 package com.quarantino.ruto.HelperClasses.NearbyAdapter;
 
 import android.graphics.Bitmap;
+import java.io.Serializable;
 
-public class NearbyPlacesHelperClass {
+public class NearbyPlacesHelperClass implements Serializable {
 
     Bitmap imageOfPlace;
     float rating;

@@ -24,10 +24,10 @@
             app:cardCornerRadius="9dp">
 
             <ImageView
+                android:id="@+id/authPhotoImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/bg"
-                android:scaleType="centerCrop"/>
+                android:src="@drawable/person_6"/>
 
         </androidx.cardview.widget.CardView>
 
