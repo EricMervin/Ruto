@@ -18,7 +18,7 @@ import com.quarantino.ruto.R;
 public class SplashScreen extends AppCompatActivity {
 
     //Declaring variables
-    private static int screenTime = 6000;
+    private static int screenTime = 6500;
 
     Animation topAnimation;
     TextView logo;
