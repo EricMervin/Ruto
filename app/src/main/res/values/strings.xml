@@ -28,5 +28,11 @@
 
     <string name="uberClientId">Y-oWoU91f8dIguIrgOg49Tmk6f8vWoMJ</string>
     <string name="places_api_key">AIzaSyA5L81_-5d2Hy7hHsNVhodk1zS90Qu-aP8</string>
+    <string name="title_activity_itinerary">ItineraryActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 
 </resources>

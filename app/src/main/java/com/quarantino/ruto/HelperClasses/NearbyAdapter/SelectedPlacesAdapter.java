@@ -1,19 +1,14 @@
-package com.quarantino.ruto.HelperClasses.SelectedPlacesAdapter;
+package com.quarantino.ruto.HelperClasses.NearbyAdapter;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.quarantino.ruto.R;
@@ -22,11 +17,11 @@ import java.util.ArrayList;
 
 public class SelectedPlacesAdapter extends RecyclerView.Adapter<SelectedPlacesAdapter.SelectedPlacesViewHolder>{
 
-    private ArrayList<SelectedPlacesHelperClass> selectedPlacesList;
+    private ArrayList<NearbyPlacesHelperClass> selectedPlacesList;
     Context context;
     private  OnSelectedPlaceListener onSelectedPlaceListener;
 
-    public SelectedPlacesAdapter(ArrayList<SelectedPlacesHelperClass> selectedPlacesList, OnSelectedPlaceListener onSelectedPlaceListener) {
+    public SelectedPlacesAdapter(ArrayList<NearbyPlacesHelperClass> selectedPlacesList, OnSelectedPlaceListener onSelectedPlaceListener) {
         this.selectedPlacesList = selectedPlacesList;
         this.onSelectedPlaceListener = onSelectedPlaceListener;
     }
@@ -42,9 +37,9 @@ public class SelectedPlacesAdapter extends RecyclerView.Adapter<SelectedPlacesAd
 
     @Override
     public void onBindViewHolder(@NonNull SelectedPlacesViewHolder holder, int position) {
-        SelectedPlacesHelperClass selectedPlacesHelperClass = selectedPlacesList.get(position);
-        holder.nameOfPlace.setText(selectedPlacesHelperClass.getNameOfSelectedPlace());
-        holder.photoOfPlace.setImageBitmap(selectedPlacesHelperClass.getPhotoOfSelectedPlace());
+        NearbyPlacesHelperClass selectedPlacesHelperClass = selectedPlacesList.get(position);
+        holder.nameOfPlace.setText(selectedPlacesHelperClass.getNameOfPlace());
+        holder.photoOfPlace.setImageBitmap(selectedPlacesHelperClass.getImageOfPlace());
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.quarantino.ruto.HelperClasses.NearbyAdapter;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +14,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.quarantino.ruto.R;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPlacesCreateFragAdapter.NearbyPlacesCreateFragViewHolder> {
+public class NearbyPlacesItineraryAdapter extends RecyclerView.Adapter<NearbyPlacesItineraryAdapter.NearbyPlacesCreateFragViewHolder> {
 
     private ArrayList<NearbyPlacesHelperClass> nearbyTypePlaceList;
     private OnNearbyPlaceRouteListener onNearbyPlaceRouteListener;
     Resources context;
 
-    public NearbyPlacesCreateFragAdapter(ArrayList<NearbyPlacesHelperClass> nearbyTypePlaceList, OnNearbyPlaceRouteListener onNearbyPlaceRouteListener) {
+    public NearbyPlacesItineraryAdapter(ArrayList<NearbyPlacesHelperClass> nearbyTypePlaceList, OnNearbyPlaceRouteListener onNearbyPlaceRouteListener) {
         this.nearbyTypePlaceList = nearbyTypePlaceList;
         this.onNearbyPlaceRouteListener = onNearbyPlaceRouteListener;
     }
@@ -36,7 +30,7 @@ public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPl
     @NonNull
     @Override
     public NearbyPlacesCreateFragViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_place_route_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_place_itinerary_card, parent, false);
 
         context = parent.getContext().getResources();
         return new NearbyPlacesCreateFragViewHolder(view, onNearbyPlaceRouteListener);
@@ -46,7 +40,7 @@ public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPl
     public void onBindViewHolder(@NonNull NearbyPlacesCreateFragViewHolder holder, int position) {
         NearbyPlacesHelperClass nearbyPlacesHelperClass = nearbyTypePlaceList.get(position);
         holder.placeName.setText(nearbyPlacesHelperClass.getNameOfPlace());
-        holder.placePhoto.setImageBitmap(nearbyPlacesHelperClass.getImageOfPlace());
+//        holder.placePhoto.setImageBitmap(nearbyPlacesHelperClass.getImageOfPlace());
         holder.ratingPlace.setText(String.valueOf(nearbyPlacesHelperClass.getRating()));
 
         if(nearbyPlacesHelperClass.getOpenStatus() == "true"){
@@ -80,10 +74,10 @@ public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPl
     public static class NearbyPlacesCreateFragViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView placeName, ratingPlace, openPlace;
-        ImageView placePhoto, iconButton;
+        ImageView iconButton;
         FrameLayout addPlaceButton;
         ConstraintLayout addPlaceButtonBackground;
-        boolean isAdded = false;
+        boolean isAdded = true;
         OnNearbyPlaceRouteListener onNearbyPlaceRouteListener;
 
         public NearbyPlacesCreateFragViewHolder(@NonNull View itemView, final OnNearbyPlaceRouteListener onNearbyPlaceRouteListener) {
@@ -94,7 +88,7 @@ public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPl
             addPlaceButtonBackground = itemView.findViewById(R.id.addButtonBackground);
             iconButton = itemView.findViewById(R.id.iconButton);
             placeName = itemView.findViewById(R.id.nearbyPlaceName);
-            placePhoto = itemView.findViewById(R.id.nearbyPlacePhoto);
+//            placePhoto = itemView.findViewById(R.id.nearbyPlacePhoto);
             ratingPlace = itemView.findViewById(R.id.ratingOfPlace);
             openPlace = itemView.findViewById(R.id.statusOfPlace);
 
@@ -107,9 +101,6 @@ public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPl
                     if(!isAdded){
                         addPlaceButtonBackground.setBackgroundResource(R.drawable.circle_button_check);
                         iconButton.setImageResource(R.drawable.tick_icon);
-                    } else{
-                        addPlaceButtonBackground.setBackgroundResource(R.drawable.circle_button_uncheck);
-                        iconButton.setImageResource(R.drawable.plus_icon);
                     }
                     onNearbyPlaceRouteListener.onAddPlaceRouteClick(getAdapterPosition(), isAdded);
                     isAdded = !isAdded;
@@ -119,12 +110,12 @@ public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPl
 
         @Override
         public void onClick(View view) {
-            onNearbyPlaceRouteListener.onNearbyPlaceRouteClick(getAdapterPosition(), placeName, placePhoto);
+            onNearbyPlaceRouteListener.onNearbyPlaceRouteClick(getAdapterPosition(), placeName);
         }
     }
 
     public interface OnNearbyPlaceRouteListener{
-        void onNearbyPlaceRouteClick(int position, TextView placeName, ImageView placePhoto);
+        void onNearbyPlaceRouteClick(int position, TextView placeName);
         void onAddPlaceRouteClick(int position, boolean isAdded);
     }
 }
