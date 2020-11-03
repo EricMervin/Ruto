@@ -21,8 +21,6 @@ public class MapActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         selectedPlacesList = bundle.getParcelableArrayList("selectedPlaces");
 
-        for(int i = 0; i < selectedPlacesList.size(); i++){
-            Log.d("Name of Place", selectedPlacesList.get(i).getNameOfPlace());
-        }
+
     }
 }

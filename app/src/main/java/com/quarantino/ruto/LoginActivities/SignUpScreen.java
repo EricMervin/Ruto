@@ -30,7 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.quarantino.ruto.Activities.MainDashboard;
-import com.quarantino.ruto.Activities.PermissionsActivity;
+import com.quarantino.ruto.PermissionsActivity;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.UserHelperClass;
 import com.quarantino.ruto.HelperClasses.UserHelperClassFirebase;

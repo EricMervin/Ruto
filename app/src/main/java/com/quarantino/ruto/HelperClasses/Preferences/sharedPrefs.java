@@ -80,4 +80,6 @@ public class sharedPrefs {
         editor.putInt("Counter", ++counter);
         editor.commit();
     }
+
+
 }

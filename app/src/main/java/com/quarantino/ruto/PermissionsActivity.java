@@ -1,4 +1,4 @@
-package com.quarantino.ruto.Activities;
+package com.quarantino.ruto;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -20,9 +20,8 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.quarantino.ruto.Activities.MainDashboard;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
-import com.quarantino.ruto.LoginActivities.SignUpScreen;
-import com.quarantino.ruto.R;
 
 public class PermissionsActivity extends AppCompatActivity {
 
@@ -33,7 +32,7 @@ public class PermissionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
 
-        if(ContextCompat.checkSelfPermission(PermissionsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(PermissionsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             sharedPrefs sharedPrefs = new sharedPrefs(getApplicationContext());
             sharedPrefs.setPermission(false);
             startActivity(new Intent(PermissionsActivity.this, MainDashboard.class));
@@ -58,7 +57,7 @@ public class PermissionsActivity extends AppCompatActivity {
 
                             @Override
                             public void onPermissionDenied(PermissionDeniedResponse response) {
-                                if(response.isPermanentlyDenied()){
+                                if (response.isPermanentlyDenied()) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(PermissionsActivity.this);
                                     builder.setTitle("Permission Denied")
                                             .setMessage("Permission to access device location is permanently denied. you need to go to setting to allow the permission.")
