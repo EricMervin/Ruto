@@ -40,6 +40,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -120,6 +122,21 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
     }
 
     public void generateRoute(View view) {
+        ArrayList<NearbyPlacesHelperClass> selectedPlacesListComp = new ArrayList<>();
+
+        for (int i = 0; i < selectedPlacesList.size(); i++) {
+            selectedPlacesListComp.add(new NearbyPlacesHelperClass(
+                    selectedPlacesList.get(i).getNameOfPlace(),
+                    selectedPlacesList.get(i).getOpenStatus(),
+                    selectedPlacesList.get(i).getRating(),
+                    selectedPlacesList.get(i).getIdOfPlace(),
+                    selectedPlacesList.get(i).getPlaceLat(),
+                    selectedPlacesList.get(i).getPlaceLong()
+            ));
+        }
+        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+        intent.putParcelableArrayListExtra("selectedPlaces", selectedPlacesListComp);
+        startActivity(intent);
     }
 
     public void openPlace(View view) {

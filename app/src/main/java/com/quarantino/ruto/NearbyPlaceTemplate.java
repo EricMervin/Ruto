@@ -133,8 +133,6 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         nameOfPlace.setText(nameOfPlaceStr);
         photoOfPlace.setImageBitmap(imageOfPlace);
 
-//        rideRequestButton = new RideRequestButton(getApplicationContext());
-
         getPlaceDetails(idOfPlace);
     }
 

@@ -31,7 +31,7 @@ public class NearbyPlacesItineraryAdapter extends RecyclerView.Adapter<NearbyPla
     @NonNull
     @Override
     public NearbyPlacesCreateFragViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_place_route_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_place_itinerary_card, parent, false);
 
         context = parent.getContext().getResources();
         return new NearbyPlacesCreateFragViewHolder(view, onNearbyPlaceRouteListener);
@@ -51,20 +51,6 @@ public class NearbyPlacesItineraryAdapter extends RecyclerView.Adapter<NearbyPla
             holder.openPlace.setText("Closed");
             holder.openPlace.setTextColor(context.getColor(R.color.customError));
         }
-
-//        holder.isAdded = nearbyPlacesRouteHelperClass.getPlaceAddedStatus();
-//        boolean placeIsAdd = holder.isAdded;
-//
-//        if(placeIsAdd){
-//            holder.addPlaceButton.setBackgroundResource(R.drawable.circle_button_check);
-//            holder.iconButton.setImageResource(R.drawable.tick_icon);
-//        } else{
-//            holder.addPlaceButton.setBackgroundResource(R.drawable.circle_button_uncheck);
-//            holder.iconButton.setImageResource(R.drawable.plus_icon);
-//        }
-//
-//        nearbyPlacesRouteHelperClass.setPlaceAddedStatus(!holder.isAdded);
-//        holder.isAdded = nearbyPlacesRouteHelperClass.getPlaceAddedStatus();
     }
 
     @Override

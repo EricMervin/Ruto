@@ -81,7 +81,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
 
     private ArrayList<NearbyPlacesHelperClass> selectedPlacesList = new ArrayList<>();
     private ArrayList<NearbyPlacesHelperClass> nearbyPlaces;
-    private Object NearbyPlacesHelper;
 
     public create_frag() {
     }
@@ -444,8 +443,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
             }
 
             Intent intent = new Intent(getActivity(), ItineraryActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("Selected Places", selectedPlacesList);
             intent.putParcelableArrayListExtra("selectedPlaces", selectedPlacesListComp);
             startActivity(intent);
         } else {
