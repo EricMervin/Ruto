@@ -1,7 +1,5 @@
 package com.quarantino.ruto.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +7,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.LoginActivities.LoginScreen;
@@ -48,6 +48,10 @@ public class SplashScreen extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), OnBoardScreen.class);
                     startActivity(intent);
                     finish();
+                } else if(preference.getPermission()){
+                    Intent intent = new Intent(getApplicationContext(), PermissionsActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else if (preference.getIsLoggedIn()) {
                     Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
                     startActivity(intent);
@@ -61,6 +65,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
+
 
             }
         }, screenTime);

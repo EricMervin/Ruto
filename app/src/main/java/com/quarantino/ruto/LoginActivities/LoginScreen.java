@@ -1,8 +1,5 @@
 package com.quarantino.ruto.LoginActivities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +9,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
@@ -32,9 +31,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.quarantino.ruto.Activities.MainDashboard;
+import com.quarantino.ruto.Activities.PermissionsActivity;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.UserHelperClass;
-import com.quarantino.ruto.Activities.MainDashboard;
 import com.quarantino.ruto.HelperClasses.UserHelperClassFirebase;
 import com.quarantino.ruto.R;
 
@@ -175,9 +175,10 @@ public class LoginScreen extends AppCompatActivity {
                     //SharedPreferences : Login Token
                     sharedPrefs preference = new sharedPrefs(getApplicationContext());
                     preference.setIsLoggedIn(true);
+                    preference.setPermission(true);
 
                     //Start next activity
-                    Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
+                    Intent intent = new Intent(getApplicationContext(), PermissionsActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
 //                    Log.d("User Name", userName);

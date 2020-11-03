@@ -61,6 +61,16 @@ public class sharedPrefs {
         editor.commit();
     }
 
+    public boolean getPermission(){
+        return sharedPref.getBoolean("Permission Granted", true);
+    }
+
+    public void setPermission(boolean bool){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("Permission Granted", bool);
+        editor.commit();
+    }
+
     public int getCounter() {
         return sharedPref.getInt("Counter", 0);
     }
