@@ -1,6 +1,7 @@
 package com.quarantino.ruto.HelperClasses.NearbyAdapter;
 
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,7 @@ public class NearbyPlacesItineraryAdapter extends RecyclerView.Adapter<NearbyPla
     @NonNull
     @Override
     public NearbyPlacesCreateFragViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_place_itinerary_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_place_route_card, parent, false);
 
         context = parent.getContext().getResources();
         return new NearbyPlacesCreateFragViewHolder(view, onNearbyPlaceRouteListener);
@@ -40,10 +41,10 @@ public class NearbyPlacesItineraryAdapter extends RecyclerView.Adapter<NearbyPla
     public void onBindViewHolder(@NonNull NearbyPlacesCreateFragViewHolder holder, int position) {
         NearbyPlacesHelperClass nearbyPlacesHelperClass = nearbyTypePlaceList.get(position);
         holder.placeName.setText(nearbyPlacesHelperClass.getNameOfPlace());
-//        holder.placePhoto.setImageBitmap(nearbyPlacesHelperClass.getImageOfPlace());
+        holder.placePhoto.setImageBitmap(nearbyPlacesHelperClass.getImageOfPlace());
         holder.ratingPlace.setText(String.valueOf(nearbyPlacesHelperClass.getRating()));
 
-        if(nearbyPlacesHelperClass.getOpenStatus() == "true"){
+        if(nearbyPlacesHelperClass.getOpenStatus().equalsIgnoreCase("true") || nearbyPlacesHelperClass.getOpenStatus().equalsIgnoreCase(" true")){
             holder.openPlace.setText("Open Now");
             holder.openPlace.setTextColor(context.getColor(R.color.checkGreen));
         } else {
@@ -74,7 +75,7 @@ public class NearbyPlacesItineraryAdapter extends RecyclerView.Adapter<NearbyPla
     public static class NearbyPlacesCreateFragViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView placeName, ratingPlace, openPlace;
-        ImageView iconButton;
+        ImageView placePhoto, iconButton;
         FrameLayout addPlaceButton;
         ConstraintLayout addPlaceButtonBackground;
         boolean isAdded = true;
@@ -88,7 +89,7 @@ public class NearbyPlacesItineraryAdapter extends RecyclerView.Adapter<NearbyPla
             addPlaceButtonBackground = itemView.findViewById(R.id.addButtonBackground);
             iconButton = itemView.findViewById(R.id.iconButton);
             placeName = itemView.findViewById(R.id.nearbyPlaceName);
-//            placePhoto = itemView.findViewById(R.id.nearbyPlacePhoto);
+            placePhoto = itemView.findViewById(R.id.nearbyPlacePhoto);
             ratingPlace = itemView.findViewById(R.id.ratingOfPlace);
             openPlace = itemView.findViewById(R.id.statusOfPlace);
 

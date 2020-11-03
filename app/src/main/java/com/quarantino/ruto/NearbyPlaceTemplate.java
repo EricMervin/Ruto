@@ -121,6 +121,9 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         currentLong = getIntent().getDoubleExtra("Current Longitude", 0);
         placeLat = getIntent().getDoubleExtra("Latitude of Place", 0);
         placeLng = getIntent().getDoubleExtra("Longitude of Place", 0);
+
+//        openStatus.setText(getIntent().getStringExtra("Open Status"));
+
         byte[] byteArray = getIntent().getExtras().getByteArray("Image");
         Bitmap imageOfPlace = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
@@ -296,10 +299,9 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
                 phoneNumber.setText(contactDetails);
             }
 
-
             String open_now = hashMapList.get("open_now");
             if (open_now != null) {
-                if (open_now == "true")
+                if (open_now.equalsIgnoreCase("true") || open_now.equalsIgnoreCase(" true"))
                     openStatus.setText("Open Now");
                 else
                     openStatus.setText("Closed Now");

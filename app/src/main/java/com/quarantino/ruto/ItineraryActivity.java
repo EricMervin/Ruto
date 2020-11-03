@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -17,6 +19,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,13 +37,17 @@ import com.quarantino.ruto.HelperClasses.NearbyAdapter.SelectedPlacesAdapter;
 import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewAdapter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class ItineraryActivity extends AppCompatActivity implements NearbyPlacesItineraryAdapter.OnNearbyPlaceRouteListener{
 
     private RecyclerView selectedPlacesRecycler;
     private RecyclerView.Adapter selectedPlacesRecyclerAdapter;
-//    private ArrayList<NearbyPlacesHelperClass> selectedPlacesListNoImage = new ArrayList<>();
+    private ArrayList<NearbyPlacesHelperClass> selectedPlacesListNoImage = new ArrayList<>();
     private ArrayList<NearbyPlacesHelperClass> selectedPlacesList = new ArrayList<>();
 
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -53,7 +60,7 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
         setContentView(R.layout.activity_itinerary);
 
         Bundle bundle = getIntent().getExtras();
-        selectedPlacesList = bundle.getParcelableArrayList("selectedPlaces");
+        selectedPlacesListNoImage = bundle.getParcelableArrayList("selectedPlaces");
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -62,17 +69,30 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
 
-//        for(int i = 0; i < selectedPlacesListNoImage.size(); i++){
-//            selectedPlacesList.add(new NearbyPlacesHelperClass(
-//                    BitmapFactory.decodeResource(getResources(), R.drawable.bg),
-//                    selectedPlacesListNoImage.get(i).getNameOfPlace(),
-//                    selectedPlacesListNoImage.get(i).getOpenStatus(),
-//                    selectedPlacesListNoImage.get(i).getRating(),
-//                    selectedPlacesListNoImage.get(i).getIdOfPlace(),
-//                    selectedPlacesListNoImage.get(i).getPlaceLat(),
-//                    selectedPlacesListNoImage.get(i).getPlaceLong()
-//            ));
-//        }
+        for(int i = 0; i < selectedPlacesListNoImage.size(); i++){
+
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            String filePath = directory.getAbsolutePath();
+            File myPath = new File(filePath, selectedPlacesListNoImage.get(i).getIdOfPlace() + ".jpg");
+
+            Bitmap bitmapPlace = null;
+            try {
+                bitmapPlace = BitmapFactory.decodeStream(new FileInputStream(myPath));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            selectedPlacesList.add(new NearbyPlacesHelperClass(
+                    bitmapPlace,
+                    selectedPlacesListNoImage.get(i).getNameOfPlace(),
+                    selectedPlacesListNoImage.get(i).getOpenStatus(),
+                    selectedPlacesListNoImage.get(i).getRating(),
+                    selectedPlacesListNoImage.get(i).getIdOfPlace(),
+                    selectedPlacesListNoImage.get(i).getPlaceLat(),
+                    selectedPlacesListNoImage.get(i).getPlaceLong()
+            ));
+        }
 
         selectedPlacesRecycler = findViewById(R.id.itineraryRecycler);
         selectedPlacesRecycler.setHasFixedSize(true);
@@ -111,17 +131,15 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
         Intent intent = new Intent(this, NearbyPlaceTemplate.class);
 
         //Converting the photo of place to byte array
-        Resources res = getResources();
-        Drawable drawable = res.getDrawable(R.drawable.bg);
-        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        selectedPlacesList.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 95, stream);
         byte[] byteArray = stream.toByteArray();
 
         //Passing data to the next activity
         intent.putExtra("Name of Place", selectedPlacesList.get(position).getNameOfPlace());
         intent.putExtra("Position", position);
         intent.putExtra("Image", byteArray);
+        intent.putExtra("Open Status", selectedPlacesList.get(position).getOpenStatus());
         intent.putExtra("Current Latitude", userCurrentLat);
         intent.putExtra("Current Longitude", userCurrentLong);
         intent.putExtra("Latitude of Place", selectedPlacesList.get(position).getPlaceLat());

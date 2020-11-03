@@ -3,14 +3,16 @@ package com.quarantino.ruto.MainDashboardFragments;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,9 +37,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.quarantino.ruto.HelperClasses.JsonParser;
-import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesCreateFragAdapter;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.SelectedPlacesAdapter;
+import com.quarantino.ruto.HelperClasses.UserHelperClass;
 import com.quarantino.ruto.ItineraryActivity;
 import com.quarantino.ruto.NearbyPlaceTemplate;
 import com.quarantino.ruto.R;
@@ -46,11 +49,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -64,6 +70,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
     private RecyclerView.Adapter nearbyPlacesRecyclerAdapter, selectedPlacesRecyclerAdapter;
     private AutoCompleteTextView autoCompleteTextView;
     private TextView continueToItinerary;
+    private OutputStream outputStream;
 
     private String[] placesArr = {"Restaurant", "Museum", "Cafe", "Airport", "Library"};
 
@@ -106,7 +113,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         } else {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
-
 
 
         nearbyPlacesRecycler = view.findViewById(R.id.nearbyPlacesOptRecycler);
@@ -278,7 +284,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
                         placeExists = true;
                     }
                 }
-                if(placeExists){
+                if (placeExists) {
                     continue;
                 }
 
@@ -289,7 +295,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
 //                String cityName = hashMapList.get("city_name");
 
                 try {
-                    nearbyPlaces.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, openNow ,Float.parseFloat(rating), placeId, placeLat, placeLong));
+                    nearbyPlaces.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, openNow, Float.parseFloat(rating), placeId, placeLat, placeLong));
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -297,7 +303,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
                 }
 
                 cnt++;
-                if(cnt >= 8){
+                if (cnt >= 8) {
                     break;
                 }
             }
@@ -377,6 +383,8 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
                     nearbyPlaces.get(position).getPlaceLat(),
                     nearbyPlaces.get(position).getPlaceLong()));
 
+            Log.d(nearbyPlaces.get(position).getNameOfPlace(), nearbyPlaces.get(position).getOpenStatus());
+
             selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
         } else {
             String idToBeDeleted = nearbyPlaces.get(position).getIdOfPlace();
@@ -399,28 +407,49 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         selectedPlacesRecyclerAdapter.notifyItemRangeRemoved(position, 1);
     }
 
-    public void continueToItinerary(){
-        ArrayList<NearbyPlacesHelperClass> selectedPlacesListComp = new ArrayList<>();
+    public void continueToItinerary() {
+        if (selectedPlacesList.size() != 0) {
+            ArrayList<NearbyPlacesHelperClass> selectedPlacesListComp = new ArrayList<>();
 
-        for(int i = 0; i < selectedPlacesList.size(); i++){
-//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//            selectedPlacesList.get(i).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 50, stream);
-//            Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(stream.toByteArray()));
+            for (int i = 0; i < selectedPlacesList.size(); i++) {
+                Bitmap bitmapImage = selectedPlacesList.get(i).getImageOfPlace();
 
-            selectedPlacesListComp.add(new NearbyPlacesHelperClass(
-                    selectedPlacesList.get(i).getNameOfPlace(),
-                    selectedPlacesList.get(i).getOpenStatus(),
-                    selectedPlacesList.get(i).getRating(),
-                    selectedPlacesList.get(i).getIdOfPlace(),
-                    selectedPlacesList.get(i).getPlaceLat(),
-                    selectedPlacesList.get(i).getPlaceLong()
-            ));
-        }
+                ContextWrapper cw = new ContextWrapper(getContext());
+                File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+                File myPath = new File(directory, selectedPlacesList.get(i).getIdOfPlace() + ".jpg");
 
-        Intent intent = new Intent(getActivity(), ItineraryActivity.class);
+                FileOutputStream fos = null;
+
+                try {
+                    fos = new FileOutputStream(myPath);
+                    bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                selectedPlacesListComp.add(new NearbyPlacesHelperClass(
+                        selectedPlacesList.get(i).getNameOfPlace(),
+                        selectedPlacesList.get(i).getOpenStatus(),
+                        selectedPlacesList.get(i).getRating(),
+                        selectedPlacesList.get(i).getIdOfPlace(),
+                        selectedPlacesList.get(i).getPlaceLat(),
+                        selectedPlacesList.get(i).getPlaceLong()
+                ));
+            }
+
+            Intent intent = new Intent(getActivity(), ItineraryActivity.class);
 //        Bundle bundle = new Bundle();
 //        bundle.putSerializable("Selected Places", selectedPlacesList);
-        intent.putParcelableArrayListExtra("selectedPlaces", selectedPlacesListComp);
-        startActivity(intent);
+            intent.putParcelableArrayListExtra("selectedPlaces", selectedPlacesListComp);
+            startActivity(intent);
+        } else {
+            Log.d("Continue", "False");
+        }
     }
 }
