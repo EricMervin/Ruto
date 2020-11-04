@@ -1,57 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightGrey"
+    android:background="@color/white"
     tools:context=".PermissionsActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="32dp"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/gothammedium"
-            android:letterSpacing="-0.025"
-            android:text="Permission Request"
-            android:textColor="@color/colorPrimary"
-            android:textSize="33sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:fontFamily="@font/gothamregular"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="2dp"
-            android:letterSpacing="-0.025"
-            android:text="Places Project needs permission to access device location to provide required services. Please allow the permission to avail location services."
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/logInBtn"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/headingPermission"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
-        android:backgroundTint="@color/colorPrimary"
+        android:fontFamily="@font/gothammedium"
+        android:letterSpacing="-0.05"
+        android:text="Permission Request"
+        android:textColor="@color/colorPrimary"
+        android:textSize="63sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/permissionText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="@font/gothamregular"
+        android:gravity="left"
+        android:letterSpacing="-0.025"
+        android:lineSpacingExtra="8dp"
+        android:text="Places Project needs permission to access device location to provide required services. Please allow the permission to avail location services."
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headingPermission"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="54dp"
+        android:src="@drawable/person_8"
+        app:layout_constraintBottom_toTopOf="@id/permissionBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/permissionText" />
+
+    <Button
+        android:id="@+id/permissionBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="48dp"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:fontFamily="@font/gothammedium"
         android:letterSpacing="-0.05"
         android:padding="18dp"
@@ -61,8 +71,8 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         app:cornerRadius="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_alignParentBottom="true"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

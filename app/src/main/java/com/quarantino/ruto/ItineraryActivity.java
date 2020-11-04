@@ -136,7 +136,10 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
         }
         Intent intent = new Intent(getApplicationContext(), MapActivity.class);
         intent.putParcelableArrayListExtra("selectedPlaces", selectedPlacesListComp);
+        intent.putExtra("Current Latitude", userCurrentLat);
+        intent.putExtra("Current Longitude", userCurrentLong);
         startActivity(intent);
+        finish();
     }
 
     public void openPlace(View view) {
