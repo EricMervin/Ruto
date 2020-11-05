@@ -11,8 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -36,24 +34,10 @@ import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewAdapter;
 import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewHelperClass;
 import com.uber.sdk.android.core.Deeplink;
 import com.uber.sdk.android.core.UberSdk;
-import com.uber.sdk.android.core.auth.AccessTokenManager;
-import com.uber.sdk.android.rides.RequestDeeplink;
 import com.uber.sdk.android.rides.RideParameters;
-import com.uber.sdk.android.rides.RideRequestActivityBehavior;
-import com.uber.sdk.android.rides.RideRequestButton;
-import com.uber.sdk.core.auth.AccessToken;
+import com.uber.sdk.android.rides.RideRequestDeeplink;
 import com.uber.sdk.core.auth.Scope;
 import com.uber.sdk.core.client.SessionConfiguration;
-import com.uber.sdk.rides.client.UberRidesApi;
-import com.uber.sdk.rides.client.error.ApiError;
-import com.uber.sdk.rides.client.error.ErrorParser;
-import com.uber.sdk.rides.client.model.Product;
-import com.uber.sdk.rides.client.model.Ride;
-import com.uber.sdk.rides.client.model.RideEstimate;
-import com.uber.sdk.rides.client.model.RideRequestParameters;
-import com.uber.sdk.rides.client.model.UserProfile;
-import com.uber.sdk.rides.client.services.RidesService;
-import com.uber.sdk.android.rides.RideRequestDeeplink;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,15 +48,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-
-import retrofit2.Response;
 
 public class NearbyPlaceTemplate extends AppCompatActivity {
 
@@ -85,14 +64,14 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
 
     private RecyclerView reviewRecycler;
     private RecyclerView.Adapter reviewRecyclerAdapter;
-    private ArrayList<ReviewHelperClass> reviewOfPlace = new ArrayList<>();
+    private final ArrayList<ReviewHelperClass> reviewOfPlace = new ArrayList<>();
 
-    private TextView nameOfPlace, openStatus, phoneNumber;
+    private TextView nameOfPlace, openStatus, phoneNumber, cityOfPlace;
     private RatingBar ratingOfPlace;
     private ImageView photoOfPlace;
 //    private RideRequestButton rideRequestButton;
 
-    private String nameOfPlaceStr, cityOfPlace;
+    private String nameOfPlaceStr, cityPlace;
     private float ratingOfPlaceVal;
     private double placeLat, placeLng, currentLat, currentLong;
 
@@ -107,6 +86,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         nameOfPlace = findViewById(R.id.placeName);
         ratingOfPlace = findViewById(R.id.placeRating);
         photoOfPlace = findViewById(R.id.placeImage);
+        cityOfPlace = findViewById(R.id.cityOfPlace);
 
         reviewRecycler = findViewById(R.id.reviewRecycler);
         reviewRecycler.setHasFixedSize(true);
@@ -137,38 +117,38 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
     }
 
     private void drawMap() {
-            supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    map = googleMap;
-                    map.clear();
-                    map.getUiSettings().setScrollGesturesEnabled(false);
-                    map.getUiSettings().setZoomGesturesEnabled(false);
-                    map.getUiSettings().setZoomControlsEnabled(false);
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                map.clear();
+                map.getUiSettings().setScrollGesturesEnabled(false);
+                map.getUiSettings().setZoomGesturesEnabled(false);
+                map.getUiSettings().setZoomControlsEnabled(false);
 
-                    try {
-                        boolean success = googleMap.setMapStyle(
-                                MapStyleOptions.loadRawResourceStyle(
-                                        getApplicationContext(), R.raw.mapstyle));
-                        if (!success) {
-                            Log.d("Map Error", "Style parsing failed.");
-                        }
-                    } catch (Resources.NotFoundException e) {
-                        Log.d("Map Error", "Can't find style. Error: ", e);
+                try {
+                    boolean success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    getApplicationContext(), R.raw.mapstyle));
+                    if (!success) {
+                        Log.d("Map Error", "Style parsing failed.");
                     }
-
-                    LatLng latLng = new LatLng(placeLat, placeLng);
-                    MarkerOptions options = new MarkerOptions().position(latLng)
-                            .title(nameOfPlaceStr).icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker));
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(placeLat, placeLng), 12
-                    ));
-                    map.addMarker(options);
+                } catch (Resources.NotFoundException e) {
+                    Log.d("Map Error", "Can't find style. Error: ", e);
                 }
-            });
+
+                LatLng latLng = new LatLng(placeLat, placeLng);
+                MarkerOptions options = new MarkerOptions().position(latLng)
+                        .title(nameOfPlaceStr).icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(placeLat, placeLng), 12
+                ));
+                map.addMarker(options);
+            }
+        });
     }
 
-    private BitmapDescriptor bitmapFromVector(Context context, int vectorResId){
+    private BitmapDescriptor bitmapFromVector(Context context, int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
 
@@ -216,7 +196,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
 
             rideParameters = new RideParameters.Builder()
                     .setPickupToMyLocation()
-                    .setDropoffLocation(placeLat, placeLng, cityOfPlace, "Place Address")
+                    .setDropoffLocation(placeLat, placeLng, cityPlace, "Place Address")
                     .build();
 
             configuration = new SessionConfiguration.Builder()
@@ -290,10 +270,17 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
             HashMap<String, String> hashMapList = hashMaps.get(0);
 
             String name = hashMapList.get("name");
-            cityOfPlace = hashMapList.get("city_place");
+            cityPlace = hashMapList.get("city_place");
+
+            if (cityPlace != null) {
+                cityOfPlace.setText(cityPlace);
+            } else {
+//                findViewById(R.id.locationIcon).setVisibility(View.INVISIBLE);
+                cityOfPlace.setText("Unavailable");
+            }
 
             String contactDetails = hashMapList.get("contact");
-            if(contactDetails != null){
+            if (contactDetails != null) {
                 phoneNumber.setText(contactDetails);
             }
 

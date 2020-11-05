@@ -13,8 +13,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.quarantino.ruto.HelperClasses.SliderAdapter;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
+import com.quarantino.ruto.HelperClasses.SliderAdapter;
 import com.quarantino.ruto.LoginActivities.LoginScreen;
 import com.quarantino.ruto.LoginActivities.SignUpScreen;
 import com.quarantino.ruto.R;
@@ -27,7 +27,7 @@ public class OnBoardScreen extends AppCompatActivity {
     SliderAdapter sliderAdapter;
     TextView[] obSliderDots;
 
-    Button lgsButton, signButton, skipButton, nextButton;
+    Button lgsButton, signButton, skipButton, nextButton, backButton;
 
     // Animations
     Animation animation;
@@ -43,10 +43,12 @@ public class OnBoardScreen extends AppCompatActivity {
         // Hooks
         viewPager = findViewById(R.id.obSlider);
         dotsLayout = findViewById(R.id.obDots);
-        lgsButton = findViewById(R.id.obLgsBtn);
-        signButton = findViewById(R.id.obSignBtn);
+        lgsButton = findViewById(R.id.continueBtn);
+//        signButton = findViewById(R.id.obSignBtn);
         skipButton = findViewById(R.id.obSkipBtn);
         nextButton = findViewById(R.id.obNextBtn);
+        backButton = findViewById(R.id.obBackBtn);
+        backButton.setVisibility(View.INVISIBLE);
 
         //Adapter
         sliderAdapter = new SliderAdapter(this);
@@ -62,6 +64,10 @@ public class OnBoardScreen extends AppCompatActivity {
 
     public void nextSlide(View view) {
         viewPager.setCurrentItem(currentSlidePosition + 1);
+    }
+
+    public void previousSlide(View view) {
+        viewPager.setCurrentItem(currentSlidePosition - 1);
     }
 
     private void sliderDots(int position) {
@@ -102,7 +108,15 @@ public class OnBoardScreen extends AppCompatActivity {
                 lgsButton.setVisibility(View.VISIBLE);
                 skipButton.setVisibility(View.INVISIBLE);
                 nextButton.setVisibility(View.INVISIBLE);
+                backButton.setVisibility(View.VISIBLE);
+            } else if(position == 1){
+                backButton.setVisibility(View.VISIBLE);
+                signButton.setVisibility(View.INVISIBLE);
+                lgsButton.setVisibility(View.INVISIBLE);
+                skipButton.setVisibility(View.VISIBLE);
+                nextButton.setVisibility(View.VISIBLE);
             } else {
+                backButton.setVisibility(View.INVISIBLE);
                 signButton.setVisibility(View.INVISIBLE);
                 lgsButton.setVisibility(View.INVISIBLE);
                 skipButton.setVisibility(View.VISIBLE);

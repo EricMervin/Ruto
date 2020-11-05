@@ -72,7 +72,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
     private TextView continueToItinerary;
     private OutputStream outputStream;
 
-    private String[] placesArr = {"Restaurant", "Museum", "Cafe", "Airport", "Library"};
+    private String[] placesArr = {"Restaurant", "Museum", "Cafe", "Airport", "Library", "Bank", "Church", "Gym"};
 
     private ProgressDialog loadingDialog;
     private double userCurrentLat = 0, userCurrentLong = 0;
@@ -124,13 +124,13 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         autoCompleteTextView.setAdapter(adapter);
         autoCompleteTextView.invalidate();
 
-        autoCompleteTextView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                autoCompleteTextView.showDropDown();
-                return false;
-            }
-        });
+//        autoCompleteTextView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                autoCompleteTextView.showDropDown();
+//                return false;
+//            }
+//        });
 
         autoCompleteTextView.setOnItemClickListener(this);
 

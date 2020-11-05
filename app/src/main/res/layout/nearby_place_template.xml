@@ -35,6 +35,23 @@
                     android:background="@drawable/card_image_overlay"
                     android:transitionName="nearbyImageOverlayAnim" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="32dp"
+                    android:drawableStart="@drawable/back_arrow"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/white"
+                    android:fontFamily="@font/gothammedium"
+                    android:gravity="center_vertical"
+                    android:onClick="goBack"
+                    android:text="Back"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,21 +60,54 @@
                     android:padding="16dp"
                     android:paddingStart="24dp">
 
-                    <TextView
-                        android:id="@+id/placeName"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="21dp"
                         android:layout_toStartOf="@+id/placeRating"
-                        android:fontFamily="@font/gothammedium"
-                        android:letterSpacing="-0.05"
-                        android:lineSpacingExtra="6dp"
-                        android:text="@string/appName"
-                        android:textColor="@color/white"
-                        android:textSize="33sp"
-                        android:transitionName="nearbyTitleAnim" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/placeName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="21dp"
+                            android:fontFamily="@font/gothammedium"
+                            android:letterSpacing="-0.05"
+                            android:lineSpacingExtra="6dp"
+                            android:text="@string/appName"
+                            android:textColor="@color/white"
+                            android:textSize="36sp"
+                            android:transitionName="nearbyTitleAnim" />
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp">
+
+                            <ImageView
+                                android:id="@+id/locationIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/location_icon" />
+
+                            <TextView
+                                android:id="@+id/cityOfPlace"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@id/locationIcon"
+                                android:fontFamily="@font/gothamregular"
+                                android:text="Noida"
+                                android:textColor="#77FFFFFF"
+                                android:textSize="16sp" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
 
                     <RatingBar
                         android:id="@+id/placeRating"
@@ -252,20 +302,6 @@
 
     </ScrollView>
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
-        android:fontFamily="@font/gothammedium"
-        android:onClick="goBack"
-        android:text="Go Back"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
-
     <RelativeLayout
         android:id="@+id/uberSection"
         android:layout_width="match_parent"
@@ -313,7 +349,7 @@
                 android:onClick="bookmarkPlace"
                 android:stateListAnimator="@null"
                 app:cornerRadius="12dp"
-                app:icon="@drawable/abc_vector_test"
+                app:icon="@drawable/back_arrow"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
                 app:layout_constraintBottom_toBottomOf="@id/bookUberBtn"

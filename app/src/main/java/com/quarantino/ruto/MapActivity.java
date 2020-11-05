@@ -112,13 +112,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private String getUrl(String directionMode) {
         String strOrigin = "origin=" + currentLat + "," + currentLong;
-        String strDest = "destination=" + currentLat+2 + "," + currentLong+2;
+        String strDest = "destination=" + selectedPlacesList.get(selectedPlacesList.size() - 1).getPlaceLat() + "," + selectedPlacesList.get(selectedPlacesList.size() - 1).getPlaceLong();
         String mode = "mode=" + directionMode;
 
         String waypoints = "";
-        for (int i = 0; i < selectedPlacesList.size(); i++) {
+        for (int i = 0; i < selectedPlacesList.size()-1; i++) {
             if (i == 0)
-                waypoints = "waypoints=optimize:true|";
+                waypoints = "waypoints=optimize:false|";
             if (i == selectedPlacesList.size() - 1) {
                 waypoints += selectedPlacesList.get(i).getPlaceLat() + "," + selectedPlacesList.get(i).getPlaceLong();
             } else {

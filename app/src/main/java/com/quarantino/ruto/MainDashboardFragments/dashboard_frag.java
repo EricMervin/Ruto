@@ -478,12 +478,12 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
         String restaurantUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
-                "&radius=15000" + "&type=" + "restaurant" +
+                "&radius=8000" + "&type=" + "restaurant" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
         String shoppingMallUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
-                "&radius=15000" + "&type=" + "museum" +
+                "&radius=12000" + "&type=" + "shopping_mall" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
         Log.d("Json URL", shoppingMallUrl);

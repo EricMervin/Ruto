@@ -94,7 +94,7 @@
                 android:onClick="openPlace"
                 android:stateListAnimator="@null"
                 app:cornerRadius="12dp"
-                app:icon="@drawable/abc_vector_test"
+                app:icon="@drawable/back_arrow"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
                 app:layout_constraintBottom_toBottomOf="@id/generateRouteBtn"

@@ -17,9 +17,9 @@ public class SliderAdapter extends PagerAdapter {
     Context context;
     LayoutInflater layoutInflater;
     int[] images = {
-            R.drawable.illustration_1,
-            R.drawable.illustration_2,
-            R.drawable.illustration_1
+            R.drawable.onboarding_1,
+            R.drawable.onboarding_2,
+            R.drawable.onboarding_3
     };
     int[] titles = {
             R.string.obTitle1, R.string.obTitle2, R.string.obTitle3
@@ -52,6 +52,8 @@ public class SliderAdapter extends PagerAdapter {
         ImageView image = view.findViewById(R.id.obSliderImage);
         TextView obTitle = view.findViewById(R.id.obSliderTitle);
         TextView obDes = view.findViewById(R.id.obSliderDes);
+        View opacity = view.findViewById(R.id.opacity);
+        opacity.getBackground().setAlpha(124);
 
         image.setImageResource(images[position]);
         obTitle.setText(titles[position]);

@@ -11,14 +11,10 @@
         android:id="@+id/obSlider"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </androidx.viewpager.widget.ViewPager>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/obSkipBtn"
@@ -27,10 +23,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:drawableRight="@drawable/skip_btn"
+        android:drawableTint="@color/white"
         android:fontFamily="@font/gothambold"
-        android:letterSpacing=".1"
+        android:letterSpacing="-0.02"
         android:onClick="skipSlide"
         android:text="@string/skipBtn"
+        android:textColor="@color/white"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,75 +37,130 @@
         android:id="@+id/obBtnPanel"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/obLgsBtn"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/obSignBtn"
-            android:layout_marginBottom="0dp"
-            android:backgroundTint="@color/white"
-            android:fontFamily="@font/gothammedium"
-            android:letterSpacing=".1"
-            android:padding="12dp"
-            android:stateListAnimator="@null"
-            android:text="@string/lgsBtn"
-            android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:visibility="invisible"
-            android:onClick="openLogIn"/>
+<!--        <Button-->
+<!--            android:id="@+id/obLgsBtn"-->
+<!--            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_above="@+id/obSignBtn"-->
+<!--            android:layout_marginBottom="0dp"-->
+<!--            android:backgroundTint="@color/white"-->
+<!--            android:fontFamily="@font/gothammedium"-->
+<!--            android:letterSpacing=".1"-->
+<!--            android:onClick="openLogIn"-->
+<!--            android:padding="12dp"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            android:text="@string/lgsBtn"-->
+<!--            android:textAllCaps="true"-->
+<!--            android:textColor="@color/colorPrimary"-->
+<!--            android:textSize="14sp"-->
+<!--            android:visibility="invisible" />-->
 
-        <Button
-            android:id="@+id/obSignBtn"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/obNextBtn"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:fontFamily="@font/gothambold"
-            android:letterSpacing=".1"
-            android:padding="12dp"
-            android:text="@string/sUpBtn"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:visibility="invisible"
-            android:onClick="openSignUp"/>
+<!--        <Button-->
+<!--            android:id="@+id/obSignBtn"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_above="@+id/obNextBtn"-->
+<!--            android:layout_marginStart="30dp"-->
+<!--            android:layout_marginEnd="30dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:backgroundTint="@color/colorPrimaryDark"-->
+<!--            android:fontFamily="@font/gothammedium"-->
+<!--            android:letterSpacing="-0.05"-->
+<!--            android:onClick="openSignUp"-->
+<!--            android:padding="18dp"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            android:text="Sign Up"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="18sp"-->
+<!--            android:visibility="invisible"-->
+<!--            app:cornerRadius="9dp" />-->
 
         <LinearLayout
             android:id="@+id/obDots"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginStart="0dp"
-            android:orientation="horizontal"
             android:layout_marginBottom="30dp"
-            android:padding="0dp"/>
+            android:orientation="horizontal"
+            android:padding="0dp"
+            android:visibility="invisible" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/obNextBtn"
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="54dp"
+            android:backgroundTint="@color/white"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:onClick="nextSlide"
+            android:stateListAnimator="@null"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/forward_arrow"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="@color/colorPrimary" />
 
         <Button
-            android:id="@+id/obNextBtn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:paddingEnd="-3dp"
+            android:id="@+id/continueBtn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_height="57dp"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="30dp"
-            android:drawableEnd="@drawable/next_btn"
-            android:fontFamily="@font/gothambold"
-            android:letterSpacing=".1"
-            android:onClick="nextSlide"
-            android:visibility="visible"
-            android:text="@string/nextBtn" />
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="54dp"
+            android:backgroundTint="@color/white"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:onClick="openSignUp"
+            android:stateListAnimator="@null"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="@font/gothammedium"
+            android:letterSpacing="-0.025"
+            android:textAllCaps="false"
+            app:cornerRadius="12dp"
+            android:drawableEnd="@drawable/forward_arrow"
+            app:iconPadding="2dp"
+            android:textSize="16sp"
+            android:text="Continue"
+            android:visibility="invisible"
+            app:iconTint="@color/colorPrimary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/obBackBtn"
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="54dp"
+            android:backgroundTint="@color/white"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:onClick="previousSlide"
+            android:stateListAnimator="@null"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/back_arrow"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="@color/colorPrimary" />
 
     </RelativeLayout>
 
