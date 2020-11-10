@@ -1,18 +1,18 @@
 package com.quarantino.ruto.MainDashboardFragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,13 +22,18 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,11 +41,11 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.quarantino.ruto.HelperClasses.JsonParser;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesCreateFragAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.SelectedPlacesAdapter;
-import com.quarantino.ruto.HelperClasses.UserHelperClass;
 import com.quarantino.ruto.ItineraryActivity;
 import com.quarantino.ruto.NearbyPlaceTemplate;
 import com.quarantino.ruto.R;
@@ -51,15 +56,14 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -70,7 +74,9 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
     private RecyclerView.Adapter nearbyPlacesRecyclerAdapter, selectedPlacesRecyclerAdapter;
     private AutoCompleteTextView autoCompleteTextView;
     private TextView continueToItinerary;
-    private OutputStream outputStream;
+    private Button filterButton;
+    private String placeTypeSelected;
+    private int searchRadius = 15000;
 
     private String[] placesArr = {"Restaurant", "Museum", "Cafe", "Airport", "Library", "Bank", "Church", "Gym"};
 
@@ -90,6 +96,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,34 +120,156 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
 
-
         nearbyPlacesRecycler = view.findViewById(R.id.nearbyPlacesOptRecycler);
         nearbyPlacesRecycler.setHasFixedSize(true);
         nearbyPlacesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.custom_row, placesArr);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.custom_row, placesArr);
         autoCompleteTextView.setThreshold(0);
         autoCompleteTextView.setDropDownVerticalOffset(9);
         autoCompleteTextView.setAdapter(adapter);
         autoCompleteTextView.invalidate();
 
-//        autoCompleteTextView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                autoCompleteTextView.showDropDown();
-//                return false;
-//            }
-//        });
+        autoCompleteTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                autoCompleteTextView.showDropDown();
+                return false;
+            }
+        });
 
         autoCompleteTextView.setOnItemClickListener(this);
+
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+        bottomSheetDialog.setCanceledOnTouchOutside(false);
+        bottomSheetDialog.setDismissWithAnimation(true);
+
+        View bottomSheetView = inflater.inflate(R.layout.radius_bottom_sheet, null);
+        final TextView seekBarVal = bottomSheetView.findViewById(R.id.radiusValText);
+
+        Button cancelBottomSheet = bottomSheetView.findViewById(R.id.cancelValBtn);
+        cancelBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.cancel();
+            }
+        });
+
+        Button changeRadiusBottomSheet = bottomSheetView.findViewById(R.id.changeValBtn);
+        changeRadiusBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchRadius = Integer.parseInt(String.valueOf(seekBarVal.getText()));
+                bottomSheetDialog.cancel();
+                if (placeTypeSelected != null)
+                    getNearbyPlaces(userCurrentLat, userCurrentLong, placeTypeSelected);
+
+                bottomSheetDialog.cancel();
+            }
+        });
+
+        final SeekBar seek = bottomSheetView.findViewById(R.id.radiusSeekBar);
+        seek.setProgress(40);
+        seek.incrementProgressBy(2);
+        seek.setMax(100);
+
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @SuppressLint("DefaultLocale")
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                seekBarVal.setText(String.format("%d km", i * 300));
+                Log.d("Radius Value", String.valueOf(i));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        filterButton = view.findViewById(R.id.radiusButton);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
+
+//        filterButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+//                bottomSheetDialog.setContentView(R.layout.radius_bottom_sheet);
+//
+//                final TextView title= bottomSheetDialog.findViewById(R.id.titleBottomSheet);
+//
+//                SeekBar seek = bottomSheetDialog.findViewById(R.id.radiusSeekBar);
+//                seek.setProgress(12000);
+//                seek.incrementProgressBy(500);
+//                seek.setMax(21000);
+//
+//                seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//                    @Override
+//                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+//                        i = i / 10;
+//                        i = i * 10;
+//                        Log.d("Radius Value", String.valueOf(i));
+//                        title.setText(String.valueOf(i));
+//                    }
+//
+//                    @Override
+//                    public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//                    }
+//                });
+//
+//                bottomSheetDialog.setCanceledOnTouchOutside(false);
+//                bottomSheetDialog.setDismissWithAnimation(true);
+//                bottomSheetDialog.show();
+//            }
+//        });
 
         //Selected Places Recycler View
         selectedPlacesRecycler = view.findViewById(R.id.selectedPlaceRecycler);
         selectedPlacesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         selectedPlacesRecyclerAdapter = new SelectedPlacesAdapter(selectedPlacesList, this);
         selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(selectedPlacesRecycler);
+
         return view;
     }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder,
+                              @NonNull RecyclerView.ViewHolder target) {
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+
+            Collections.swap(selectedPlacesList, fromPosition, toPosition);
+            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
 
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -167,7 +296,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
 
         String placeUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
-                "&radius=15000" + "&type=" + placeType +
+                "&radius=" + searchRadius + "&type=" + placeType +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
         Log.d("Json URL", placeUrl);
@@ -182,7 +311,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        String placeTypeSelected = adapterView.getItemAtPosition(i).toString().toLowerCase();
+        placeTypeSelected = adapterView.getItemAtPosition(i).toString().toLowerCase();
         closeKeyboard();
         getNearbyPlaces(userCurrentLat, userCurrentLong, placeTypeSelected);
     }
@@ -195,6 +324,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class nearbyPlaceTask extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -222,7 +352,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         StringBuilder builder = new StringBuilder();
-        String line = "";
+        String line;
 
         while ((line = reader.readLine()) != null) {
             builder.append(line);
@@ -237,6 +367,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         return data;
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class nearbyPlacesParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
         @Override
         protected void onPreExecute() {
@@ -248,7 +379,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
             JsonParser jsonParser = new JsonParser();
 
             List<HashMap<String, String>> mapList = null;
-            JSONObject object = null;
+            JSONObject object;
             try {
                 object = new JSONObject(strings[0]);
                 mapList = jsonParser.parseResult(object);
@@ -261,7 +392,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         @Override
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
             int cnt = 0;
-            int limit = 6;
 
             for (int i = 0; i < hashMaps.size(); i++) {
                 HashMap<String, String> hashMapList = hashMaps.get(i);
@@ -295,9 +425,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
 
                 try {
                     nearbyPlaces.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, openNow, Float.parseFloat(rating), placeId, placeLat, placeLong));
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -310,6 +438,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class photoDownload extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... strings) {
@@ -371,20 +500,52 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
     }
 
     @Override
-    public void onAddPlaceRouteClick(int position, boolean isAdded) {
+    public void onAddPlaceRouteClick(final int position, final boolean isAdded) {
         if (!isAdded) {
-            selectedPlacesList.add(new NearbyPlacesHelperClass(
-                    nearbyPlaces.get(position).getImageOfPlace(),
-                    nearbyPlaces.get(position).getNameOfPlace(),
-                    nearbyPlaces.get(position).getOpenStatus(),
-                    nearbyPlaces.get(position).getRating(),
-                    nearbyPlaces.get(position).getIdOfPlace(),
-                    nearbyPlaces.get(position).getPlaceLat(),
-                    nearbyPlaces.get(position).getPlaceLong()));
+            if (!nearbyPlaces.get(position).getOpenStatus().equalsIgnoreCase("true")) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Location Closed");
+                builder.setMessage("The place that you have selected is currently closed, do you still want to add it to your itinerary?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selectedPlacesList.add(new NearbyPlacesHelperClass(
+                                nearbyPlaces.get(position).getImageOfPlace(),
+                                nearbyPlaces.get(position).getNameOfPlace(),
+                                nearbyPlaces.get(position).getOpenStatus(),
+                                nearbyPlaces.get(position).getRating(),
+                                nearbyPlaces.get(position).getIdOfPlace(),
+                                nearbyPlaces.get(position).getPlaceLat(),
+                                nearbyPlaces.get(position).getPlaceLong()));
 
-            Log.d(nearbyPlaces.get(position).getNameOfPlace(), nearbyPlaces.get(position).getOpenStatus());
+                        Log.d(nearbyPlaces.get(position).getNameOfPlace(), nearbyPlaces.get(position).getOpenStatus());
 
-            selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
+                        selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                selectedPlacesList.add(new NearbyPlacesHelperClass(
+                        nearbyPlaces.get(position).getImageOfPlace(),
+                        nearbyPlaces.get(position).getNameOfPlace(),
+                        nearbyPlaces.get(position).getOpenStatus(),
+                        nearbyPlaces.get(position).getRating(),
+                        nearbyPlaces.get(position).getIdOfPlace(),
+                        nearbyPlaces.get(position).getPlaceLat(),
+                        nearbyPlaces.get(position).getPlaceLong()));
+
+                Log.d(nearbyPlaces.get(position).getNameOfPlace(), nearbyPlaces.get(position).getOpenStatus());
+
+                selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
+            }
         } else {
             String idToBeDeleted = nearbyPlaces.get(position).getIdOfPlace();
 

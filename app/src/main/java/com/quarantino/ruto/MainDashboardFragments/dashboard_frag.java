@@ -1,9 +1,11 @@
 package com.quarantino.ruto.MainDashboardFragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -128,6 +131,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         return view;
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class nearbyPlaceTask extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -146,6 +150,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class restaurantTask extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -164,6 +169,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class shoppingTask extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -191,7 +197,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         StringBuilder builder = new StringBuilder();
-        String line = "";
+        String line;
 
         while ((line = reader.readLine()) != null) {
             builder.append(line);
@@ -206,6 +212,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         return data;
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class nearbyPlacesParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
         @Override
         protected void onPreExecute() {
@@ -217,7 +224,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
             JsonParser jsonParser = new JsonParser();
 
             List<HashMap<String, String>> mapList = null;
-            JSONObject object = null;
+            JSONObject object;
             try {
                 object = new JSONObject(strings[0]);
                 mapList = jsonParser.parseResult(object);
@@ -251,15 +258,10 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 String photoRef = hashMapList.get("photo_reference");
 //                String openNow = hashMapList.get("open_now");
 
-//                Log.d("Process", "On Post Executed");
-//                Log.d("Place Id", placeId);
-//                Log.d("PhotoRef", photoRef);
-
                 try {
-                    nearbyPlaces.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                    nearbyPlaces.add(
+                            new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -270,6 +272,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class restaurantParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
 //        @Override
 //        protected void onPreExecute() {
@@ -338,6 +341,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class shoppingParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
 //        @Override
 //        protected void onPreExecute() {
@@ -406,6 +410,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class photoDownload extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... strings) {
@@ -481,16 +486,16 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 "&radius=8000" + "&type=" + "restaurant" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
-        String shoppingMallUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+        String museumUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
-                "&radius=12000" + "&type=" + "shopping_mall" +
+                "&radius=15000" + "&type=" + "museum" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
-        Log.d("Json URL", shoppingMallUrl);
+        Log.d("Json URL", museumUrl);
 
         new nearbyPlaceTask().execute(touristUrl);
         new restaurantTask().execute(restaurantUrl);
-        new shoppingTask().execute(shoppingMallUrl);
+        new shoppingTask().execute(museumUrl);
     }
 
     @Override
@@ -512,12 +517,11 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         categoriesRecycler.setHasFixedSize(true);
         categoriesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        categoriesList.add(new CategoriesHelperClass("Cafe", getResources().getDrawable(R.drawable.cafe_icon)));
-        categoriesList.add(new CategoriesHelperClass("Monument", getResources().getDrawable(R.drawable.monument_icon)));
-        categoriesList.add(new CategoriesHelperClass("Restaurants", getResources().getDrawable(R.drawable.restaurant_icon)));
-        categoriesList.add(new CategoriesHelperClass("Art Gallery", getResources().getDrawable(R.drawable.art_icon)));
-        categoriesList.add(new CategoriesHelperClass("Theatre", getResources().getDrawable(R.drawable.theatre_icon)));
-        categoriesList.add(new CategoriesHelperClass("Park", getResources().getDrawable(R.drawable.cafe_icon)));
+        categoriesList.add(new CategoriesHelperClass("Cafe", ContextCompat.getDrawable(getContext(), R.drawable.cafe_icon)));
+        categoriesList.add(new CategoriesHelperClass("Monument", ContextCompat.getDrawable(getContext(), R.drawable.monument_icon)));
+        categoriesList.add(new CategoriesHelperClass("Restaurant", ContextCompat.getDrawable(getContext(), R.drawable.restaurant_icon)));
+        categoriesList.add(new CategoriesHelperClass("Art", ContextCompat.getDrawable(getContext(), R.drawable.art_icon)));
+        categoriesList.add(new CategoriesHelperClass("Theatre", ContextCompat.getDrawable(getContext(), R.drawable.theatre_icon)));
 
         categoriesRecyclerAdapter = new CategoriesAdapter(categoriesList);
         categoriesRecycler.setAdapter(categoriesRecyclerAdapter);

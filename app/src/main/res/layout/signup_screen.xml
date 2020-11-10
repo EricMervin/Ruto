@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/gothamregular"
-            android:hint="Full Name"
+            android:hint="Name"
             android:inputType="textPersonName"
             android:paddingStart="16dp"
             android:paddingTop="18dp"

@@ -1,20 +1,16 @@
 package com.quarantino.ruto;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdate;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -26,24 +22,18 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.quarantino.ruto.Activities.MainDashboard;
 import com.quarantino.ruto.HelperClasses.DirectionHelpers.FetchURL;
-import com.quarantino.ruto.HelperClasses.DirectionHelpers.PointsParser;
 import com.quarantino.ruto.HelperClasses.DirectionHelpers.TaskLoadedCallback;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
 
     private GoogleMap googleMap;
     private double currentLat, currentLong;
+    private boolean[] roundYesNoArr;
+    private boolean roundYesNo;
     private Polyline currentPolyline;
     private ArrayList<NearbyPlacesHelperClass> selectedPlacesList = new ArrayList<>();
 
@@ -56,8 +46,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         selectedPlacesList = bundle.getParcelableArrayList("selectedPlaces");
         currentLat = getIntent().getDoubleExtra("Current Latitude", 0);
         currentLong = getIntent().getDoubleExtra("Current Longitude", 0);
+//        roundYesNoArr = getIntent().getBooleanArrayExtra("Round Trip");
+//        roundYesNo = roundYesNoArr[0];
+        roundYesNo = getIntent().getExtras().getBoolean("Round Trip");
 
-        for(int i = 0; i < selectedPlacesList.size(); i++){
+        for (int i = 0; i < selectedPlacesList.size(); i++) {
             selectedPlacesList.get(i).getNameOfPlace();
         }
 
@@ -91,10 +84,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         googleMap.addMarker(new MarkerOptions().position(new LatLng(currentLat, currentLong)).title("Start/Stop").icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker)));
 
-        for(int i = 0; i < selectedPlacesList.size(); i++){
+        for (int i = 0; i < selectedPlacesList.size(); i++) {
             placeLat = selectedPlacesList.get(i).getPlaceLat();
             placeLong = selectedPlacesList.get(i).getPlaceLong();
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(placeLat, placeLong)).title("Stop " + (i+1)).icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker)));
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(placeLat, placeLong)).title("Stop " + (i + 1)).icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker)));
         }
     }
 
@@ -111,18 +104,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private String getUrl(String directionMode) {
+        int loopLen;
+        String strDest;
+
         String strOrigin = "origin=" + currentLat + "," + currentLong;
-        String strDest = "destination=" + selectedPlacesList.get(selectedPlacesList.size() - 1).getPlaceLat() + "," + selectedPlacesList.get(selectedPlacesList.size() - 1).getPlaceLong();
+
+        if (!roundYesNo) {
+            strDest = "destination=" + selectedPlacesList.get(selectedPlacesList.size() - 1).getPlaceLat() + "," + selectedPlacesList.get(selectedPlacesList.size() - 1).getPlaceLong();
+            loopLen = selectedPlacesList.size() - 1;
+        } else {
+            strDest = "destination=" + currentLat + "," + currentLong;
+            loopLen = selectedPlacesList.size();
+        }
+
         String mode = "mode=" + directionMode;
 
         String waypoints = "";
-        for (int i = 0; i < selectedPlacesList.size()-1; i++) {
+        for (int i = 0; i < loopLen; i++) {
             if (i == 0)
                 waypoints = "waypoints=optimize:false|";
             if (i == selectedPlacesList.size() - 1) {
                 waypoints += selectedPlacesList.get(i).getPlaceLat() + "," + selectedPlacesList.get(i).getPlaceLong();
             } else {
-                waypoints += selectedPlacesList.get(i).getPlaceLat() + "," + selectedPlacesList.get(i).getPlaceLong()+ "|";
+                waypoints += selectedPlacesList.get(i).getPlaceLat() + "," + selectedPlacesList.get(i).getPlaceLong() + "|";
             }
         }
 

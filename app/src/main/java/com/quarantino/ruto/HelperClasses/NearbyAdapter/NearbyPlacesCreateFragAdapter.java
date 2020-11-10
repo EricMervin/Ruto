@@ -49,7 +49,7 @@ public class NearbyPlacesCreateFragAdapter extends RecyclerView.Adapter<NearbyPl
         holder.placePhoto.setImageBitmap(nearbyPlacesHelperClass.getImageOfPlace());
         holder.ratingPlace.setText(String.valueOf(nearbyPlacesHelperClass.getRating()));
 
-        if(nearbyPlacesHelperClass.getOpenStatus() == "true"){
+        if(nearbyPlacesHelperClass.getOpenStatus().equals("true")){
             holder.openPlace.setText("Open Now");
             holder.openPlace.setTextColor(context.getColor(R.color.checkGreen));
         } else {

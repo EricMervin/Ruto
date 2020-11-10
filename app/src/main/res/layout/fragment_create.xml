@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightGrey"
-    android:orientation="vertical"
     tools:context=".MainDashboardFragments.create_frag">
 
     <androidx.core.widget.NestedScrollView
@@ -21,96 +20,124 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/selectedPlacesHeading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
-                android:fontFamily="@font/gothammedium"
-                android:letterSpacing="-0.075"
-                android:text="Selected Places"
-                android:textColor="@color/colorPrimary"
-                android:textSize="21sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/continueSelectedPlace"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="21dp"
-                android:fontFamily="@font/gothammedium"
-                android:text="continue"
-                android:gravity="center_vertical"
-                android:drawableEnd="@drawable/next_btn"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@+id/selectedPlacesHeading"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/selectedPlacesHeading" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/selectedPlaceRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="12dp"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:paddingStart="30dp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/placeTypeInput"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="24dp"
-                android:gravity="center_vertical"
-                app:boxBackgroundColor="@color/white"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="0dp"
-                app:errorIconTint="@color/customError"
-                app:errorTextColor="@color/customError"
-                app:hintEnabled="false"
-                app:hintTextColor="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/headingSignUp">
+                android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompletePlace"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/selectedPlacesHeading"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/search_icon"
-                    android:drawablePadding="12dp"
-                    android:drawableTint="@color/colorPrimary"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="32dp"
+                    android:fontFamily="@font/gothammedium"
+                    android:letterSpacing="-0.075"
+                    android:text="Selected Places"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="21sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/continueSelectedPlace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="21dp"
                     android:fontFamily="@font/gothammedium"
                     android:gravity="center_vertical"
-                    android:hint="Explore next to you"
-                    android:letterSpacing="-0.035"
-                    android:paddingStart="24dp"
-                    android:paddingTop="18dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="18dp"
-                    android:singleLine="true"
-                    android:popupBackground="@null"
+                    android:text="continue"
                     android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimary"
-                    android:textSize="19.5sp" />
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/selectedPlacesHeading"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/selectedPlacesHeading"
+                    app:drawableEndCompat="@drawable/next_btn" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/selectedPlaceRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="12dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="30dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/placeTypeInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="0dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:layout_toStartOf="@id/radiusButton"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:errorIconTint="@color/customError"
+                    app:errorTextColor="@color/customError"
+                    app:hintEnabled="false"
+                    app:hintTextColor="@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/headingSignUp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompletePlace"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/search_icon"
+                        android:drawablePadding="12dp"
+                        android:drawableTint="@color/colorPrimary"
+                        android:fontFamily="@font/gothammedium"
+                        android:gravity="center_vertical"
+                        android:hint="Explore next to you"
+                        android:letterSpacing="-0.035"
+                        android:paddingStart="24dp"
+                        android:paddingTop="18dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="18dp"
+                        android:popupBackground="@null"
+                        android:singleLine="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textColorHint="@color/colorPrimary"
+                        android:textSize="19.5sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/radiusButton"
+                    android:layout_width="57dp"
+                    android:layout_height="57dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="9dp"
+                    android:backgroundTint="@color/white"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    android:stateListAnimator="@null"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/filter_icon"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="@color/colorPrimary" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/neabyPlacesTV"
@@ -131,31 +158,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="12dp"
+                android:layout_marginBottom="27dp"
                 android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
                 android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:layout_marginBottom="27dp"
-                android:nestedScrollingEnabled="false"/>
-
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:id="@+id/ericBtn"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="24dp"-->
-<!--                android:layout_marginTop="32dp"-->
-<!--                android:layout_marginEnd="24dp"-->
-<!--                android:fontFamily="@font/gothammedium"-->
-<!--                android:letterSpacing="-0.05"-->
-<!--                android:padding="16dp"-->
-<!--                android:stateListAnimator="@null"-->
-<!--                android:text="Add"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="@color/white"-->
-<!--                android:textSize="18sp" />-->
+                android:paddingEnd="24dp" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</RelativeLayout>

@@ -1,5 +1,6 @@
 package com.quarantino.ruto;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -161,9 +162,6 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
     }
 
     private void getPlaceDetails(String placeId) {
-
-        // https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJ-yw3J0bkDDkRMTxIHAK_Ous&key=AIzaSyA5L81_-5d2Hy7hHsNVhodk1zS90Qu-aP8
-
         String url = "https://maps.googleapis.com/maps/api/place/details/json" +
                 "?placeid=" + placeId +
                 "&key=" + getResources().getString(R.string.places_api_key);
@@ -183,6 +181,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         Log.d("Bookmark Pressed", "Added Bookmark");
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class PlaceTask extends AsyncTask<String, Integer, String> {
 
         @Override
@@ -247,6 +246,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
         return data;
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class placeDetailsTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
         @Override
         protected List<HashMap<String, String>> doInBackground(String... strings) {
@@ -275,7 +275,6 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
             if (cityPlace != null) {
                 cityOfPlace.setText(cityPlace);
             } else {
-//                findViewById(R.id.locationIcon).setVisibility(View.INVISIBLE);
                 cityOfPlace.setText("Unavailable");
             }
 

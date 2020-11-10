@@ -1,15 +1,19 @@
 package com.quarantino.ruto;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -44,6 +48,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ItineraryActivity extends AppCompatActivity implements NearbyPlacesItineraryAdapter.OnNearbyPlaceRouteListener{
 
@@ -101,7 +106,30 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
         selectedPlacesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         selectedPlacesRecyclerAdapter = new NearbyPlacesItineraryAdapter(selectedPlacesList , this);
         selectedPlacesRecycler.setAdapter(selectedPlacesRecyclerAdapter);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(selectedPlacesRecycler);
     }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder,
+                              @NonNull RecyclerView.ViewHolder target) {
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+
+            Collections.swap(selectedPlacesList, fromPosition, toPosition);
+            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
 
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -122,6 +150,7 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
     }
 
     public void generateRoute(View view) {
+        final Boolean[] roundYesNo = {true};
         ArrayList<NearbyPlacesHelperClass> selectedPlacesListComp = new ArrayList<>();
 
         for (int i = 0; i < selectedPlacesList.size(); i++) {
@@ -134,12 +163,35 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
                     selectedPlacesList.get(i).getPlaceLong()
             ));
         }
-        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+        final Intent intent = new Intent(getApplicationContext(), MapActivity.class);
         intent.putParcelableArrayListExtra("selectedPlaces", selectedPlacesListComp);
         intent.putExtra("Current Latitude", userCurrentLat);
         intent.putExtra("Current Longitude", userCurrentLong);
-        startActivity(intent);
-        finish();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Round Trip");
+        builder.setMessage("Are you sure?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                intent.putExtra("Round Trip", roundYesNo[0]);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                roundYesNo[0] = false;
+                intent.putExtra("Round Trip", roundYesNo[0]);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public void openPlace(View view) {
@@ -174,7 +226,7 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
 
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(this, p2);
 
-        startActivity(intent, optionsCompat.toBundle());
+//        startActivity(intent, optionsCompat.toBundle());
     }
 
     @Override
