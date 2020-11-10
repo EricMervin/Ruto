@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.quarantino.ruto.HelperClasses.DirectionHelpers.FetchURL;
 import com.quarantino.ruto.HelperClasses.DirectionHelpers.TaskLoadedCallback;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
@@ -32,7 +33,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private GoogleMap googleMap;
     private double currentLat, currentLong;
-    private boolean[] roundYesNoArr;
     private boolean roundYesNo;
     private Polyline currentPolyline;
     private ArrayList<NearbyPlacesHelperClass> selectedPlacesList = new ArrayList<>();
@@ -43,21 +43,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
 
         Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
         selectedPlacesList = bundle.getParcelableArrayList("selectedPlaces");
+
         currentLat = getIntent().getDoubleExtra("Current Latitude", 0);
         currentLong = getIntent().getDoubleExtra("Current Longitude", 0);
-//        roundYesNoArr = getIntent().getBooleanArrayExtra("Round Trip");
-//        roundYesNo = roundYesNoArr[0];
         roundYesNo = getIntent().getExtras().getBoolean("Round Trip");
 
-        for (int i = 0; i < selectedPlacesList.size(); i++) {
-            selectedPlacesList.get(i).getNameOfPlace();
-        }
-
-        new FetchURL(MapActivity.this).execute(getUrl("driving"), "driving");
+        new FetchURL(MapActivity.this).execute(getUrl(), "driving");
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapNearBy);
         mapFragment.getMapAsync(this);
+
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setCanceledOnTouchOutside(false);
+        bottomSheetDialog.setDismissWithAnimation(true);
     }
 
     @Override
@@ -93,6 +93,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private BitmapDescriptor bitmapFromVector(Context applicationContext, int map_marker) {
         Drawable vectorDrawable = ContextCompat.getDrawable(applicationContext, map_marker);
+
+        assert vectorDrawable != null;
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
 
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -103,7 +105,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    private String getUrl(String directionMode) {
+    private String getUrl() {
         int loopLen;
         String strDest;
 
@@ -117,20 +119,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             loopLen = selectedPlacesList.size();
         }
 
-        String mode = "mode=" + directionMode;
+        String mode = "mode=" + "driving";
 
-        String waypoints = "";
+        String wayPoints = "";
         for (int i = 0; i < loopLen; i++) {
             if (i == 0)
-                waypoints = "waypoints=optimize:false|";
+                wayPoints = "waypoints=optimize:false|";
             if (i == selectedPlacesList.size() - 1) {
-                waypoints += selectedPlacesList.get(i).getPlaceLat() + "," + selectedPlacesList.get(i).getPlaceLong();
+                wayPoints += selectedPlacesList.get(i).getPlaceLat() + "," + selectedPlacesList.get(i).getPlaceLong();
             } else {
-                waypoints += selectedPlacesList.get(i).getPlaceLat() + "," + selectedPlacesList.get(i).getPlaceLong() + "|";
+                wayPoints += selectedPlacesList.get(i).getPlaceLat() + "," + selectedPlacesList.get(i).getPlaceLong() + "|";
             }
         }
 
-        String parameters = strOrigin + "&" + strDest + "&" + waypoints + "&" + mode;
+        String parameters = strOrigin + "&" + strDest + "&" + wayPoints + "&" + mode;
 
         String url = "https://maps.googleapis.com/maps/api/directions/json?" + parameters + "&key=" + getString(R.string.places_api_key);
         return url;
@@ -142,9 +144,5 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             currentPolyline.remove();
 
         currentPolyline = googleMap.addPolyline((PolylineOptions) values[0]);
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
     }
 }

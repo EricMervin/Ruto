@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.LightingColorFilter;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -159,7 +161,10 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         changeRadiusBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchRadius = Integer.parseInt(String.valueOf(seekBarVal.getText()));
+//                searchRadius = Integer.parseInt(String.valueOf(seekBarVal.getText()));
+                String radiusStr = (String) seekBarVal.getText();
+                String numberStr= radiusStr.replaceAll("[^0-9]", "");
+                searchRadius = Integer.parseInt(String.valueOf(numberStr));
                 bottomSheetDialog.cancel();
                 if (placeTypeSelected != null)
                     getNearbyPlaces(userCurrentLat, userCurrentLong, placeTypeSelected);
@@ -178,6 +183,8 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 seekBarVal.setText(String.format("%d km", i * 300));
+                seekBarVal.setTextSize(27);
+                seekBarVal.setTextColor(getResources().getColor(R.color.colorPrimary));
                 Log.d("Radius Value", String.valueOf(i));
             }
 
@@ -200,45 +207,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
             }
         });
 
-//        filterButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
-//                bottomSheetDialog.setContentView(R.layout.radius_bottom_sheet);
-//
-//                final TextView title= bottomSheetDialog.findViewById(R.id.titleBottomSheet);
-//
-//                SeekBar seek = bottomSheetDialog.findViewById(R.id.radiusSeekBar);
-//                seek.setProgress(12000);
-//                seek.incrementProgressBy(500);
-//                seek.setMax(21000);
-//
-//                seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//                    @Override
-//                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-//                        i = i / 10;
-//                        i = i * 10;
-//                        Log.d("Radius Value", String.valueOf(i));
-//                        title.setText(String.valueOf(i));
-//                    }
-//
-//                    @Override
-//                    public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//                    }
-//                });
-//
-//                bottomSheetDialog.setCanceledOnTouchOutside(false);
-//                bottomSheetDialog.setDismissWithAnimation(true);
-//                bottomSheetDialog.show();
-//            }
-//        });
-
         //Selected Places Recycler View
         selectedPlacesRecycler = view.findViewById(R.id.selectedPlaceRecycler);
         selectedPlacesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -251,7 +219,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         return view;
     }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+    final ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.START | ItemTouchHelper.END, 0) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView,
                               @NonNull RecyclerView.ViewHolder viewHolder,
