@@ -14,12 +14,12 @@
     <!-- Titles -->
     <string name="obTitle1">Discover Places</string>
     <string name="obTitle2">Beautiful Locations</string>
-    <string name="obTitle3"></string>
+    <string name="obTitle3">Login to Continue</string>
 
     <!-- Text -->
     <string name="obText1">Think of a small description for one of the features of the app.</string>
     <string name="obText2">Think of a small description for one of the features of the app.</string>
-    <string name="obText3"></string>
+    <string name="obText3">Think of a small description for one of the features of the app.</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="splashTitle">Ruto<font fgcolor='#FFFD6A02'>.</font></string>

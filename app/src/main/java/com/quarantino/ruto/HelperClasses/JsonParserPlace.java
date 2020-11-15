@@ -22,7 +22,6 @@ public class JsonParserPlace {
             String placeAddress = object.getString("formatted_address");
 
             JSONArray placeReviews = object.getJSONArray("reviews");
-//            HashMap<String, String> reviewList = new HashMap<>();
             for(int i = 0; i <= 1; i++){
                 String author = ((JSONObject) placeReviews.get(i)).getString("author_name");
                 String reviewText = ((JSONObject) placeReviews.get(i)).getString("text");

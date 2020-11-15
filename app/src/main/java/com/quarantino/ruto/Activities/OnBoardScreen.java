@@ -62,10 +62,6 @@ public class OnBoardScreen extends AppCompatActivity {
         viewPager.setCurrentItem(2);
     }
 
-    public void nextSlide(View view) {
-        viewPager.setCurrentItem(currentSlidePosition + 1);
-    }
-
     public void previousSlide(View view) {
         viewPager.setCurrentItem(currentSlidePosition - 1);
     }
@@ -104,20 +100,20 @@ public class OnBoardScreen extends AppCompatActivity {
 //                signButton.setAnimation(animation);
 //                lgsButton.setAnimation(animation);
 
-                signButton.setVisibility(View.VISIBLE);
+//                signButton.setVisibility(View.VISIBLE);
                 lgsButton.setVisibility(View.VISIBLE);
                 skipButton.setVisibility(View.INVISIBLE);
                 nextButton.setVisibility(View.INVISIBLE);
                 backButton.setVisibility(View.VISIBLE);
-            } else if(position == 1){
+            } else if (position == 1) {
                 backButton.setVisibility(View.VISIBLE);
-                signButton.setVisibility(View.INVISIBLE);
+//                signButton.setVisibility(View.INVISIBLE);
                 lgsButton.setVisibility(View.INVISIBLE);
                 skipButton.setVisibility(View.VISIBLE);
                 nextButton.setVisibility(View.VISIBLE);
             } else {
                 backButton.setVisibility(View.INVISIBLE);
-                signButton.setVisibility(View.INVISIBLE);
+//                signButton.setVisibility(View.INVISIBLE);
                 lgsButton.setVisibility(View.INVISIBLE);
                 skipButton.setVisibility(View.VISIBLE);
                 nextButton.setVisibility(View.VISIBLE);
@@ -144,5 +140,9 @@ public class OnBoardScreen extends AppCompatActivity {
 
         startActivity(new Intent(this, SignUpScreen.class));
         finish();
+    }
+
+    public void nextSlide(View view) {
+        viewPager.setCurrentItem(currentSlidePosition + 1);
     }
 }

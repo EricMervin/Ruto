@@ -21,35 +21,80 @@
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/map_bottom_bg"
+        android:backgroundTint="@color/white"
         app:behavior_hideable="true"
         app:behavior_peekHeight="72dp"
-        android:backgroundTint="@color/white"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        android:background="@drawable/map_bottom_bg">
+        android:elevation="20dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="21dp"
-                android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="21dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Itinerary"
-                    android:letterSpacing="-0.035"
-                    android:textSize="32sp"
+                    android:layout_alignParentStart="true"
                     android:fontFamily="@font/gothammedium"
+                    android:letterSpacing="-0.035"
+                    android:text="Itinerary"
                     android:textColor="@color/colorPrimary"
-                    android:drawableEnd="@drawable/back_arrow"/>
+                    android:textSize="32sp" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/finalItinerary"
-                    android:layout_marginTop="24dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                <ImageButton
+                    android:id="@+id/expandBottomButton"
+                    android:layout_width="33dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_height="33dp"
+                    android:src="@drawable/expand_icon"
+                    android:background="@color/white"
+                    android:tint="@color/colorPrimary"
+                    android:contentDescription="Expand" />
 
-            </LinearLayout>
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/finalItinerary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="3dp">
+
+                <Button
+                    android:id="@+id/openMapsBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4.5dp"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:fontFamily="@font/gothammedium"
+                    android:letterSpacing="-0.05"
+                    android:padding="18dp"
+                    android:stateListAnimator="@null"
+                    android:text="Open Maps"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:cornerRadius="9dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 

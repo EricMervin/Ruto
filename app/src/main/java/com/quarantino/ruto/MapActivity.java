@@ -1,15 +1,23 @@
 package com.quarantino.ruto;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,20 +30,31 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.quarantino.ruto.HelperClasses.DirectionHelpers.FetchURL;
 import com.quarantino.ruto.HelperClasses.DirectionHelpers.TaskLoadedCallback;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.ItineraryAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesItineraryAdapter;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, NearbyPlacesItineraryAdapter.OnNearbyPlaceRouteListener {
 
     private GoogleMap googleMap;
     private double currentLat, currentLong;
     private boolean roundYesNo;
     private Polyline currentPolyline;
     private ArrayList<NearbyPlacesHelperClass> selectedPlacesList = new ArrayList<>();
+    private ArrayList<NearbyPlacesHelperClass> selectedPlacesListImage = new ArrayList<>();
+
+    private RecyclerView itineraryRecycler;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private ImageButton expandButton;
+    private RecyclerView.Adapter itineraryRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +74,60 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapNearBy);
         mapFragment.getMapAsync(this);
 
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setCanceledOnTouchOutside(false);
-        bottomSheetDialog.setDismissWithAnimation(true);
+        expandButton = findViewById(R.id.expandBottomButton);
+
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        expandButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    expandButton.setImageDrawable(getDrawable(R.drawable.expand_icon));
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                } else {
+                    expandButton.setImageDrawable(getDrawable(R.drawable.collapse_icon));
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+        });
+
+        for (int i = 0; i < selectedPlacesList.size(); i++) {
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            String filePath = directory.getAbsolutePath();
+            File myPath = new File(filePath, selectedPlacesList.get(i).getIdOfPlace() + ".jpg");
+
+            Bitmap bitmapPlace = null;
+            try {
+                bitmapPlace = BitmapFactory.decodeStream(new FileInputStream(myPath));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            selectedPlacesListImage.add(new NearbyPlacesHelperClass(
+                    bitmapPlace,
+                    selectedPlacesList.get(i).getNameOfPlace(),
+                    selectedPlacesList.get(i).getOpenStatus(),
+                    selectedPlacesList.get(i).getRating(),
+                    selectedPlacesList.get(i).getIdOfPlace(),
+                    selectedPlacesList.get(i).getPlaceLat(),
+                    selectedPlacesList.get(i).getPlaceLong()
+            ));
+        }
+
+        itineraryRecycler = findViewById(R.id.finalItinerary);
+        itineraryRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        itineraryRecyclerAdapter = new ItineraryAdapter(selectedPlacesListImage);
+        itineraryRecycler.setAdapter(itineraryRecyclerAdapter);
+
+        Button openMaps = findViewById(R.id.openMapsBtn);
+        openMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -81,13 +151,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         ));
 
         double placeLat, placeLong;
+        String placeName;
 
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(currentLat, currentLong)).title("Start/Stop").icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker)));
+        if (roundYesNo)
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(currentLat, currentLong)).title("Start/Stop").icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker)));
+        else
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(currentLat, currentLong)).title("Start").icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker)));
 
         for (int i = 0; i < selectedPlacesList.size(); i++) {
             placeLat = selectedPlacesList.get(i).getPlaceLat();
             placeLong = selectedPlacesList.get(i).getPlaceLong();
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(placeLat, placeLong)).title("Stop " + (i + 1)).icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker)));
+            placeName = selectedPlacesList.get(i).getNameOfPlace();
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(placeLat, placeLong)).title(placeName).icon(bitmapFromVector(getApplicationContext(), R.drawable.map_marker)));
         }
     }
 
@@ -144,5 +219,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             currentPolyline.remove();
 
         currentPolyline = googleMap.addPolyline((PolylineOptions) values[0]);
+    }
+
+    @Override
+    public void onNearbyPlaceRouteClick(int position, TextView placeName) {
+
+    }
+
+    @Override
+    public void onAddPlaceRouteClick(int position, boolean isAdded) {
+
     }
 }

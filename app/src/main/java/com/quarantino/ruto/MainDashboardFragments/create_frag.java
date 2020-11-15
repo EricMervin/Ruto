@@ -183,7 +183,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 seekBarVal.setText(String.format("%d km", i * 300));
-                seekBarVal.setTextSize(27);
                 seekBarVal.setTextColor(getResources().getColor(R.color.colorPrimary));
                 Log.d("Radius Value", String.valueOf(i));
             }
