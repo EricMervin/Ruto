@@ -1,10 +1,7 @@
 package com.quarantino.ruto.LoginActivities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -34,16 +31,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.quarantino.ruto.Activities.MainDashboard;
-import com.quarantino.ruto.MainDashboardFragments.dashboard_frag;
-import com.quarantino.ruto.PermissionsActivity;
+import com.quarantino.ruto.Activities.PermissionsActivity;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.UserHelperClass;
 import com.quarantino.ruto.HelperClasses.UserHelperClassFirebase;
 import com.quarantino.ruto.R;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.ExecutionException;
 
 public class SignUpScreen extends AppCompatActivity {
 

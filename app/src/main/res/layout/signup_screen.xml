@@ -15,7 +15,7 @@
         android:layout_marginTop="30dp"
         android:fontFamily="@font/gothammedium"
         android:letterSpacing="-0.075"
-        android:text="Sign In"
+        android:text="Sign Up"
         android:textColor="@color/colorPrimary"
         android:textSize="54sp"
         app:layout_constraintStart_toStartOf="parent"

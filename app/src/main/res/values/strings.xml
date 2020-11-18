@@ -13,13 +13,13 @@
 
     <!-- Titles -->
     <string name="obTitle1">Discover Places</string>
-    <string name="obTitle2">Beautiful Locations</string>
-    <string name="obTitle3">Login to Continue</string>
+    <string name="obTitle2">Always Organised</string>
+    <string name="obTitle3">Get Travelling</string>
 
     <!-- Text -->
-    <string name="obText1">Think of a small description for one of the features of the app.</string>
-    <string name="obText2">Think of a small description for one of the features of the app.</string>
-    <string name="obText3">Think of a small description for one of the features of the app.</string>
+    <string name="obText1">What is on your bucket list? Fulfill them one by one.</string>
+    <string name="obText2">No more separate apps for itinerary and directions. Find them both in the same place</string>
+    <string name="obText3">Login using your google account or make a new profile and get started.</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="splashTitle">Ruto<font fgcolor='#FFFD6A02'>.</font></string>

@@ -16,14 +16,14 @@ import com.quarantino.ruto.R;
 
 import java.util.ArrayList;
 
-public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapter.NearbyPlacesViewHolder>{
+public class HistoryPlacesAdapter extends RecyclerView.Adapter<HistoryPlacesAdapter.NearbyPlacesViewHolder>{
 
     private ArrayList<NearbyPlacesHelperClass> nearbyPlaces;
-    private OnNearbyPlaceListener onNearbyPlaceListener;
+    private OnHistoryPlaceListener onNearbyPlaceListener;
 
     private Context context;
 
-    public NearbyPlacesAdapter(ArrayList<NearbyPlacesHelperClass> nearbyPlaces, OnNearbyPlaceListener onNearbyPlaceListener) {
+    public HistoryPlacesAdapter(ArrayList<NearbyPlacesHelperClass> nearbyPlaces, OnHistoryPlaceListener onNearbyPlaceListener) {
         this.nearbyPlaces = nearbyPlaces;
         this.onNearbyPlaceListener = onNearbyPlaceListener;
     }
@@ -58,9 +58,9 @@ public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapte
         RelativeLayout cardLayout;
         TextView placeName;
         RatingBar placeRatingBar;
-        OnNearbyPlaceListener onNearbyPlaceListener;
+        OnHistoryPlaceListener onHistoryPlaceListener;
 
-        public NearbyPlacesViewHolder(@NonNull View itemView, OnNearbyPlaceListener onNearbyPlaceListener){
+        public NearbyPlacesViewHolder(@NonNull View itemView, OnHistoryPlaceListener onNearbyPlaceListener){
             super(itemView);
 
             //Hooks
@@ -70,18 +70,18 @@ public class NearbyPlacesAdapter extends RecyclerView.Adapter<NearbyPlacesAdapte
             placeRatingBar = itemView.findViewById(R.id.placeRating);
             imageOverlay = itemView.findViewById(R.id.imageOverlay);
 
-            this.onNearbyPlaceListener = onNearbyPlaceListener;
+            this.onHistoryPlaceListener = onNearbyPlaceListener;
 
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            onNearbyPlaceListener.onNearbyPlaceClick(getAdapterPosition(), placeName, placePhoto, placeRatingBar, imageOverlay);
+            onHistoryPlaceListener.onHistoryPlaceClick(getAdapterPosition(), placeName, placePhoto, placeRatingBar, imageOverlay);
         }
     }
 
-    public interface OnNearbyPlaceListener{
-        void onNearbyPlaceClick(int position, TextView placeName, ImageView placePhoto, RatingBar placeRating, View imageOverlay);
+    public interface OnHistoryPlaceListener {
+        void onHistoryPlaceClick(int position, TextView placeName, ImageView placePhoto, RatingBar placeRating, View imageOverlay);
     }
 }

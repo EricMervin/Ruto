@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/lightGrey"
-    tools:context=".ItineraryActivity">
+    tools:context=".Activities.ItineraryActivity">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

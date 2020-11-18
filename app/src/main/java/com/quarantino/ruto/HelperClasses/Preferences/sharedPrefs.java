@@ -19,7 +19,7 @@ public class sharedPrefs {
     public void setIsFirstTime(boolean state) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("First Time", state);
-        editor.commit();
+        editor.apply();
     }
     public boolean getIsLoggedIn() {
         return sharedPref.getBoolean("User Logged In", false);
@@ -28,7 +28,7 @@ public class sharedPrefs {
     public void setIsLoggedIn(boolean state) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("User Logged In", state);
-        editor.commit();
+        editor.apply();
     }
 
     public boolean getIsLoggedOut() {
@@ -38,7 +38,7 @@ public class sharedPrefs {
     public void setIsLoggedOut(boolean state) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("User Logged Out", state);
-        editor.commit();
+        editor.apply();
     }
 
     public boolean getProfilePhotoToken() {
@@ -48,7 +48,7 @@ public class sharedPrefs {
     public void setProfilePhotoToken(boolean state) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("Profile Photo", state);
-        editor.commit();
+        editor.apply();
     }
 
     public boolean getMDFirstTime() {
@@ -58,7 +58,7 @@ public class sharedPrefs {
     public void setMDFirstTime(boolean bool){
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("Main Dashboard First Time", bool);
-        editor.commit();
+        editor.apply();
     }
 
     public boolean getPermission(){
@@ -68,7 +68,7 @@ public class sharedPrefs {
     public void setPermission(boolean bool){
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("Permission Granted", bool);
-        editor.commit();
+        editor.apply();
     }
 
     public int getCounter() {
@@ -78,8 +78,16 @@ public class sharedPrefs {
     public void setCounter(int counter){
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("Counter", ++counter);
-        editor.commit();
+        editor.apply();
     }
 
+    public boolean getRouteGen(){
+        return sharedPref.getBoolean("Route Generated", false);
+    }
 
+    public void setRouteGen(boolean bool){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("Permission Granted", bool);
+        editor.apply();
+    }
 }

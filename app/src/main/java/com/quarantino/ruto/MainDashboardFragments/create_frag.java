@@ -10,8 +10,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.LightingColorFilter;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +33,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,8 +47,9 @@ import com.quarantino.ruto.HelperClasses.JsonParser;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesCreateFragAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.SelectedPlacesAdapter;
-import com.quarantino.ruto.ItineraryActivity;
-import com.quarantino.ruto.NearbyPlaceTemplate;
+import com.quarantino.ruto.Activities.ItineraryActivity;
+import com.quarantino.ruto.Activities.NearbyPlaceTemplate;
+import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.R;
 
 import org.json.JSONException;
@@ -78,7 +78,7 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
     private TextView continueToItinerary;
     private Button filterButton;
     private String placeTypeSelected;
-    private int searchRadius = 15000;
+    private int searchRadius = 12000;
 
     private String[] placesArr = {"Restaurant", "Museum", "Cafe", "Airport", "Library", "Bank", "Church", "Gym"};
 
@@ -149,14 +149,6 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         View bottomSheetView = inflater.inflate(R.layout.radius_bottom_sheet, null);
         final TextView seekBarVal = bottomSheetView.findViewById(R.id.radiusValText);
 
-        Button cancelBottomSheet = bottomSheetView.findViewById(R.id.cancelValBtn);
-        cancelBottomSheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomSheetDialog.cancel();
-            }
-        });
-
         Button changeRadiusBottomSheet = bottomSheetView.findViewById(R.id.changeValBtn);
         changeRadiusBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +169,20 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
         seek.setProgress(40);
         seek.incrementProgressBy(2);
         seek.setMax(100);
+
+        Button cancelBottomSheet = bottomSheetView.findViewById(R.id.cancelValBtn);
+        cancelBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.cancel();
+                seek.setProgress(searchRadius/300);
+                seekBarVal.setText(String.format("%d km", seek.getProgress() * 300));
+                if(searchRadius != 12000)
+                    seekBarVal.setTextColor(getResources().getColor(R.color.colorPrimary));
+                else
+                    seekBarVal.setTextColor(getResources().getColor(R.color.colorAccent));
+            }
+        });
 
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @SuppressLint("DefaultLocale")

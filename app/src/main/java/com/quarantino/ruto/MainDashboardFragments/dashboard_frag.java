@@ -3,9 +3,10 @@ package com.quarantino.ruto.MainDashboardFragments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -35,6 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.quarantino.ruto.Activities.NearbyPlaceTemplate;
 import com.quarantino.ruto.HelperClasses.CategoriesAdapter.CategoriesAdapter;
 import com.quarantino.ruto.HelperClasses.CategoriesAdapter.CategoriesHelperClass;
 import com.quarantino.ruto.HelperClasses.JsonParser;
@@ -42,8 +44,6 @@ import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.ParksAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.RestaurantsAdapter;
-import com.quarantino.ruto.HelperClasses.UserHelperClass;
-import com.quarantino.ruto.NearbyPlaceTemplate;
 import com.quarantino.ruto.R;
 
 import org.json.JSONException;
@@ -51,6 +51,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,10 +64,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener, RestaurantsAdapter.OnRestaurantListener, ParksAdapter.OnParkListener{
+public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener, RestaurantsAdapter.OnRestaurantListener, ParksAdapter.OnParkListener {
 
     private TextView cityOfUser;
 
@@ -206,8 +209,8 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         String data = builder.toString();
         reader.close();
 
-        Log.d("Process", "Url downloaded");
-        Log.d("Data downloaded", data);
+//        Log.d("Process", "Url downloaded");
+//        Log.d("Data downloaded", data);
 
         return data;
     }
@@ -243,12 +246,12 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
                 double placeLat, placeLong;
 
-                if(hashMapList.get("lat") != null && hashMapList.get("lng") != null){
+                if (hashMapList.get("lat") != null && hashMapList.get("lng") != null) {
                     placeLat = Double.parseDouble(hashMapList.get("lat"));
                     placeLong = Double.parseDouble(hashMapList.get("lng"));
-                    Log.d("Place Lat", String.valueOf(placeLat));
-                    Log.d("Place Long", String.valueOf(placeLong));
-                } else{
+//                    Log.d("Place Lat", String.valueOf(placeLat));
+//                    Log.d("Place Long", String.valueOf(placeLong));
+                } else {
                     continue;
                 }
 
@@ -260,7 +263,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
                 try {
                     nearbyPlaces.add(
-                            new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                            new NearbyPlacesHelperClass(new photoDownload().execute(photoRef, placeId).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -307,12 +310,12 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
                 double placeLat, placeLong;
 
-                if(hashMapList.get("lat") != null && hashMapList.get("lng") != null){
+                if (hashMapList.get("lat") != null && hashMapList.get("lng") != null) {
                     placeLat = Double.parseDouble(hashMapList.get("lat"));
                     placeLong = Double.parseDouble(hashMapList.get("lng"));
-                    Log.d("Place Lat", String.valueOf(placeLat));
-                    Log.d("Place Long", String.valueOf(placeLong));
-                } else{
+//                    Log.d("Place Lat", String.valueOf(placeLat));
+//                    Log.d("Place Long", String.valueOf(placeLong));
+                } else {
                     continue;
                 }
 
@@ -327,10 +330,8 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 //                Log.d("PhotoRef", photoRef);
 
                 try {
-                    topRestaurants.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                    topRestaurants.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef, placeId).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -362,7 +363,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 object = new JSONObject(strings[0]);
                 mapList = jsonParser.parseResult(object);
             } catch (JSONException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
             return mapList;
         }
@@ -376,12 +377,12 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
                 double placeLat, placeLong;
 
-                if(hashMapList.get("lat") != null && hashMapList.get("lng") != null){
+                if (hashMapList.get("lat") != null && hashMapList.get("lng") != null) {
                     placeLat = Double.parseDouble(hashMapList.get("lat"));
                     placeLong = Double.parseDouble(hashMapList.get("lng"));
-                    Log.d("Place Lat", String.valueOf(placeLat));
-                    Log.d("Place Long", String.valueOf(placeLong));
-                } else{
+//                    Log.d("Place Lat", String.valueOf(placeLat));
+//                    Log.d("Place Long", String.valueOf(placeLong));
+                } else {
                     continue;
                 }
 
@@ -396,10 +397,8 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 //                Log.d("PhotoRef", photoRef);
 
                 try {
-                    shoppingMall.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                    shoppingMall.add(new NearbyPlacesHelperClass(new photoDownload().execute(photoRef, placeId).get(), name, Float.parseFloat(rating), placeId, placeLat, placeLong));
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -415,15 +414,54 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         @Override
         protected Bitmap doInBackground(String... strings) {
             String photoReference = strings[0];
+            String placeId = strings[1];
             Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
 
             String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference="
                     + photoReference + "&key=" + getResources().getString(R.string.places_api_key);
+
+            ContextWrapper cw = new ContextWrapper(getContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            String filePath = directory.getAbsolutePath();
+            File myPath = new File(filePath, placeId + ".jpg");
+
+            Bitmap bitmapPlace = null;
             try {
-                InputStream in = new java.net.URL(urlPhoto).openStream();
-                return BitmapFactory.decodeStream(in);
-            } catch (IOException e) {
+                bitmapPlace = BitmapFactory.decodeStream(new FileInputStream(myPath));
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
+            }
+
+            if (bitmapPlace == null) {
+                try {
+                    InputStream in = new java.net.URL(urlPhoto).openStream();
+                    Bitmap resultBitmap = BitmapFactory.decodeStream(in);
+
+                    ContextWrapper cwNew = new ContextWrapper(getContext());
+                    File directoryNew = cwNew.getDir("imageDir", Context.MODE_PRIVATE);
+                    File myPathNew = new File(directoryNew, placeId + ".jpg");
+
+                    FileOutputStream fos = null;
+
+                    try {
+                        fos = new FileOutputStream(myPathNew);
+                        resultBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    return resultBitmap;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                return bitmapPlace;
             }
 
             return icon1;
@@ -462,19 +500,23 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    String cityName = addresses.get(0).getLocality();
-                    cityOfUser.setText(cityName);
 
+                    String cityName = null;
+
+                    if (addresses != null) {
+                        cityName = addresses.get(0).getLocality();
+                    }
+
+                    cityOfUser.setText(cityName);
                     getNearbyPlaces(currentLat, currentLong);
-//                    getNearbyRestaurants(currentLat, currentLong);
                 }
             }
         });
     }
 
     private void getNearbyPlaces(double currentLat, double currentLong) {
-        Log.d("Location lat", String.valueOf(currentLat));
-        Log.d("Location long", String.valueOf(currentLong));
+        Log.d("Current Lat", String.valueOf(currentLat));
+        Log.d("Current Long", String.valueOf(currentLong));
 
         String touristUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
@@ -491,7 +533,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
                 "&radius=15000" + "&type=" + "museum" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
-        Log.d("Json URL", museumUrl);
+//        Log.d("Json URL", museumUrl);
 
         new nearbyPlaceTask().execute(touristUrl);
         new restaurantTask().execute(restaurantUrl);
@@ -626,23 +668,5 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2, p4);
 
         startActivity(intent, optionsCompat.toBundle());
-    }
-
-    // Obsolete
-    public Bitmap getPhotoOfPlace(String photoRef) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference="
-                + photoRef + "&key=" + getResources().getString(R.string.places_api_key);
-        Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
-
-        try {
-            InputStream in = new java.net.URL(urlPhoto).openStream();
-            return BitmapFactory.decodeStream(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return icon1;
     }
 }

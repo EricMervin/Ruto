@@ -51,6 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
+        android:progressTint="@color/colorPrimaryDark"
         android:thumb="@drawable/map_marker" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

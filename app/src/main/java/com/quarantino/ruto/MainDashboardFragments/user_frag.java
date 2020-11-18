@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.wear.widget.CircledImageView;
 
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -30,6 +33,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.HistoryPlacesAdapter;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesAdapter;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.UserHelperClass;
 import com.quarantino.ruto.LoginActivities.LoginScreen;
@@ -39,14 +45,20 @@ import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class user_frag extends Fragment {
+public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistoryPlaceListener {
 
-    TextView userName, userUsername;
-    CircleImageView userProfilePhoto;
+    private RecyclerView historyRecycler;
+    private RecyclerView.Adapter historyRecyclerAdapter;
+    private TextView userName, userUsername;
+    private CircleImageView userProfilePhoto;
+
+    private ArrayList<NearbyPlacesHelperClass> historyPlaces = new ArrayList<>();
 
     public user_frag() {
         // Required empty public constructor
@@ -86,7 +98,11 @@ public class user_frag extends Fragment {
             e.printStackTrace();
         }
 
-//        Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(userProfilePhoto);
+        historyRecycler = view.findViewById(R.id.historyRecycler);
+        historyRecycler.setHasFixedSize(true);
+        historyRecyclerAdapter = new HistoryPlacesAdapter(historyPlaces, this);
+        historyRecycler.setAdapter(historyRecyclerAdapter);
+        historyRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         //Helper class
         UserHelperClass userHelperClass = new UserHelperClass(getContext());
@@ -140,5 +156,10 @@ public class user_frag extends Fragment {
 
         startActivity(new Intent(getContext(), LoginScreen.class));
         getActivity().finish();
+    }
+
+    @Override
+    public void onHistoryPlaceClick(int position, TextView placeName, ImageView placePhoto, RatingBar placeRating, View imageOverlay) {
+
     }
 }

@@ -15,7 +15,7 @@ public class JsonParser {
         try {
             jsonArray = object.getJSONArray("results");
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         assert null != jsonArray;
@@ -30,7 +30,7 @@ public class JsonParser {
                 HashMap<String, String> data = parseJsonObject((JSONObject) jsonArray.get(j));
                 dataList.add(data);
             } catch (JSONException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
 
@@ -70,7 +70,7 @@ public class JsonParser {
             dataPlace.put("place_id", placeId);
             dataPlace.put("open_now", openNow);
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return dataPlace;

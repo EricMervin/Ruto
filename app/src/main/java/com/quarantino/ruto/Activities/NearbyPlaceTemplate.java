@@ -1,4 +1,4 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.quarantino.ruto.HelperClasses.JsonParserPlace;
 import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewAdapter;
 import com.quarantino.ruto.HelperClasses.ReviewAdapter.ReviewHelperClass;
+import com.quarantino.ruto.R;
 import com.uber.sdk.android.core.Deeplink;
 import com.uber.sdk.android.core.UberSdk;
 import com.uber.sdk.android.rides.RideParameters;
@@ -61,7 +62,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
 
     private RideParameters rideParameters;
     private SessionConfiguration configuration;
-    private RideRequestDeeplink deeplink;
+    private RideRequestDeeplink uberDeepLink;
 
     private RecyclerView reviewRecycler;
     private RecyclerView.Adapter reviewRecyclerAdapter;
@@ -70,7 +71,6 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
     private TextView nameOfPlace, openStatus, phoneNumber, cityOfPlace;
     private RatingBar ratingOfPlace;
     private ImageView photoOfPlace;
-//    private RideRequestButton rideRequestButton;
 
     private String nameOfPlaceStr, cityPlace;
     private float ratingOfPlaceVal;
@@ -173,7 +173,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
 
     public void bookUber(View view) {
         Log.d("Uber Status", "Uber Booked");
-        startActivity(new Intent(Intent.ACTION_VIEW, deeplink.getUri()));
+        startActivity(new Intent(Intent.ACTION_VIEW, uberDeepLink.getUri()));
     }
 
     public void bookmarkPlace(View view) {
@@ -207,7 +207,7 @@ public class NearbyPlaceTemplate extends AppCompatActivity {
 
             UberSdk.initialize(configuration);
 
-            deeplink = new RideRequestDeeplink.Builder(getApplicationContext())
+            uberDeepLink = new RideRequestDeeplink.Builder(getApplicationContext())
                     .setSessionConfiguration(configuration)
                     .setFallback(Deeplink.Fallback.MOBILE_WEB)
                     .setRideParameters(rideParameters)

@@ -1,12 +1,15 @@
-package com.quarantino.ruto;
+package com.quarantino.ruto.Activities;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +40,7 @@ import com.quarantino.ruto.HelperClasses.DirectionHelpers.TaskLoadedCallback;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.ItineraryAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesItineraryAdapter;
+import com.quarantino.ruto.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -125,7 +130,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         openMaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                StringBuilder uri;
+                if(roundYesNo) {
+                    uri = new StringBuilder("http://maps.google.com/maps?saddr=" + currentLat + "," + currentLong + "&daddr=" + selectedPlacesList.get(0).getPlaceLat() + "," + selectedPlacesList.get(0).getPlaceLong());
+                    for(int i = 1; i < selectedPlacesList.size(); i++){
+//                        Log.d("Place Name", selectedPlacesList.get(i).getNameOfPlace());
+                        uri.append("+to:").append(selectedPlacesList.get(i).getPlaceLat()).append(",").append(selectedPlacesList.get(i).getPlaceLong());
+                    }
+                    uri.append("+to:").append(currentLat).append(",").append(currentLong);
+                } else {
+                    uri = new StringBuilder("http://maps.google.com/maps?saddr=" + currentLat + "," + currentLong + "&daddr=" + selectedPlacesList.get(0).getPlaceLat() + "," + selectedPlacesList.get(0).getPlaceLong());
+                    for(int i = 1; i < selectedPlacesList.size(); i++){
+//                        Log.d("Place Name", selectedPlacesList.get(i).getNameOfPlace());
+                        uri.append("+to:").append(selectedPlacesList.get(i).getPlaceLat()).append(",").append(selectedPlacesList.get(i).getPlaceLong());
+                    }
+                }
 
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri.toString()));
+                startActivity(intent);
             }
         });
     }
@@ -229,5 +251,31 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onAddPlaceRouteClick(int position, boolean isAdded) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+//        final Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sure you want to exit?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                final Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
