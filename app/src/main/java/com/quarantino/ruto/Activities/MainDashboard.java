@@ -1,5 +1,6 @@
 package com.quarantino.ruto.Activities;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,10 +15,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
+import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.MainDashboardFragments.create_frag;
 import com.quarantino.ruto.MainDashboardFragments.dashboard_frag;
 import com.quarantino.ruto.MainDashboardFragments.user_frag;
 import com.quarantino.ruto.R;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class MainDashboard extends AppCompatActivity {
 
@@ -30,15 +38,34 @@ public class MainDashboard extends AppCompatActivity {
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment activeFragment = dashboardFrag;
 
+    private ArrayList<NearbyPlacesHelperClass> selectedPlacesListNoImage = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_dashboard);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        sharedPrefs preference = new sharedPrefs(this);
+        if (preference.getRouteGen()) {
+            SharedPreferences sharedPreferences = getSharedPreferences("History", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString("History Of Places", null);
+            Type type = new TypeToken<ArrayList<NearbyPlacesHelperClass>>() {
+            }.getType();
+            selectedPlacesListNoImage = gson.fromJson(json, type);
+
+            if(selectedPlacesListNoImage == null){
+                selectedPlacesListNoImage = new ArrayList<>();
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("listPlaces", selectedPlacesListNoImage);
+            userFrag.setArguments(bundle);
+            Log.d("MD List Size", String.valueOf(selectedPlacesListNoImage.size()));
         }
+
+        window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         fragmentManager.beginTransaction().add(R.id.fragmentCont, userFrag, "3").hide(userFrag).commit();
         fragmentManager.beginTransaction().add(R.id.fragmentCont, createFrag, "2").hide(createFrag).commit();
@@ -70,8 +97,9 @@ public class MainDashboard extends AppCompatActivity {
                         fragmentManager.beginTransaction().hide(activeFragment).show(userFrag).commit();
                         activeFragment = userFrag;
                         return true;
+                    default:
+                        return false;
                 }
-                return false;
             }
         });
 

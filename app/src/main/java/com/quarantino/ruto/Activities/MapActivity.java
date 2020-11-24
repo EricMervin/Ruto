@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,6 +36,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.quarantino.ruto.HelperClasses.DirectionHelpers.FetchURL;
 import com.quarantino.ruto.HelperClasses.DirectionHelpers.TaskLoadedCallback;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.ItineraryAdapter;
@@ -45,6 +48,7 @@ import com.quarantino.ruto.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, NearbyPlacesItineraryAdapter.OnNearbyPlaceRouteListener {
@@ -261,8 +265,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         builder.setTitle("Sure you want to exit?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                final Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
+                Intent intent = new Intent(getApplicationContext(), MainDashboard.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                intent.putParcelableArrayListExtra("lastPlaces", selectedPlacesList);
+
+                saveData();
                 startActivity(intent);
                 finish();
                 dialog.dismiss();
@@ -277,5 +284,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("History", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(selectedPlacesList);
+        editor.putString("History Of Places", json);
+        editor.apply();
     }
 }

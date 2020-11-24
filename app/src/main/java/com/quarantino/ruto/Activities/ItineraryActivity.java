@@ -157,6 +157,9 @@ public class ItineraryActivity extends AppCompatActivity implements NearbyPlaces
         intent.putExtra("Current Latitude", userCurrentLat);
         intent.putExtra("Current Longitude", userCurrentLong);
 
+        sharedPrefs preferences = new sharedPrefs(this);
+        preferences.setRouteGen(true);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Round Trip");
         builder.setMessage("Are you sure?");

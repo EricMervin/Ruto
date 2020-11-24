@@ -87,7 +87,7 @@ public class sharedPrefs {
 
     public void setRouteGen(boolean bool){
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("Permission Granted", bool);
+        editor.putBoolean("Route Generated", bool);
         editor.apply();
     }
 }

@@ -36,6 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.quarantino.ruto.Activities.CategoryActivity;
 import com.quarantino.ruto.Activities.NearbyPlaceTemplate;
 import com.quarantino.ruto.HelperClasses.CategoriesAdapter.CategoriesAdapter;
 import com.quarantino.ruto.HelperClasses.CategoriesAdapter.CategoriesHelperClass;
@@ -66,7 +67,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener, RestaurantsAdapter.OnRestaurantListener, ParksAdapter.OnParkListener {
+public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNearbyPlaceListener, RestaurantsAdapter.OnRestaurantListener, ParksAdapter.OnParkListener, CategoriesAdapter.OnCategoryTypeListener {
 
     private TextView cityOfUser;
 
@@ -520,7 +521,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
 
         String touristUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLong +
-                "&radius=21000" + "&type=" + "tourist_attraction" +
+                "&radius=22000" + "&type=" + "tourist_attraction" +
                 "&key=" + getResources().getString(R.string.places_api_key);
 
         String restaurantUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
@@ -560,12 +561,13 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         categoriesRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         categoriesList.add(new CategoriesHelperClass("Cafe", ContextCompat.getDrawable(getContext(), R.drawable.cafe_icon)));
-        categoriesList.add(new CategoriesHelperClass("Monument", ContextCompat.getDrawable(getContext(), R.drawable.monument_icon)));
         categoriesList.add(new CategoriesHelperClass("Restaurant", ContextCompat.getDrawable(getContext(), R.drawable.restaurant_icon)));
         categoriesList.add(new CategoriesHelperClass("Art", ContextCompat.getDrawable(getContext(), R.drawable.art_icon)));
         categoriesList.add(new CategoriesHelperClass("Theatre", ContextCompat.getDrawable(getContext(), R.drawable.theatre_icon)));
+        categoriesList.add(new CategoriesHelperClass("Monument", ContextCompat.getDrawable(getContext(), R.drawable.monument_icon)));
 
-        categoriesRecyclerAdapter = new CategoriesAdapter(categoriesList);
+
+        categoriesRecyclerAdapter = new CategoriesAdapter(categoriesList, this);
         categoriesRecycler.setAdapter(categoriesRecyclerAdapter);
     }
 
@@ -639,6 +641,16 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2, p4);
 
         startActivity(intent, optionsCompat.toBundle());
+    }
+
+
+    @Override
+    public void onCategoryTypeClick(int position, TextView categoryType) {
+        Intent intent = new Intent(getContext(), CategoryActivity.class);
+        intent.putExtra("Category Type", categoriesList.get(position).getCategoryType());
+        intent.putExtra("Current Latitude", currentLat);
+        intent.putExtra("Current Longitude", currentLong);
+        startActivity(intent);
     }
 
     @Override

@@ -188,9 +188,8 @@ public class create_frag extends Fragment implements AdapterView.OnItemClickList
             @SuppressLint("DefaultLocale")
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                seekBarVal.setText(String.format("%d km", i * 300));
+                seekBarVal.setText(String.format("%d m", i * 300));
                 seekBarVal.setTextColor(getResources().getColor(R.color.colorPrimary));
-                Log.d("Radius Value", String.valueOf(i));
             }
 
             @Override

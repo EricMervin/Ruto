@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MapActivity"></activity>
+        <activity android:name=".Activities.CategoryActivity"></activity>
+        <activity android:name=".Activities.MapActivity" />
         <activity android:name=".Activities.ItineraryActivity" />
         <activity android:name=".Activities.NearbyPlaceTemplate" />
 

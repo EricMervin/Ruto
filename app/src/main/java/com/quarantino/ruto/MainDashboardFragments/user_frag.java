@@ -1,19 +1,19 @@
 package com.quarantino.ruto.MainDashboardFragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.wear.widget.CircledImageView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,30 +23,39 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.Auth;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.quarantino.ruto.Activities.NearbyPlaceTemplate;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.HistoryPlacesAdapter;
-import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesAdapter;
 import com.quarantino.ruto.HelperClasses.NearbyAdapter.NearbyPlacesHelperClass;
 import com.quarantino.ruto.HelperClasses.Preferences.sharedPrefs;
 import com.quarantino.ruto.HelperClasses.UserHelperClass;
 import com.quarantino.ruto.LoginActivities.LoginScreen;
 import com.quarantino.ruto.R;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -58,6 +67,10 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
     private TextView userName, userUsername;
     private CircleImageView userProfilePhoto;
 
+    FusedLocationProviderClient fusedLocationProviderClient;
+    private double currentLat = 0, currentLong = 0;
+
+    private ArrayList<NearbyPlacesHelperClass> historyPlacesNoImage = new ArrayList<>();
     private ArrayList<NearbyPlacesHelperClass> historyPlaces = new ArrayList<>();
 
     public user_frag() {
@@ -82,6 +95,41 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
                 logOutUser(view);
             }
         });
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getCurrentLocation();
+        } else {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
+
+        Bundle bundle = getArguments();
+        historyPlacesNoImage = bundle.getParcelableArrayList("listPlaces");
+
+        for (int i = 0; i < historyPlacesNoImage.size(); i++) {
+            ContextWrapper cw = new ContextWrapper(getContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            String filePath = directory.getAbsolutePath();
+            File myPath = new File(filePath, historyPlacesNoImage.get(i).getIdOfPlace() + ".jpg");
+
+            Bitmap bitmapPlace = null;
+            try {
+                bitmapPlace = BitmapFactory.decodeStream(new FileInputStream(myPath));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            historyPlaces.add(new NearbyPlacesHelperClass(
+                    bitmapPlace,
+                    historyPlacesNoImage.get(i).getNameOfPlace(),
+                    historyPlacesNoImage.get(i).getOpenStatus(),
+                    historyPlacesNoImage.get(i).getRating(),
+                    historyPlacesNoImage.get(i).getIdOfPlace(),
+                    historyPlacesNoImage.get(i).getPlaceLat(),
+                    historyPlacesNoImage.get(i).getPlaceLong()
+            ));
+        }
 
         userName = view.findViewById(R.id.profileUserName);
         userUsername = view.findViewById(R.id.profileUserUsername);
@@ -110,6 +158,23 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
         userName.setText(userHelperClass.getName());
 
         return view ;
+    }
+
+    private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
+
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    currentLat = location.getLatitude();
+                    currentLong = location.getLongitude();
+                }
+            }
+        });
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -160,6 +225,30 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
 
     @Override
     public void onHistoryPlaceClick(int position, TextView placeName, ImageView placePhoto, RatingBar placeRating, View imageOverlay) {
+        Intent intent = new Intent(getContext(), NearbyPlaceTemplate.class);
 
+        //Converting the photo of place to byte array
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        historyPlaces.get(position).getImageOfPlace().compress(Bitmap.CompressFormat.JPEG, 95, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        intent.putExtra("Name of Place", historyPlaces.get(position).getNameOfPlace());
+        intent.putExtra("Position", position);
+        intent.putExtra("Image", byteArray);
+        intent.putExtra("Current Latitude", currentLat);
+        intent.putExtra("Current Longitude", currentLong);
+        intent.putExtra("Latitude of Place", historyPlaces.get(position).getPlaceLat());
+        intent.putExtra("Longitude of Place", historyPlaces.get(position).getPlaceLong());
+        intent.putExtra("Id Of Place", historyPlaces.get(position).getIdOfPlace());
+        intent.putExtra("Rating of Place", historyPlaces.get(position).getRating());
+
+        Pair<View, String> p1 = Pair.create((View) placePhoto, "nearbyImageAnim");
+        Pair<View, String> p2 = Pair.create((View) placeName, "nearbyTitleAnim");
+//        Pair<View, String> p3 = Pair.create((View) placeRating, "nearbyRatingAnim");
+        Pair<View, String> p4 = Pair.create((View) imageOverlay, "nearbyImageOverlayAnim");
+
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2, p4);
+
+        startActivity(intent, optionsCompat.toBundle());
     }
 }

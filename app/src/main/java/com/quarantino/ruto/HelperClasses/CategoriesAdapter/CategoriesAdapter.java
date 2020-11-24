@@ -21,21 +21,23 @@ import java.util.ResourceBundle;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder>{
 
-    ArrayList<CategoriesHelperClass> categoriesList;
+    private ArrayList<CategoriesHelperClass> categoriesList;
+    private OnCategoryTypeListener onCategoryTypeListener;
     Resources context;
 
-    public CategoriesAdapter(ArrayList<CategoriesHelperClass> categoriesList) {
+    public CategoriesAdapter(ArrayList<CategoriesHelperClass> categoriesList, OnCategoryTypeListener onCategoryTypeListener) {
         this.categoriesList = categoriesList;
+        this.onCategoryTypeListener = onCategoryTypeListener;
     }
 
     @NonNull
     @Override
     public CategoriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.categories_card, parent, false);
-        CategoriesViewHolder categoriesViewHolder = new CategoriesViewHolder(view);
 
         context = parent.getContext().getResources();
-        return categoriesViewHolder;
+
+        return new CategoriesViewHolder(view, onCategoryTypeListener);
     }
 
     @Override
@@ -50,17 +52,30 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         return categoriesList.size();
     }
 
-    public static class CategoriesViewHolder extends RecyclerView.ViewHolder{
+    public static class CategoriesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView categoryType;
         ImageView categoryIcon;
+        OnCategoryTypeListener onCategoryTypeListener;
 
-        public CategoriesViewHolder(@NonNull View itemView) {
+        public CategoriesViewHolder(@NonNull View itemView, OnCategoryTypeListener onCategoryTypeListener) {
             super(itemView);
 
             //Hooks
             categoryType = itemView.findViewById(R.id.categoryTitle);
             categoryIcon = itemView.findViewById(R.id.categoryIcon);
+            this.onCategoryTypeListener = onCategoryTypeListener;
+
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            onCategoryTypeListener.onCategoryTypeClick(getAdapterPosition(), categoryType);
+        }
+    }
+
+    public interface OnCategoryTypeListener {
+        void onCategoryTypeClick(int position, TextView categoryType);
     }
 }

@@ -19,22 +19,22 @@ import java.util.ArrayList;
 public class CategoryPlacesAdapter extends RecyclerView.Adapter<CategoryPlacesAdapter.NearbyPlacesViewHolder>{
 
     private ArrayList<NearbyPlacesHelperClass> nearbyPlaces;
-    private OnCategoryPlaceListener onNearbyPlaceListener;
+    private OnCategoryPlaceListener onCategoryPlaceListener;
 
     private Context context;
 
-    public CategoryPlacesAdapter(ArrayList<NearbyPlacesHelperClass> nearbyPlaces, OnCategoryPlaceListener onNearbyPlaceListener) {
+    public CategoryPlacesAdapter(ArrayList<NearbyPlacesHelperClass> nearbyPlaces, OnCategoryPlaceListener onCategoryPlaceListener) {
         this.nearbyPlaces = nearbyPlaces;
-        this.onNearbyPlaceListener = onNearbyPlaceListener;
+        this.onCategoryPlaceListener = onCategoryPlaceListener;
     }
 
     @NonNull
     @Override
     public NearbyPlacesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.nearby_places_card, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.category_places_card, parent, false);
 
-        return new NearbyPlacesViewHolder(view, onNearbyPlaceListener);
+        return new NearbyPlacesViewHolder(view, onCategoryPlaceListener);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class CategoryPlacesAdapter extends RecyclerView.Adapter<CategoryPlacesAd
         RatingBar placeRatingBar;
         OnCategoryPlaceListener onCategoryPlaceListener;
 
-        public NearbyPlacesViewHolder(@NonNull View itemView, OnCategoryPlaceListener onNearbyPlaceListener){
+        public NearbyPlacesViewHolder(@NonNull View itemView, OnCategoryPlaceListener onCategoryPlaceListener){
             super(itemView);
 
             //Hooks
@@ -70,7 +70,7 @@ public class CategoryPlacesAdapter extends RecyclerView.Adapter<CategoryPlacesAd
             placeRatingBar = itemView.findViewById(R.id.placeRating);
             imageOverlay = itemView.findViewById(R.id.imageOverlay);
 
-            this.onCategoryPlaceListener = onNearbyPlaceListener;
+            this.onCategoryPlaceListener = onCategoryPlaceListener;
 
             itemView.setOnClickListener(this);
         }
