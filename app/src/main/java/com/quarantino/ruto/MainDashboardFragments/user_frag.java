@@ -5,12 +5,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -54,8 +51,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -74,7 +69,6 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
     private ArrayList<NearbyPlacesHelperClass> historyPlaces = new ArrayList<>();
 
     public user_frag() {
-        // Required empty public constructor
     }
 
     @Override
@@ -104,8 +98,15 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
 
-        Bundle bundle = getArguments();
-        historyPlacesNoImage = bundle.getParcelableArrayList("listPlaces");
+        TextView historyPlacesTV = view.findViewById(R.id.historyTitle);
+
+        if (new sharedPrefs(getContext()).getRouteGen()) {
+            historyPlacesTV.setVisibility(View.VISIBLE);
+            Bundle bundle = getArguments();
+            historyPlacesNoImage = bundle.getParcelableArrayList("listPlaces");
+        } else {
+            historyPlacesTV.setVisibility(View.INVISIBLE);
+        }
 
         for (int i = 0; i < historyPlacesNoImage.size(); i++) {
             ContextWrapper cw = new ContextWrapper(getContext());
@@ -137,7 +138,6 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String photoUrl = user.getPhotoUrl().toString().replace("s96-c", "s400-c");
-
         Log.d("User Photo", photoUrl);
 
         try {
@@ -157,7 +157,7 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
         userUsername.setText(String.format("@%s", userHelperClass.getUsername()));
         userName.setText(userHelperClass.getName());
 
-        return view ;
+        return view;
     }
 
     private void getCurrentLocation() {
@@ -184,8 +184,6 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
             String urlPhoto = strings[0];
             Bitmap icon1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
 
-//            String urlPhoto = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference="
-//                    + photoReference + "&key=" + getResources().getString(R.string.places_api_key);
             try {
                 InputStream in = new java.net.URL(urlPhoto).openStream();
                 return BitmapFactory.decodeStream(in);
@@ -203,7 +201,6 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
     }
 
     public void logOutUser(View view) {
-//        Log.d("Log Out", "Successful");
         sharedPrefs preference = new sharedPrefs(getContext());
         preference.setIsLoggedIn(false);
         preference.setIsLoggedOut(true);
@@ -244,7 +241,6 @@ public class user_frag extends Fragment implements HistoryPlacesAdapter.OnHistor
 
         Pair<View, String> p1 = Pair.create((View) placePhoto, "nearbyImageAnim");
         Pair<View, String> p2 = Pair.create((View) placeName, "nearbyTitleAnim");
-//        Pair<View, String> p3 = Pair.create((View) placeRating, "nearbyRatingAnim");
         Pair<View, String> p4 = Pair.create((View) imageOverlay, "nearbyImageOverlayAnim");
 
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2, p4);

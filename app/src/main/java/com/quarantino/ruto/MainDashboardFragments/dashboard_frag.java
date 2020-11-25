@@ -430,7 +430,7 @@ public class dashboard_frag extends Fragment implements NearbyPlacesAdapter.OnNe
             try {
                 bitmapPlace = BitmapFactory.decodeStream(new FileInputStream(myPath));
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
 
             if (bitmapPlace == null) {
